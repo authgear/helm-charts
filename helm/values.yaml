@@ -1,0 +1,12 @@
+ingress:
+  host: _replace_me_.example.com
+
+image: nginx:1.18
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi
