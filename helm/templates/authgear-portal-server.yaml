@@ -111,6 +111,11 @@ metadata:
   name: {{ include "authgear.namePortal" . | quote }}
   labels:
     {{- include "helm.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "http://{{- include "authgear.nameResolver" . -}}.{{ .Values.namespace }}.svc.cluster.local/resolve"
+    nginx.ingress.kubernetes.io/auth-response-headers: "x-authgear-session-valid, x-authgear-user-id, x-authgear-user-anonymous, x-authgear-user-verified, x-authgear-session-acr, x-authgear-session-amr"
+    nginx.ingress.kubernetes.io/auth-snippet: |
+      proxy_set_header X-Forwarded-Host {{ .Values.portalServer.authgearHost }};
 spec:
   tls:
   - secretName: {{ .Values.portalServer.ingress.tls.secretName | quote }}

@@ -50,6 +50,8 @@ portalServer:
     tls:
       secretName: __replace_me__
 
+  authgearHost: __replace_me__.example.com
+
   env:
     TRUST_PROXY: "true"
     LOG_LEVEL: "warn"
@@ -57,7 +59,7 @@ portalServer:
     CONFIG_SOURCE_TYPE: "kubernetes"
     CONFIG_SOURCE_KUBE_NAMESPACE: "authgear-apps"
     AUTHGEAR_CLIENT_ID: __replace_me__
-    AUTHGEAR_ENDPOINT: __replace_me__.example.com
+    AUTHGEAR_ENDPOINT: https://__replace_me__.example.com
     ADMIN_API_TYPE: "static"
     ADMIN_API_AUTH: "jwt"
     ADMIN_API_ENDPOINT: __replace_me__.example.com
