@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authgear.nameAdmin" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "authgear.adminSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.adminSelectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "authgear.nameMain" . | quote }}
+      containers:
+      - name: authgear-admin-server
+        image: {{ .Values.mainServer.image | quote }}
+        args: ["authgear", "start", "admin"]
+        env:
+        - name: TRUST_PROXY
+          value: {{ .Values.mainServer.env.TRUST_PROXY | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.mainServer.env.LOG_LEVEL | quote }}
+        - name: SENTRY_DSN
+          value: {{ .Values.mainServer.env.SENTRY_DSN | quote }}
+        - name: ADMIN_API_AUTH
+          value: {{ .Values.mainServer.env.ADMIN_API_AUTH | quote }}
+        - name: CONFIG_SOURCE_TYPE
+          value: {{ .Values.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
+        - name: CONFIG_SOURCE_KUBE_NAMESPACE
+          value: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+        ports:
+        - name: http
+          containerPort: 3002
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        resources:
+          {{- toYaml .Values.adminServer.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.nameAdmin" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "authgear.adminSelectorLabels" . | nindent 4 }}
+# FIXME(deploy): We should have a ingress for Admin API
+# But the current assumption is that we are given only 1 domain
+# which is occupied by the main server.

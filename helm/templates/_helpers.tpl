@@ -50,3 +50,13 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/name: {{ include "authgear.nameMain" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "authgear.nameAdmin" -}}
+{{- printf "%s-%s" .Release.Name "admin" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.adminSelectorLabels" -}}
+{{ include "helm.labels" . }}
+app.kubernetes.io/name: {{ include "authgear.nameAdmin" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
