@@ -1,12 +1,25 @@
-ingress:
-  host: _replace_me_.example.com
+namespace: authgear
 
-image: nginx:1.18
+mainServer:
+  image: __replace_me_
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 64Mi
-  limits:
-    cpu: 500m
-    memory: 128Mi
+  ingress:
+    host: _replace_me_.example.com
+    tls:
+      secretName: _replace_me_
+
+  env:
+    TRUST_PROXY: "true"
+    LOG_LEVEL: "warn"
+    SENTRY_DSN: ""
+    ADMIN_API_AUTH: "jwt"
+    CONFIG_SOURCE_TYPE: "kubernetes"
+    CONFIG_SOURCE_KUBE_NAMESPACE: "authgear-apps"
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 128Mi

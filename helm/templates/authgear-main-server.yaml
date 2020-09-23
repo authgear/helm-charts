@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "authgear.nameMain" . | quote }}
+  namespace: {{ .Values.namespace | quote }}
+roleRef:
+  kind: Role
+  name: {{ include "authgear.nameMain" . | quote }}
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "authgear.mainSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.mainSelectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "authgear.nameMain" . | quote }}
+      containers:
+      - name: authgear-main-server
+        image: {{ .Values.mainServer.image | quote }}
+        args: ["authgear", "start", "main"]
+        env:
+        - name: TRUST_PROXY
+          value: {{ .Values.mainServer.env.TRUST_PROXY | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.mainServer.env.LOG_LEVEL | quote }}
+        - name: SENTRY_DSN
+          value: {{ .Values.mainServer.env.SENTRY_DSN | quote }}
+        - name: ADMIN_API_AUTH
+          value: {{ .Values.mainServer.env.ADMIN_API_AUTH | quote }}
+        - name: CONFIG_SOURCE_TYPE
+          value: {{ .Values.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
+        - name: CONFIG_SOURCE_KUBE_NAMESPACE
+          value: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        resources:
+          {{- toYaml .Values.mainServer.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "authgear.mainSelectorLabels" . | nindent 4 }}
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  tls:
+  - secretName: {{ .Values.mainServer.ingress.tls.secretName | quote }}
+    hosts:
+    - {{ .Values.mainServer.ingress.host | quote }}
+  rules:
+  - host: {{ .Values.mainServer.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "authgear.nameMain" . | quote }}
+          servicePort: http
