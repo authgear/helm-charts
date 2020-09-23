@@ -60,3 +60,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/name: {{ include "authgear.nameAdmin" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "authgear.nameResolver" -}}
+{{- printf "%s-%s" .Release.Name "resolver" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.resolverSelectorLabels" -}}
+{{ include "helm.labels" . }}
+app.kubernetes.io/name: {{ include "authgear.nameResolver" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
