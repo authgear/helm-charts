@@ -1,12 +1,12 @@
 namespace: authgear
 
 mainServer:
-  image: __replace_me_
+  image: __replace_me__
 
   ingress:
-    host: _replace_me_.example.com
+    host: __replace_me__.example.com
     tls:
-      secretName: _replace_me_
+      secretName: __replace_me__
 
   env:
     TRUST_PROXY: "true"
@@ -41,3 +41,23 @@ resolverServer:
     limits:
       cpu: 300m
       memory: 64Mi
+
+portalServer:
+  image: __replace_me__
+
+  ingress:
+    host: __replace_me__.example.com
+    tls:
+      secretName: __replace_me__
+
+  env:
+    TRUST_PROXY: "true"
+    LOG_LEVEL: "warn"
+    SENTRY_DSN: ""
+    CONFIG_SOURCE_TYPE: "kubernetes"
+    CONFIG_SOURCE_KUBE_NAMESPACE: "authgear-apps"
+    AUTHGEAR_CLIENT_ID: __replace_me__
+    AUTHGEAR_ENDPOINT: __replace_me__.example.com
+    ADMIN_API_TYPE: "static"
+    ADMIN_API_AUTH: "jwt"
+    ADMIN_API_ENDPOINT: __replace_me__.example.com

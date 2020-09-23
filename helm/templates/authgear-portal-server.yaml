@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "authgear.namePortal" . | quote }}
+  namespace: {{ .Values.namespace | quote }}
+roleRef:
+  kind: Role
+  name: {{ include "authgear.namePortal" . | quote }}
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "authgear.portalSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.portalSelectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "authgear.namePortal" . | quote }}
+      containers:
+      - name: authgear-portal-server
+        image: {{ .Values.portalServer.image | quote }}
+        env:
+        - name: TRUST_PROXY
+          value: {{ .Values.portalServer.env.TRUST_PROXY | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.portalServer.env.LOG_LEVEL | quote }}
+        - name: SENTRY_DSN
+          value: {{ .Values.portalServer.env.SENTRY_DSN | quote }}
+        - name: CONFIG_SOURCE_TYPE
+          value: {{ .Values.portalServer.env.CONFIG_SOURCE_TYPE | quote }}
+        - name: CONFIG_SOURCE_KUBE_NAMESPACE
+          value: {{ .Values.portalServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+        - name: AUTHGEAR_CLIENT_ID
+          value: {{ .Values.portalServer.env.AUTHGEAR_CLIENT_ID | quote }}
+        - name: AUTHGEAR_ENDPOINT
+          value: {{ .Values.portalServer.env.AUTHGEAR_ENDPOINT | quote }}
+        - name: ADMIN_API_TYPE
+          value: {{ .Values.portalServer.env.ADMIN_API_TYPE | quote }}
+        - name: ADMIN_API_AUTH
+          value: {{ .Values.portalServer.env.ADMIN_API_AUTH | quote }}
+        - name: ADMIN_API_ENDPOINT
+          value: {{ .Values.portalServer.env.ADMIN_API_ENDPOINT | quote }}
+        ports:
+        - name: http
+          containerPort: 3003
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        resources:
+          {{- toYaml .Values.portalServer.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "authgear.portalSelectorLabels" . | nindent 4 }}
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  tls:
+  - secretName: {{ .Values.portalServer.ingress.tls.secretName | quote }}
+    hosts:
+    - {{ .Values.portalServer.ingress.host | quote }}
+  rules:
+  - host: {{ .Values.portalServer.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "authgear.namePortal" . | quote }}
+          servicePort: http

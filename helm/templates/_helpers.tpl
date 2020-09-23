@@ -70,3 +70,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/name: {{ include "authgear.nameResolver" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "authgear.namePortal" -}}
+{{- printf "%s-%s" .Release.Name "portal" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.portalSelectorLabels" -}}
+{{ include "helm.labels" . }}
+app.kubernetes.io/name: {{ include "authgear.namePortal" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
