@@ -63,3 +63,4 @@ portalServer:
     ADMIN_API_TYPE: "static"
     ADMIN_API_AUTH: "jwt"
     ADMIN_API_ENDPOINT: __replace_me__.example.com
+    ADMIN_API_HOST_TEMPLATE: "{{ .AppID }}.example.com"

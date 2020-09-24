@@ -75,6 +75,8 @@ spec:
           value: {{ .Values.portalServer.env.ADMIN_API_AUTH | quote }}
         - name: ADMIN_API_ENDPOINT
           value: {{ .Values.portalServer.env.ADMIN_API_ENDPOINT | quote }}
+        - name: ADMIN_API_HOST_TEMPLATE
+          value: {{ .Values.portalServer.env.ADMIN_API_HOST_TEMPLATE | quote }}
         ports:
         - name: http
           containerPort: 3003
