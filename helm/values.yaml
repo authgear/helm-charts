@@ -64,3 +64,14 @@ portalServer:
     ADMIN_API_AUTH: "jwt"
     ADMIN_API_ENDPOINT: __replace_me__.example.com
     ADMIN_API_HOST_TEMPLATE: "{{ .AppID }}.example.com"
+    APP_HOST_TEMPLATE: "{{ .AppID }}.example.com"
+    APP_SECRET_DATABASE_URL: postgres://localhost
+    APP_SECRET_DATABASE_SCHEMA: public
+    APP_SECRET_REDIS_URL: redis://localhost/0
+    APP_SECRET_SMTP_HOST: localhost
+    APP_SECRET_SMTP_PORT: "587"
+    APP_SECRET_SMTP_MODE: normal
+    APP_SECRET_SMTP_USERNAME: __replace_me__
+    APP_SECRET_SMTP_PASSWORD: __replace_me__
+    APP_SECRET_TWILIO_ACCOUNT_SID: __replace_me__
+    APP_SECRET_TWILIO_AUTH_TOKEN: __replace_me__
