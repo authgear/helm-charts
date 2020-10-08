@@ -75,3 +75,4 @@ portalServer:
     APP_SECRET_SMTP_PASSWORD: __replace_me__
     APP_SECRET_TWILIO_ACCOUNT_SID: __replace_me__
     APP_SECRET_TWILIO_AUTH_TOKEN: __replace_me__
+    DATABASE_URL: postgres://localhost
