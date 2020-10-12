@@ -17,6 +17,12 @@ rules:
 - apiGroups: [""]
   resources: ["configmaps", "secrets"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+- apiGroups: ["extensions", "networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+- apiGroups: ["cert-manager.io"]
+  resources: ["certificates"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -51,10 +57,22 @@ spec:
         {{- include "authgear.portalSelectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "authgear.namePortal" . | quote }}
+      volumes:
+      - name: volume-ingress-template
+        configMap:
+          name: {{ .Values.portalServer.configMap.ingressTemplate.name | quote }}
+          items:
+          - key: ingress.tpl.yaml
+            path: ingress.tpl.yaml
       containers:
       - name: authgear-portal-server
         image: {{ .Values.portalServer.image | quote }}
+        volumeMounts:
+        - name: volume-ingress-template
+          mountPath: /app/configmap/ingress-template
         env:
+        - name: DATABASE_URL
+          value: {{ .Values.portalServer.env.DATABASE_URL | quote }}
         - name: TRUST_PROXY
           value: {{ .Values.portalServer.env.TRUST_PROXY | quote }}
         - name: LOG_LEVEL
@@ -99,8 +117,24 @@ spec:
           value: {{ .Values.portalServer.env.APP_SECRET_TWILIO_ACCOUNT_SID | quote }}
         - name: APP_SECRET_TWILIO_AUTH_TOKEN
           value: {{ .Values.portalServer.env.APP_SECRET_TWILIO_AUTH_TOKEN | quote }}
-        - name: DATABASE_URL
-          value: {{ .Values.portalServer.env.DATABASE_URL | quote }}
+        - name: APP_KUBERNETES_INGRESS_TEMPLATE_FILE
+          value: /app/configmap/ingress-template/ingress.tpl.yaml
+        - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE | quote }}
+        - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_SECRET_NAME
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_SECRET_NAME | quote }}
+        - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_KIND
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
+        - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_NAME
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
+        - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_TYPE
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_TYPE | quote }}
+        - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME | quote }}
+        - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
+        - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME
+          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
         ports:
         - name: http
           containerPort: 3003

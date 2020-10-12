@@ -47,6 +47,10 @@ portalServer:
 
   authgearHost: __replace_me__.example.com
 
+  configMap:
+    ingressTemplate:
+      name: __replace_me__
+
   env:
     TRUST_PROXY: "true"
     LOG_LEVEL: "warn"
@@ -70,4 +74,12 @@ portalServer:
     APP_SECRET_SMTP_PASSWORD: __replace_me__
     APP_SECRET_TWILIO_ACCOUNT_SID: __replace_me__
     APP_SECRET_TWILIO_AUTH_TOKEN: __replace_me__
+    APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE: none
+    APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_SECRET_NAME: __replace_me__
+    APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_KIND: Issuer
+    APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_NAME: __replace_me__
+    APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_TYPE: none
+    APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME: __replace_me__
+    APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND: Issuer
+    APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME: __replace_me__
     DATABASE_URL: postgres://localhost
