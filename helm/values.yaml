@@ -52,6 +52,7 @@ portalServer:
       name: __replace_me__
 
   env:
+    DATABASE_URL: postgres://localhost
     TRUST_PROXY: "true"
     LOG_LEVEL: "warn"
     SENTRY_DSN: ""
@@ -82,4 +83,6 @@ portalServer:
     APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME: __replace_me__
     APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND: Issuer
     APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME: __replace_me__
-    DATABASE_URL: postgres://localhost
+    APP_BRANDING_APP_NAME: __replace_me__
+    APP_BRANDING_EMAIL_DEFAULT_SENDER: no-reply@example.com
+    APP_BRANDING_SMS_DEFAULT_SENDER: __replace_me__

@@ -135,6 +135,12 @@ spec:
           value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME
           value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
+        - name: APP_BRANDING_APP_NAME
+          value: {{ .Values.portalServer.env.APP_BRANDING_APP_NAME | quote }}
+        - name: APP_BRANDING_EMAIL_DEFAULT_SENDER
+          value: {{ .Values.portalServer.env.APP_BRANDING_EMAIL_DEFAULT_SENDER | quote }}
+        - name: APP_BRANDING_SMS_DEFAULT_SENDER
+          value: {{ .Values.portalServer.env.APP_BRANDING_SMS_DEFAULT_SENDER | quote }}
         ports:
         - name: http
           containerPort: 3003
