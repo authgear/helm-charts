@@ -56,6 +56,13 @@ portalServer:
     TRUST_PROXY: "true"
     LOG_LEVEL: "warn"
     SENTRY_DSN: ""
+    SMTP_HOST: __replace_me__
+    SMTP_PORT: 587
+    SMTP_MODE: normal
+    SMTP_USERNAME: __replace_me__
+    SMTP_PASSWORD: __replace_me__
+    MAIL_SENDER: __replace_me__
+    MAIL_REPLY_TO: __replace_me__
     CONFIG_SOURCE_TYPE: "kubernetes"
     CONFIG_SOURCE_KUBE_NAMESPACE: "authgear-apps"
     AUTHGEAR_CLIENT_ID: __replace_me__

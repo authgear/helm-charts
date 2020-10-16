@@ -79,6 +79,20 @@ spec:
           value: {{ .Values.portalServer.env.LOG_LEVEL | quote }}
         - name: SENTRY_DSN
           value: {{ .Values.portalServer.env.SENTRY_DSN | quote }}
+        - name: SMTP_HOST
+          value: {{ .Values.portalServer.env.SMTP_HOST | quote }}
+        - name: SMTP_PORT
+          value: {{ .Values.portalServer.env.SMTP_PORT | quote }}
+        - name: SMTP_MODE
+          value: {{ .Values.portalServer.env.SMTP_MODE | quote }}
+        - name: SMTP_USERNAME
+          value: {{ .Values.portalServer.env.SMTP_USERNAME | quote }}
+        - name: SMTP_PASSWORD
+          value: {{ .Values.portalServer.env.SMTP_PASSWORD | quote }}
+        - name: MAIL_SENDER
+          value: {{ .Values.portalServer.env.MAIL_SENDER | quote }}
+        - name: MAIL_REPLY_TO
+          value: {{ .Values.portalServer.env.MAIL_REPLY_TO | quote }}
         - name: CONFIG_SOURCE_TYPE
           value: {{ .Values.portalServer.env.CONFIG_SOURCE_TYPE | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
