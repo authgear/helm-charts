@@ -111,8 +111,8 @@ spec:
           value: {{ .Values.portalServer.env.ADMIN_API_ENDPOINT | quote }}
         - name: ADMIN_API_HOST_TEMPLATE
           value: {{ .Values.portalServer.env.ADMIN_API_HOST_TEMPLATE | quote }}
-        - name: APP_HOST_TEMPLATE
-          value: {{ .Values.portalServer.env.APP_HOST_TEMPLATE | quote }}
+        - name: APP_HOST_SUFFIX
+          value: {{ .Values.portalServer.env.APP_HOST_SUFFIX | quote }}
         - name: APP_SECRET_DATABASE_URL
           value: {{ .Values.portalServer.env.APP_SECRET_DATABASE_URL | quote }}
         - name: APP_SECRET_DATABASE_SCHEMA

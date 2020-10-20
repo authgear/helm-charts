@@ -72,7 +72,7 @@ portalServer:
     ADMIN_API_AUTH: "jwt"
     ADMIN_API_ENDPOINT: __replace_me__.example.com
     ADMIN_API_HOST_TEMPLATE: "{{ .AppID }}.example.com"
-    APP_HOST_TEMPLATE: "{{ .AppID }}.example.com"
+    APP_HOST_SUFFIX: ".example.com"
     APP_SECRET_DATABASE_URL: postgres://localhost
     APP_SECRET_DATABASE_SCHEMA: public
     APP_SECRET_REDIS_URL: redis://localhost/0
