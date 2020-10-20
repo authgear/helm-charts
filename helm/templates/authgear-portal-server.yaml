@@ -97,6 +97,8 @@ spec:
           value: {{ .Values.portalServer.env.CONFIG_SOURCE_TYPE | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
           value: {{ .Values.portalServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+        - name: AUTHGEAR_APP_ID
+          value: {{ .Values.portalServer.env.AUTHGEAR_APP_ID | quote }}
         - name: AUTHGEAR_CLIENT_ID
           value: {{ .Values.portalServer.env.AUTHGEAR_CLIENT_ID | quote }}
         - name: AUTHGEAR_ENDPOINT
