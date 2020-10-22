@@ -64,12 +64,28 @@ spec:
           items:
           - key: ingress.tpl.yaml
             path: ingress.tpl.yaml
+      {{ if .Values.appCustomResources.path }}
+      - name: app-custom-resources
+        {{- toYaml .Values.appCustomResources.volume | nindent 8 }}
+      {{ end }}
+      {{ if .Values.portalCustomResources.path }}
+      - name: portal-custom-resources
+        {{- toYaml .Values.portalCustomResources.volume | nindent 8 }}
+      {{ end }}
       containers:
       - name: authgear-portal-server
         image: {{ .Values.portalServer.image | quote }}
         volumeMounts:
         - name: volume-ingress-template
           mountPath: /app/configmap/ingress-template
+        {{ if .Values.appCustomResources.path }}
+        - name: app-custom-resources
+          mountPath: {{ .Values.appCustomResources.path | quote }}
+        {{ end }}
+        {{ if .Values.portalCustomResources.path }}
+        - name: portal-custom-resources
+          mountPath: {{ .Values.portalCustomResources.path | quote }}
+        {{ end }}
         env:
         - name: DATABASE_URL
           value: {{ .Values.portalServer.env.DATABASE_URL | quote }}
@@ -113,26 +129,10 @@ spec:
           value: {{ .Values.portalServer.env.ADMIN_API_HOST_TEMPLATE | quote }}
         - name: APP_HOST_SUFFIX
           value: {{ .Values.portalServer.env.APP_HOST_SUFFIX | quote }}
-        - name: APP_SECRET_DATABASE_URL
-          value: {{ .Values.portalServer.env.APP_SECRET_DATABASE_URL | quote }}
-        - name: APP_SECRET_DATABASE_SCHEMA
-          value: {{ .Values.portalServer.env.APP_SECRET_DATABASE_SCHEMA | quote }}
-        - name: APP_SECRET_REDIS_URL
-          value: {{ .Values.portalServer.env.APP_SECRET_REDIS_URL | quote }}
-        - name: APP_SECRET_SMTP_HOST
-          value: {{ .Values.portalServer.env.APP_SECRET_SMTP_HOST | quote }}
-        - name: APP_SECRET_SMTP_PORT
-          value: {{ .Values.portalServer.env.APP_SECRET_SMTP_PORT | quote }}
-        - name: APP_SECRET_SMTP_MODE
-          value: {{ .Values.portalServer.env.APP_SECRET_SMTP_MODE | quote }}
-        - name: APP_SECRET_SMTP_USERNAME
-          value: {{ .Values.portalServer.env.APP_SECRET_SMTP_USERNAME | quote }}
-        - name: APP_SECRET_SMTP_PASSWORD
-          value: {{ .Values.portalServer.env.APP_SECRET_SMTP_PASSWORD | quote }}
-        - name: APP_SECRET_TWILIO_ACCOUNT_SID
-          value: {{ .Values.portalServer.env.APP_SECRET_TWILIO_ACCOUNT_SID | quote }}
-        - name: APP_SECRET_TWILIO_AUTH_TOKEN
-          value: {{ .Values.portalServer.env.APP_SECRET_TWILIO_AUTH_TOKEN | quote }}
+        - name: APP_CUSTOM_RESOURCE_DIRECTORY
+          value: {{ .Values.appCustomResources.path | quote }}
+        - name: PORTAL_CUSTOM_RESOURCE_DIRECTORY
+          value: {{ .Values.portalCustomResources.path | quote }}
         - name: APP_KUBERNETES_INGRESS_TEMPLATE_FILE
           value: /app/configmap/ingress-template/ingress.tpl.yaml
         - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE
@@ -151,12 +151,6 @@ spec:
           value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME
           value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
-        - name: APP_BRANDING_APP_NAME
-          value: {{ .Values.portalServer.env.APP_BRANDING_APP_NAME | quote }}
-        - name: APP_BRANDING_EMAIL_DEFAULT_SENDER
-          value: {{ .Values.portalServer.env.APP_BRANDING_EMAIL_DEFAULT_SENDER | quote }}
-        - name: APP_BRANDING_SMS_DEFAULT_SENDER
-          value: {{ .Values.portalServer.env.APP_BRANDING_SMS_DEFAULT_SENDER | quote }}
         ports:
         - name: http
           containerPort: 3003

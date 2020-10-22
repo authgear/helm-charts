@@ -15,10 +15,20 @@ spec:
         {{- include "authgear.adminSelectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "authgear.nameMain" . | quote }}
+      {{ if .Values.appCustomResources.path }}
+      volumes:
+      - name: custom-resources
+        {{- toYaml .Values.appCustomResources.volume | nindent 8 }}
+      {{ end }}
       containers:
       - name: authgear-admin-server
         image: {{ .Values.mainServer.image | quote }}
         args: ["authgear", "start", "admin"]
+        {{ if .Values.appCustomResources.path }}
+        volumeMounts:
+        - name: custom-resources
+          mountPath: {{ .Values.appCustomResources.path | quote }}
+        {{ end }}
         env:
         - name: TRUST_PROXY
           value: {{ .Values.mainServer.env.TRUST_PROXY | quote }}
@@ -32,6 +42,8 @@ spec:
           value: {{ .Values.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
           value: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+        - name: CUSTOM_RESOURCE_DIRECTORY
+          value: {{ .Values.appCustomResources.path | quote }}
         ports:
         - name: http
           containerPort: 3002
