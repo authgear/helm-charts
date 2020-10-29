@@ -151,6 +151,8 @@ spec:
           value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME
           value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
+        - name: MAX_OWNED_APPS
+          value: {{ .Values.portalServer.env.MAX_OWNED_APPS | quote }}
         ports:
         - name: http
           containerPort: 3003
