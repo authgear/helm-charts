@@ -41,6 +41,7 @@ portalServer:
   image: __replace_me__
 
   ingress:
+    annotations: {}
     host: __replace_me__.example.com
     tls:
       secretName: __replace_me__
