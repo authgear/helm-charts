@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "authgear.nameResolver" . | quote }}
   labels:
-    {{- include "helm.labels" . | nindent 4 }}
+    {{- include "authgear.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -64,7 +64,7 @@ kind: Service
 metadata:
   name: {{ include "authgear.nameResolver" . | quote }}
   labels:
-    {{- include "helm.labels" . | nindent 4 }}
+    {{- include "authgear.labels" . | nindent 4 }}
 spec:
   ports:
   - port: 80
