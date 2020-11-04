@@ -1,0 +1,3 @@
+owner: authgear
+git-repo: helm-charts
+charts-repo: https://github.com/authgear/helm-charts
