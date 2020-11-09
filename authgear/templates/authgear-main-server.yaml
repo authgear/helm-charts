@@ -10,7 +10,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ include "authgear.nameMain" . | quote }}
-  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  namespace: {{ .Values.authgear.appNamespace | quote }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 rules:
@@ -25,13 +25,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ include "authgear.nameMain" . | quote }}
-  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  namespace: {{ .Values.authgear.appNamespace | quote }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ include "authgear.nameMain" . | quote }}
-  namespace: {{ .Values.namespace | quote }}
+  namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: {{ include "authgear.nameMain" . | quote }}
@@ -54,35 +54,35 @@ spec:
         {{- include "authgear.mainSelectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "authgear.nameMain" . | quote }}
-      {{ if .Values.appCustomResources.path }}
+      {{ if .Values.authgear.appCustomResources.path }}
       volumes:
       - name: custom-resources
-        {{- toYaml .Values.appCustomResources.volume | nindent 8 }}
+        {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
       {{ end }}
       containers:
       - name: authgear-main-server
-        image: {{ .Values.mainServer.image | quote }}
+        image: {{ .Values.authgear.mainServer.image | quote }}
         args: ["authgear", "start", "main"]
-        {{ if .Values.appCustomResources.path }}
+        {{ if .Values.authgear.appCustomResources.path }}
         volumeMounts:
         - name: custom-resources
-          mountPath: {{ .Values.appCustomResources.path | quote }}
+          mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
         {{ end }}
         env:
         - name: TRUST_PROXY
-          value: {{ .Values.mainServer.env.TRUST_PROXY | quote }}
+          value: {{ .Values.authgear.mainServer.env.TRUST_PROXY | quote }}
         - name: LOG_LEVEL
-          value: {{ .Values.mainServer.env.LOG_LEVEL | quote }}
+          value: {{ .Values.authgear.mainServer.env.LOG_LEVEL | quote }}
         - name: SENTRY_DSN
-          value: {{ .Values.mainServer.env.SENTRY_DSN | quote }}
+          value: {{ .Values.authgear.mainServer.env.SENTRY_DSN | quote }}
         - name: ADMIN_API_AUTH
-          value: {{ .Values.mainServer.env.ADMIN_API_AUTH | quote }}
+          value: {{ .Values.authgear.mainServer.env.ADMIN_API_AUTH | quote }}
         - name: CONFIG_SOURCE_TYPE
-          value: {{ .Values.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
+          value: {{ .Values.authgear.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
-          value: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+          value: {{ .Values.authgear.appNamespace | quote }}
         - name: CUSTOM_RESOURCE_DIRECTORY
-          value: {{ .Values.appCustomResources.path | quote }}
+          value: {{ .Values.authgear.appCustomResources.path | quote }}
         ports:
         - name: http
           containerPort: 3000
@@ -96,7 +96,7 @@ spec:
             path: /healthz
             port: http
         resources:
-          {{- toYaml .Values.mainServer.resources | nindent 10 }}
+          {{- toYaml .Values.authgear.mainServer.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service

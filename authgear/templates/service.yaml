@@ -1,0 +1,13 @@
+# The ingresses we created are in the namespace "authgear-apps"
+# so we need to define the following so that
+# they can reference the Service in the namespace "authgear".
+apiVersion: v1
+kind: Service
+metadata:
+  name: bridge-authgear-main-server
+  namespace: {{ .Values.authgear.appNamespace | quote }}
+spec:
+  type: ExternalName
+  externalName: {{ include "authgear.nameMain" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  ports:
+  - port: 80

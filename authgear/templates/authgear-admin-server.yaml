@@ -15,35 +15,35 @@ spec:
         {{- include "authgear.adminSelectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "authgear.nameMain" . | quote }}
-      {{ if .Values.appCustomResources.path }}
+      {{ if .Values.authgear.appCustomResources.path }}
       volumes:
       - name: custom-resources
-        {{- toYaml .Values.appCustomResources.volume | nindent 8 }}
+        {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
       {{ end }}
       containers:
       - name: authgear-admin-server
-        image: {{ .Values.mainServer.image | quote }}
+        image: {{ .Values.authgear.mainServer.image | quote }}
         args: ["authgear", "start", "admin"]
-        {{ if .Values.appCustomResources.path }}
+        {{ if .Values.authgear.appCustomResources.path }}
         volumeMounts:
         - name: custom-resources
-          mountPath: {{ .Values.appCustomResources.path | quote }}
+          mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
         {{ end }}
         env:
         - name: TRUST_PROXY
-          value: {{ .Values.mainServer.env.TRUST_PROXY | quote }}
+          value: {{ .Values.authgear.mainServer.env.TRUST_PROXY | quote }}
         - name: LOG_LEVEL
-          value: {{ .Values.mainServer.env.LOG_LEVEL | quote }}
+          value: {{ .Values.authgear.mainServer.env.LOG_LEVEL | quote }}
         - name: SENTRY_DSN
-          value: {{ .Values.mainServer.env.SENTRY_DSN | quote }}
+          value: {{ .Values.authgear.mainServer.env.SENTRY_DSN | quote }}
         - name: ADMIN_API_AUTH
-          value: {{ .Values.mainServer.env.ADMIN_API_AUTH | quote }}
+          value: {{ .Values.authgear.mainServer.env.ADMIN_API_AUTH | quote }}
         - name: CONFIG_SOURCE_TYPE
-          value: {{ .Values.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
+          value: {{ .Values.authgear.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
-          value: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+          value: {{ .Values.authgear.appNamespace | quote }}
         - name: CUSTOM_RESOURCE_DIRECTORY
-          value: {{ .Values.appCustomResources.path | quote }}
+          value: {{ .Values.authgear.appCustomResources.path | quote }}
         ports:
         - name: http
           containerPort: 3002
@@ -57,7 +57,7 @@ spec:
             path: /healthz
             port: http
         resources:
-          {{- toYaml .Values.adminServer.resources | nindent 10 }}
+          {{- toYaml .Values.authgear.adminServer.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service
@@ -73,6 +73,40 @@ spec:
     name: http
   selector:
     {{- include "authgear.adminSelectorLabels" . | nindent 4 }}
-# FIXME(deploy): We should have a ingress for Admin API
-# But the current assumption is that we are given only 1 domain
-# which is occupied by the main server.
+---
+{{ if not .Values.skipCRDResources }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefixadmin
+spec:
+  stripPrefix:
+    prefixes:
+      - /_api/admin
+---
+{{ end }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "authgear.nameAdmin" . | quote }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-stripprefixadmin@kubernetescrd" .Release.Namespace | quote }}
+    kubernetes.io/tls-acme: {{ .Values.authgear.adminServer.ingress.tls.acme.enabled | quote }}
+    acme.cert-manager.io/http01-ingress-class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    cert-manager.io/issuer: "letsencrypt-http01"
+spec:
+  rules:
+  - host: {{ .Values.authgear.portalServer.appHostWildcard | quote }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ include "authgear.nameAdmin" . | quote }}
+          servicePort: 80
+        path: /_api/admin
+  tls:
+  - hosts:
+    - {{ .Values.authgear.portalServer.appHostWildcard | quote }}
+    secretName: {{ .Values.authgear.adminServer.ingress.tls.secretName | quote }}

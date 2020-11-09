@@ -1,12 +1,25 @@
 apiVersion: v2
+type: application
 name: authgear
 description: A Helm chart for Authgear
-type: application
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-# Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.3.0
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application. Versions are not expected to
-# follow Semantic Versioning. They should reflect the version the application is using.
+version: 0.4.0
 appVersion: 0.1.0
+dependencies:
+- name: traefik
+  version: 9.8.3
+  repository: "https://helm.traefik.io/traefik"
+  condition: subcharts.traefik.enabled
+- name: cert-manager
+  alias: certmanager
+  version: 1.0.3
+  repository: "https://charts.jetstack.io"
+  condition: subcharts.certmanager.enabled
+- name: redis
+  version: 11.0.3
+  repository: "https://charts.bitnami.com/bitnami"
+  condition: subcharts.redis.enabled
+- name: gcloud-sqlproxy
+  alias: gcloudsqlproxy
+  version: 0.19.12
+  repository: "https://charts.rimusz.net"
+  condition: subcharts.gcloudsqlproxy.enabled

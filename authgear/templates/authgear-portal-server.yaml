@@ -10,7 +10,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ include "authgear.namePortal" . | quote }}
-  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  namespace: {{ .Values.authgear.appNamespace | quote }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 rules:
@@ -28,13 +28,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ include "authgear.namePortal" . | quote }}
-  namespace: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+  namespace: {{ .Values.authgear.appNamespace | quote }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: {{ include "authgear.namePortal" . | quote }}
-  namespace: {{ .Values.namespace | quote }}
+  namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: {{ include "authgear.namePortal" . | quote }}
@@ -60,99 +60,99 @@ spec:
       volumes:
       - name: volume-ingress-template
         configMap:
-          name: {{ .Values.portalServer.configMap.ingressTemplate.name | quote }}
+          name: {{ .Values.authgear.portalServer.configMap.ingressTemplate.name | quote }}
           items:
           - key: ingress.tpl.yaml
             path: ingress.tpl.yaml
-      {{ if .Values.appCustomResources.path }}
+      {{ if .Values.authgear.appCustomResources.path }}
       - name: app-custom-resources
-        {{- toYaml .Values.appCustomResources.volume | nindent 8 }}
+        {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
       {{ end }}
-      {{ if .Values.portalCustomResources.path }}
+      {{ if .Values.authgear.portalCustomResources.path }}
       - name: portal-custom-resources
-        {{- toYaml .Values.portalCustomResources.volume | nindent 8 }}
+        {{- toYaml .Values.authgear.portalCustomResources.volume | nindent 8 }}
       {{ end }}
       containers:
       - name: authgear-portal-server
-        image: {{ .Values.portalServer.image | quote }}
+        image: {{ .Values.authgear.portalServer.image | quote }}
         volumeMounts:
         - name: volume-ingress-template
           mountPath: /app/configmap/ingress-template
-        {{ if .Values.appCustomResources.path }}
+        {{ if .Values.authgear.appCustomResources.path }}
         - name: app-custom-resources
-          mountPath: {{ .Values.appCustomResources.path | quote }}
+          mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
         {{ end }}
-        {{ if .Values.portalCustomResources.path }}
+        {{ if .Values.authgear.portalCustomResources.path }}
         - name: portal-custom-resources
-          mountPath: {{ .Values.portalCustomResources.path | quote }}
+          mountPath: {{ .Values.authgear.portalCustomResources.path | quote }}
         {{ end }}
         env:
         - name: DATABASE_URL
-          value: {{ .Values.portalServer.env.DATABASE_URL | quote }}
+          value: {{ .Values.authgear.portalServer.env.DATABASE_URL | quote }}
         - name: TRUST_PROXY
-          value: {{ .Values.portalServer.env.TRUST_PROXY | quote }}
+          value: {{ .Values.authgear.portalServer.env.TRUST_PROXY | quote }}
         - name: LOG_LEVEL
-          value: {{ .Values.portalServer.env.LOG_LEVEL | quote }}
+          value: {{ .Values.authgear.portalServer.env.LOG_LEVEL | quote }}
         - name: SENTRY_DSN
-          value: {{ .Values.portalServer.env.SENTRY_DSN | quote }}
+          value: {{ .Values.authgear.portalServer.env.SENTRY_DSN | quote }}
         - name: SMTP_HOST
-          value: {{ .Values.portalServer.env.SMTP_HOST | quote }}
+          value: {{ .Values.authgear.portalServer.env.SMTP_HOST | quote }}
         - name: SMTP_PORT
-          value: {{ .Values.portalServer.env.SMTP_PORT | quote }}
+          value: {{ .Values.authgear.portalServer.env.SMTP_PORT | quote }}
         - name: SMTP_MODE
-          value: {{ .Values.portalServer.env.SMTP_MODE | quote }}
+          value: {{ .Values.authgear.portalServer.env.SMTP_MODE | quote }}
         - name: SMTP_USERNAME
-          value: {{ .Values.portalServer.env.SMTP_USERNAME | quote }}
+          value: {{ .Values.authgear.portalServer.env.SMTP_USERNAME | quote }}
         - name: SMTP_PASSWORD
-          value: {{ .Values.portalServer.env.SMTP_PASSWORD | quote }}
+          value: {{ .Values.authgear.portalServer.env.SMTP_PASSWORD | quote }}
         - name: MAIL_SENDER
-          value: {{ .Values.portalServer.env.MAIL_SENDER | quote }}
+          value: {{ .Values.authgear.portalServer.env.MAIL_SENDER | quote }}
         - name: MAIL_REPLY_TO
-          value: {{ .Values.portalServer.env.MAIL_REPLY_TO | quote }}
+          value: {{ .Values.authgear.portalServer.env.MAIL_REPLY_TO | quote }}
         - name: CONFIG_SOURCE_TYPE
-          value: {{ .Values.portalServer.env.CONFIG_SOURCE_TYPE | quote }}
+          value: {{ .Values.authgear.portalServer.env.CONFIG_SOURCE_TYPE | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
-          value: {{ .Values.portalServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+          value: {{ .Values.authgear.appNamespace | quote }}
         - name: AUTHGEAR_APP_ID
-          value: {{ .Values.portalServer.env.AUTHGEAR_APP_ID | quote }}
+          value: {{ .Values.authgear.portalServer.env.AUTHGEAR_APP_ID | quote }}
         - name: AUTHGEAR_CLIENT_ID
-          value: {{ .Values.portalServer.env.AUTHGEAR_CLIENT_ID | quote }}
+          value: {{ .Values.authgear.portalServer.env.AUTHGEAR_CLIENT_ID | quote }}
         - name: AUTHGEAR_ENDPOINT
-          value: {{ .Values.portalServer.env.AUTHGEAR_ENDPOINT | quote }}
+          value: {{ .Values.authgear.portalServer.env.AUTHGEAR_ENDPOINT | quote }}
         - name: ADMIN_API_TYPE
-          value: {{ .Values.portalServer.env.ADMIN_API_TYPE | quote }}
+          value: {{ .Values.authgear.portalServer.env.ADMIN_API_TYPE | quote }}
         - name: ADMIN_API_AUTH
-          value: {{ .Values.portalServer.env.ADMIN_API_AUTH | quote }}
+          value: {{ .Values.authgear.portalServer.env.ADMIN_API_AUTH | quote }}
         - name: ADMIN_API_ENDPOINT
-          value: {{ .Values.portalServer.env.ADMIN_API_ENDPOINT | quote }}
+          value: {{ .Values.authgear.portalServer.env.ADMIN_API_ENDPOINT | quote }}
         - name: ADMIN_API_HOST_TEMPLATE
-          value: {{ .Values.portalServer.env.ADMIN_API_HOST_TEMPLATE | quote }}
+          value: {{ .Values.authgear.portalServer.env.ADMIN_API_HOST_TEMPLATE | quote }}
         - name: APP_HOST_SUFFIX
-          value: {{ .Values.portalServer.env.APP_HOST_SUFFIX | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_HOST_SUFFIX | quote }}
         - name: APP_CUSTOM_RESOURCE_DIRECTORY
-          value: {{ .Values.appCustomResources.path | quote }}
+          value: {{ .Values.authgear.appCustomResources.path | quote }}
         - name: PORTAL_CUSTOM_RESOURCE_DIRECTORY
-          value: {{ .Values.portalCustomResources.path | quote }}
+          value: {{ .Values.authgear.portalCustomResources.path | quote }}
         - name: APP_KUBERNETES_INGRESS_TEMPLATE_FILE
           value: /app/configmap/ingress-template/ingress.tpl.yaml
         - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE | quote }}
         - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_SECRET_NAME
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_SECRET_NAME | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_SECRET_NAME | quote }}
         - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_KIND
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
         - name: APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_NAME
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_TYPE
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_TYPE | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_TYPE | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME
-          value: {{ .Values.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
+          value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
         - name: MAX_OWNED_APPS
-          value: {{ .Values.portalServer.env.MAX_OWNED_APPS | quote }}
+          value: {{ .Values.authgear.portalServer.env.MAX_OWNED_APPS | quote }}
         ports:
         - name: http
           containerPort: 3003
@@ -166,7 +166,7 @@ spec:
             path: /healthz
             port: http
         resources:
-          {{- toYaml .Values.portalServer.resources | nindent 10 }}
+          {{- toYaml .Values.authgear.portalServer.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service
@@ -183,6 +183,42 @@ spec:
   selector:
     {{- include "authgear.portalSelectorLabels" . | nindent 4 }}
 ---
+{{ if not .Values.skipCRDResources }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: correcthostforforwardauth
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Host: {{ .Values.authgear.portalServer.authgearHost | quote }}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: forwardauth
+spec:
+  forwardAuth:
+    address: http://{{ include "authgear.nameResolver" . }}.{{ .Release.Namespace }}.svc.cluster.local/resolve
+    trustForwardHeader: true
+    authResponseHeaders:
+    - x-authgear-session-valid
+    - x-authgear-user-id
+    - x-authgear-user-anonymous
+    - x-authgear-user-verified
+    - x-authgear-session-acr
+    - x-authgear-session-amr
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: reverthostforupstream
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Host: {{ .Values.authgear.portalServer.ingress.host | quote }}
+---
+{{ end }}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -190,14 +226,20 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
   annotations:
-    {{- toYaml .Values.portalServer.ingress.annotations | nindent 4 }}
+    kubernetes.io/ingress.class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-correcthostforforwardauth@kubernetescrd,%s-forwardauth@kubernetescrd,%s-reverthostforupstream@kubernetescrd" .Release.Namespace .Release.Namespace .Release.Namespace | quote }}
+    kubernetes.io/tls-acme: {{ .Values.authgear.portalServer.ingress.tls.acme.enabled | quote }}
+    acme.cert-manager.io/http01-ingress-class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    cert-manager.io/issuer: "letsencrypt-http01"
 spec:
   tls:
-  - secretName: {{ .Values.portalServer.ingress.tls.secretName | quote }}
+  - secretName: {{ .Values.authgear.portalServer.ingress.tls.secretName | quote }}
     hosts:
-    - {{ .Values.portalServer.ingress.host | quote }}
+    - {{ .Values.authgear.portalServer.ingress.host | quote }}
   rules:
-  - host: {{ .Values.portalServer.ingress.host | quote }}
+  - host: {{ .Values.authgear.portalServer.ingress.host | quote }}
     http:
       paths:
       - path: /

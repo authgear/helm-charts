@@ -15,35 +15,35 @@ spec:
         {{- include "authgear.resolverSelectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "authgear.nameMain" . | quote }}
-      {{ if .Values.appCustomResources.path }}
+      {{ if .Values.authgear.appCustomResources.path }}
       volumes:
       - name: custom-resources
-        {{- toYaml .Values.appCustomResources.volume | nindent 8 }}
+        {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
       {{ end }}
       containers:
       - name: authgear-resolver-server
-        image: {{ .Values.mainServer.image | quote }}
+        image: {{ .Values.authgear.mainServer.image | quote }}
         args: ["authgear", "start", "resolver"]
-        {{ if .Values.appCustomResources.path }}
+        {{ if .Values.authgear.appCustomResources.path }}
         volumeMounts:
         - name: custom-resources
-          mountPath: {{ .Values.appCustomResources.path | quote }}
+          mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
         {{ end }}
         env:
         - name: TRUST_PROXY
-          value: {{ .Values.mainServer.env.TRUST_PROXY | quote }}
+          value: {{ .Values.authgear.mainServer.env.TRUST_PROXY | quote }}
         - name: LOG_LEVEL
-          value: {{ .Values.mainServer.env.LOG_LEVEL | quote }}
+          value: {{ .Values.authgear.mainServer.env.LOG_LEVEL | quote }}
         - name: SENTRY_DSN
-          value: {{ .Values.mainServer.env.SENTRY_DSN | quote }}
+          value: {{ .Values.authgear.mainServer.env.SENTRY_DSN | quote }}
         - name: ADMIN_API_AUTH
-          value: {{ .Values.mainServer.env.ADMIN_API_AUTH | quote }}
+          value: {{ .Values.authgear.mainServer.env.ADMIN_API_AUTH | quote }}
         - name: CONFIG_SOURCE_TYPE
-          value: {{ .Values.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
+          value: {{ .Values.authgear.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
-          value: {{ .Values.mainServer.env.CONFIG_SOURCE_KUBE_NAMESPACE | quote }}
+          value: {{ .Values.authgear.appNamespace | quote }}
         - name: CUSTOM_RESOURCE_DIRECTORY
-          value: {{ .Values.appCustomResources.path | quote }}
+          value: {{ .Values.authgear.appCustomResources.path | quote }}
         ports:
         - name: http
           containerPort: 3001
@@ -57,7 +57,7 @@ spec:
             path: /healthz
             port: http
         resources:
-          {{- toYaml .Values.resolverServer.resources | nindent 10 }}
+          {{- toYaml .Values.authgear.resolverServer.resources | nindent 10 }}
 ---
 apiVersion: v1
 kind: Service
@@ -73,5 +73,40 @@ spec:
     name: http
   selector:
     {{- include "authgear.resolverSelectorLabels" . | nindent 4 }}
-# The resolver is supposed to be called by the ingress controller
-# So Ingress is not needed.
+---
+{{ if not .Values.skipCRDResources }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefixresolver
+spec:
+  stripPrefix:
+    prefixes:
+      - /_resolver
+---
+{{ end }}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "authgear.nameResolver" . | quote }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-stripprefixresolver@kubernetescrd" .Release.Namespace | quote }}
+    kubernetes.io/tls-acme: {{ .Values.authgear.resolverServer.ingress.tls.acme.enabled | quote }}
+    acme.cert-manager.io/http01-ingress-class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    cert-manager.io/issuer: "letsencrypt-http01"
+spec:
+  rules:
+  - host: {{ .Values.authgear.portalServer.appHostWildcard | quote }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ include "authgear.nameResolver" . | quote }}
+          servicePort: 80
+        path: /_resolver
+  tls:
+  - hosts:
+    - {{ .Values.authgear.portalServer.appHostWildcard | quote }}
+    secretName: {{ .Values.authgear.resolverServer.ingress.tls.secretName | quote }}

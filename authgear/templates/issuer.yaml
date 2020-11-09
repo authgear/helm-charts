@@ -1,0 +1,34 @@
+{{ if not .Values.skipCRDResources }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-http01
+  namespace: {{ .Values.authgear.appNamespace | quote }}
+spec:
+  acme:
+    email: {{ .Values.subcharts.certmanager.acme.email | quote }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-http01-private-key
+    solvers:
+    - http01:
+       ingress:
+         class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+---
+{{ if (not (eq .Release.Namespace .Values.authgear.appNamespace)) }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-http01
+spec:
+  acme:
+    email: {{ .Values.subcharts.certmanager.acme.email | quote }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-http01-private-key
+    solvers:
+    - http01:
+       ingress:
+         class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+{{ end }}
+{{ end }}
