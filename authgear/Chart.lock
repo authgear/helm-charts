@@ -1,0 +1,15 @@
+dependencies:
+- name: traefik
+  repository: https://helm.traefik.io/traefik
+  version: 9.8.3
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.0.3
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.0.3
+- name: gcloud-sqlproxy
+  repository: https://charts.rimusz.net
+  version: 0.19.12
+digest: sha256:4aa60b3566f4cc9bc34b9897827d50c7a758a7222e015598b850ff46e639d1ca
+generated: "2020-11-09T22:28:27.76007+08:00"
