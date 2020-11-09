@@ -3,7 +3,36 @@ entries:
   authgear:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2020-11-04T18:56:30.052771+08:00"
+    created: "2020-11-09T22:29:22.679665+08:00"
+    dependencies:
+    - condition: subcharts.traefik.enabled
+      name: traefik
+      repository: https://helm.traefik.io/traefik
+      version: 9.8.3
+    - alias: certmanager
+      condition: subcharts.certmanager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.0.3
+    - condition: subcharts.redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.0.3
+    - alias: gcloudsqlproxy
+      condition: subcharts.gcloudsqlproxy.enabled
+      name: gcloud-sqlproxy
+      repository: https://charts.rimusz.net
+      version: 0.19.12
+    description: A Helm chart for Authgear
+    digest: 93cc0a142f41b67ffb6a4629782461f8c74d7ce7be540ffdb1a494c5140283a0
+    name: authgear
+    type: application
+    urls:
+    - https://github.com/authgear/helm-charts/releases/download/authgear-0.4.0/authgear-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2020-11-09T22:29:22.298289+08:00"
     description: A Helm chart for Authgear
     digest: 749b338bd4f038b5a9696831ab28d0f24d136dfdd238d39129a0f9b2de09fd26
     name: authgear
@@ -13,7 +42,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2020-11-04T18:56:29.67867+08:00"
+    created: "2020-11-09T22:29:22.011337+08:00"
     description: A Helm chart for Authgear
     digest: 6eee42a5c860cb6a79794ed68634524a3e0e80613a1049856d8618d6311db8d6
     name: authgear
@@ -23,7 +52,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2020-11-04T18:56:29.267172+08:00"
+    created: "2020-11-09T22:29:21.676437+08:00"
     description: A Helm chart for Authgear
     digest: 2755874d34badde7f902d6502b5d0bdbb9c43019b9689e20b65f36dd5e991e4c
     name: authgear
@@ -31,4 +60,4 @@ entries:
     urls:
     - https://github.com/authgear/helm-charts/releases/download/authgear-0.1.0/authgear-0.1.0.tgz
     version: 0.1.0
-generated: "2020-11-04T18:56:28.665577+08:00"
+generated: "2020-11-09T22:29:21.087498+08:00"
