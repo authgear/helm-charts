@@ -1,6 +1,8 @@
 skipCRDResources: false
 
 subcharts:
+  traefik:
+    enabled: true
   certmanager:
     enabled: false
     acme:
