@@ -74,21 +74,12 @@ spec:
   selector:
     {{- include "authgear.adminSelectorLabels" . | nindent 4 }}
 ---
-{{ if not .Values.skipCRDResources }}
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: stripprefixadmin
-spec:
-  stripPrefix:
-    prefixes:
-      - /_api/admin
----
-{{ end }}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: {{ include "authgear.nameAdmin" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
     traefik.ingress.kubernetes.io/router.tls: "true"
@@ -110,3 +101,23 @@ spec:
   - hosts:
     - {{ .Values.authgear.portalServer.appHostWildcard | quote }}
     secretName: {{ .Values.authgear.adminServer.ingress.tls.secretName | quote }}
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-http" (include "authgear.nameAdmin" .) | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-redirecthttptohttps@kubernetescrd" .Release.Namespace | quote }}
+spec:
+  rules:
+  - host: {{ .Values.authgear.portalServer.appHostWildcard | quote }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ include "authgear.nameAdmin" . | quote }}
+          servicePort: 80
+        path: /_api/admin

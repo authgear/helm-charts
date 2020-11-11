@@ -32,10 +32,13 @@ traefik:
   # However, it is impossible to reference "helm install --namespace" inside a values YAML.
   additionalArguments:
   - "--providers.kubernetesingress.ingressclass=traefikauthgear"
-  # Redirect HTTP to HTTPS
-  ports:
-    web:
-      redirectTo: websecure
+
+  # In most case we cannot use the following way to redirect ALL HTTP traffic to HTTPS.
+  # For example, when traefik is also used as ACME HTTP01 resolver, it must be able to serve HTTP traffic.
+  # ports:
+  #   web:
+  #     redirectTo: websecure
+
   # Specify resources
   resources:
     requests:
