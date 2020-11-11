@@ -28,7 +28,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{- define "authgear.mainSelectorLabels" -}}
-{{ include "authgear.labels" . }}
 app.kubernetes.io/name: {{ include "authgear.nameMain" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -38,7 +37,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "authgear.adminSelectorLabels" -}}
-{{ include "authgear.labels" . }}
 app.kubernetes.io/name: {{ include "authgear.nameAdmin" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -48,7 +46,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "authgear.resolverSelectorLabels" -}}
-{{ include "authgear.labels" . }}
 app.kubernetes.io/name: {{ include "authgear.nameResolver" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -58,7 +55,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "authgear.portalSelectorLabels" -}}
-{{ include "authgear.labels" . }}
 app.kubernetes.io/name: {{ include "authgear.namePortal" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
