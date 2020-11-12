@@ -151,8 +151,10 @@ spec:
           value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND | quote }}
         - name: APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME
           value: {{ .Values.authgear.portalServer.env.APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME | quote }}
-        - name: MAX_OWNED_APPS
-          value: {{ .Values.authgear.portalServer.env.MAX_OWNED_APPS | quote }}
+        - name: APP_MAX_OWNED_APPS
+          value: {{ .Values.authgear.portalServer.env.APP_MAX_OWNED_APPS | quote }}
+        - name: APP_SECRET_KEY_ALLOWLIST
+          value: {{ .Values.authgear.portalServer.env.APP_SECRET_KEY_ALLOWLIST | quote }}
         ports:
         - name: http
           containerPort: 3003

@@ -144,7 +144,8 @@ authgear:
       APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME: __replace_me__
       APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND: Issuer
       APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME: __replace_me__
-      MAX_OWNED_APPS: "-1"
+      APP_MAX_OWNED_APPS: "-1"
+      APP_SECRET_KEY_ALLOWLIST: admin-api.auth,sso.oauth.client,webhook
 
   appCustomResources:
     path: ""
