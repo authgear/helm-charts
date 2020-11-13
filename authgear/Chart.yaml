@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: authgear
 description: A Helm chart for Authgear
-version: 0.7.0
+version: 0.8.0
 appVersion: 0.1.0
 dependencies:
 - name: traefik
