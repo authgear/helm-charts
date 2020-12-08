@@ -57,7 +57,7 @@ authgear:
 
     env:
       TRUST_PROXY: "true"
-      LOG_LEVEL: "warn"
+      LOG_LEVEL: "info"
       SENTRY_DSN: ""
       ADMIN_API_AUTH: "jwt"
       CONFIG_SOURCE_TYPE: "kubernetes"
@@ -118,7 +118,7 @@ authgear:
     env:
       DATABASE_URL: postgres://localhost
       TRUST_PROXY: "true"
-      LOG_LEVEL: "warn"
+      LOG_LEVEL: "info"
       SENTRY_DSN: ""
       SMTP_HOST: __replace_me__
       SMTP_PORT: 587
