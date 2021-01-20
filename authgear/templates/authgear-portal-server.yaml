@@ -196,9 +196,11 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-correcthostforforwardauth@kubernetescrd,%s-forwardauth@kubernetescrd,%s-reverthostforupstream@kubernetescrd" .Release.Namespace .Release.Namespace .Release.Namespace | quote }}
-    kubernetes.io/tls-acme: {{ .Values.authgear.portalServer.ingress.tls.acme.enabled | quote }}
+    {{ if .Values.authgear.portalServer.ingress.tls.acme.enabled }}
+    kubernetes.io/tls-acme: "true"
     acme.cert-manager.io/http01-ingress-class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
     cert-manager.io/issuer: "letsencrypt-http01"
+    {{ end }}
 spec:
   tls:
   - secretName: {{ .Values.authgear.portalServer.ingress.tls.secretName | quote }}
