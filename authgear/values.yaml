@@ -48,6 +48,10 @@ traefik:
       cpu: "300m"
       memory: "256Mi"
 
+  service:
+    spec:
+      externalTrafficPolicy: Local
+
 # The values of this chart.
 authgear:
   appNamespace: "authgear-apps"
