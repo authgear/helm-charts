@@ -9,11 +9,6 @@ dependencies:
   version: 9.8.3
   repository: "https://helm.traefik.io/traefik"
   condition: subcharts.traefik.enabled
-- name: cert-manager
-  alias: certmanager
-  version: 1.0.3
-  repository: "https://charts.jetstack.io"
-  condition: subcharts.certmanager.enabled
 - name: redis
   version: 11.0.3
   repository: "https://charts.bitnami.com/bitnami"

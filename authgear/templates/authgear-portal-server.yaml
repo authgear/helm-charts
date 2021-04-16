@@ -192,13 +192,13 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    kubernetes.io/ingress.class: {{ .Values.authgear.portalServer.ingress.class | quote }}
     traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-correcthostforforwardauth@kubernetescrd,%s-forwardauth@kubernetescrd,%s-reverthostforupstream@kubernetescrd" .Release.Namespace .Release.Namespace .Release.Namespace | quote }}
     {{ if .Values.authgear.portalServer.ingress.tls.acme.enabled }}
     kubernetes.io/tls-acme: "true"
-    acme.cert-manager.io/http01-ingress-class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    acme.cert-manager.io/http01-ingress-class: {{ .Values.authgear.portalServer.ingress.class | quote }}
     cert-manager.io/issuer: "letsencrypt-http01"
     {{ end }}
 spec:
@@ -222,7 +222,7 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.subcharts.certmanager.acme.ingress.class | quote }}
+    kubernetes.io/ingress.class: {{ .Values.authgear.portalServer.ingress.class | quote }}
     traefik.ingress.kubernetes.io/router.entrypoints: web
     traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-redirecthttptohttps@kubernetescrd" .Release.Namespace | quote }}
 spec:

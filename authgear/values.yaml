@@ -3,21 +3,11 @@ skipCRDResources: false
 subcharts:
   traefik:
     enabled: true
-  certmanager:
-    enabled: false
-    acme:
-      email: __replace_me__
-      ingress:
-        class: "traefikauthgear"
   gcloudsqlproxy:
     enabled: false
   redis:
     enabled: true
     password: __replace_me__
-
-# Override the values of subchart "certmanager"
-certmanager:
-  installCRDs: true
 
 # Override the values of subchart "traefik"
 traefik:
@@ -106,6 +96,7 @@ authgear:
     image: __replace_me__
 
     ingress:
+      class: traefikauthgear
       host: __replace_me__.example.com
       tls:
         acme:
