@@ -5,8 +5,5 @@ dependencies:
 - name: redis
   repository: https://charts.bitnami.com/bitnami
   version: 11.0.3
-- name: gcloud-sqlproxy
-  repository: https://charts.rimusz.net
-  version: 0.19.12
-digest: sha256:2229bf077acf186c2c2468d0e337af96c6a91a0fd388b0f2879694ee9aa436e4
-generated: "2021-04-16T15:49:07.095007+08:00"
+digest: sha256:38feacfa65e80648d90f0a5aed4515e7ac6456161b5fda1c1454292191a573a1
+generated: "2021-04-19T11:48:26.436377+08:00"

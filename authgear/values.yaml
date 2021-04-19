@@ -3,8 +3,6 @@ skipCRDResources: false
 subcharts:
   traefik:
     enabled: true
-  gcloudsqlproxy:
-    enabled: false
   redis:
     enabled: true
     password: __replace_me__

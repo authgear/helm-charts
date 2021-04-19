@@ -13,8 +13,3 @@ dependencies:
   version: 11.0.3
   repository: "https://charts.bitnami.com/bitnami"
   condition: subcharts.redis.enabled
-- name: gcloud-sqlproxy
-  alias: gcloudsqlproxy
-  version: 0.19.12
-  repository: "https://charts.rimusz.net"
-  condition: subcharts.gcloudsqlproxy.enabled
