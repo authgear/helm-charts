@@ -73,3 +73,16 @@ spec:
     name: http
   selector:
     {{- include "authgear.adminSelectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.nameAdmin" . | quote }}
+  namespace: {{ .Values.authgear.appNamespace | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: {{ include "authgear.nameAdmin" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  ports:
+  - port: 80
