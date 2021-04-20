@@ -40,6 +40,71 @@ roleRef:
   name: {{ include "authgear.namePortal" . | quote }}
   apiGroup: rbac.authorization.k8s.io
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+data:
+  nginx.conf: |-
+    user  nginx;
+    worker_processes  1;
+
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+
+    events {
+        worker_connections  1024;
+    }
+
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+        sendfile        on;
+        keepalive_timeout  65;
+
+        server {
+            server_name _;
+            listen 80;
+
+            location / {
+                proxy_pass http://localhost:3003;
+                proxy_set_header Host $http_host;
+
+                auth_request /_auth;
+
+                auth_request_set $x_authgear_session_valid $upstream_http_x_authgear_session_valid;
+                auth_request_set $x_authgear_user_id $upstream_http_x_authgear_user_id;
+                auth_request_set $x_authgear_user_anonymous $upstream_http_x_authgear_user_anonymous;
+                auth_request_set $x_authgear_user_verified $upstream_http_x_authgear_user_verified;
+                auth_request_set $x_authgear_session_acr $upstream_http_x_authgear_session_acr;
+                auth_request_set $x_authgear_session_amr $upstream_http_x_authgear_session_amr;
+
+                proxy_set_header x-authgear-session-valid $x_authgear_session_valid;
+                proxy_set_header x-authgear-user-id $x_authgear_user_id;
+                proxy_set_header x-authgear-user-anonymous $x_authgear_user_anonymous;
+                proxy_set_header x-authgear-user-verified $x_authgear_user_verified;
+                proxy_set_header x-authgear-session-acr $x_authgear_session_acr;
+                proxy_set_header x-authgear-session-amr $x_authgear_session_amr;
+            }
+
+            location = /_auth {
+                internal;
+                proxy_pass http://{{ include "authgear.nameResolver" . }}.{{ .Release.Namespace }}.svc.cluster.local/resolve;
+                proxy_pass_request_body off;
+                proxy_set_header Host {{ .Values.authgear.portalServer.ingress.host | quote }};
+                proxy_set_header Content-Length "";
+            }
+        }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,6 +123,9 @@ spec:
     spec:
       serviceAccountName: {{ include "authgear.namePortal" . | quote }}
       volumes:
+      - name: volume-nginx-conf
+        configMap:
+          name: {{ include "authgear.namePortal" . | quote }}
       - name: volume-ingress-template
         configMap:
           name: {{ .Values.authgear.portalServer.configMap.ingressTemplate.name | quote }}
@@ -73,6 +141,17 @@ spec:
         {{- toYaml .Values.authgear.portalCustomResources.volume | nindent 8 }}
       {{ end }}
       containers:
+      - name: authgear-portal-server-proxy
+        image: {{ .Values.authgear.portalServerProxy.image | quote }}
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: volume-nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        ports:
+        - name: proxy
+          containerPort: 80
+          protocol: TCP
       - name: authgear-portal-server
         image: {{ .Values.authgear.portalServer.image | quote }}
         volumeMounts:
@@ -156,17 +235,17 @@ spec:
         - name: APP_SECRET_KEY_ALLOWLIST
           value: {{ .Values.authgear.portalServer.env.APP_SECRET_KEY_ALLOWLIST | quote }}
         ports:
-        - name: http
+        - name: portal
           containerPort: 3003
           protocol: TCP
         livenessProbe:
           httpGet:
             path: /healthz
-            port: http
+            port: portal
         readinessProbe:
           httpGet:
             path: /healthz
-            port: http
+            port: portal
         resources:
           {{- toYaml .Values.authgear.portalServer.resources | nindent 10 }}
 ---
@@ -179,58 +258,8 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: http
+    targetPort: proxy
     protocol: TCP
     name: http
   selector:
     {{- include "authgear.portalSelectorLabels" . | nindent 4 }}
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: {{ include "authgear.namePortal" . | quote }}
-  labels:
-    {{- include "authgear.labels" . | nindent 4 }}
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.authgear.portalServer.ingress.class | quote }}
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-correcthostforforwardauth@kubernetescrd,%s-forwardauth@kubernetescrd,%s-reverthostforupstream@kubernetescrd" .Release.Namespace .Release.Namespace .Release.Namespace | quote }}
-    {{ if .Values.authgear.portalServer.ingress.tls.acme.enabled }}
-    kubernetes.io/tls-acme: "true"
-    acme.cert-manager.io/http01-ingress-class: {{ .Values.authgear.portalServer.ingress.class | quote }}
-    cert-manager.io/issuer: "letsencrypt-http01"
-    {{ end }}
-spec:
-  tls:
-  - secretName: {{ .Values.authgear.portalServer.ingress.tls.secretName | quote }}
-    hosts:
-    - {{ .Values.authgear.portalServer.ingress.host | quote }}
-  rules:
-  - host: {{ .Values.authgear.portalServer.ingress.host | quote }}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ include "authgear.namePortal" . | quote }}
-          servicePort: http
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: {{ printf "%s-http" (include "authgear.namePortal" .) | quote }}
-  labels:
-    {{- include "authgear.labels" . | nindent 4 }}
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.authgear.portalServer.ingress.class | quote }}
-    traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-redirecthttptohttps@kubernetescrd" .Release.Namespace | quote }}
-spec:
-  rules:
-  - host: {{ .Values.authgear.portalServer.ingress.host | quote }}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ include "authgear.namePortal" . | quote }}
-          servicePort: http

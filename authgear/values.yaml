@@ -90,16 +90,14 @@ authgear:
         cpu: 300m
         memory: 64Mi
 
+  portalServerProxy:
+    image: nginx:1.18
+
   portalServer:
     image: __replace_me__
 
     ingress:
-      class: traefikauthgear
       host: __replace_me__.example.com
-      tls:
-        acme:
-          enabled: false
-        secretName: __replace_me__
 
     authgearHost: __replace_me__.example.com
     appHostWildcard: "*.example.com"
