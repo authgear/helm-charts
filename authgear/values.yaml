@@ -63,11 +63,6 @@ authgear:
         memory: 128Mi
 
   adminServer:
-    ingress:
-      tls:
-        acme:
-          enabled: false
-        secretName: __replace_me__
     resources:
       requests:
         cpu: 100m
@@ -77,11 +72,6 @@ authgear:
         memory: 64Mi
 
   resolverServer:
-    ingress:
-      tls:
-        acme:
-          enabled: false
-        secretName: __replace_me__
     resources:
       requests:
         cpu: 100m
