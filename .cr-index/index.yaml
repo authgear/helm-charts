@@ -3,7 +3,22 @@ entries:
   authgear:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:37:00.907937+08:00"
+    created: "2021-04-21T20:03:52.815264+08:00"
+    dependencies:
+    - condition: subcharts.redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.0.3
+    description: A Helm chart for Authgear
+    digest: bf9ebd02b2a6be5aef85d14c4bed6a2c423babd1f8816eca5e0b41f0eaffc6bc
+    name: authgear
+    type: application
+    urls:
+    - https://github.com/authgear/helm-charts/releases/download/authgear-2.0.0/authgear-2.0.0.tgz
+    version: 2.0.0
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2021-04-21T20:03:52.524262+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -18,7 +33,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:37:00.53501+08:00"
+    created: "2021-04-21T20:03:52.238958+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -33,7 +48,7 @@ entries:
     version: 1.0.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:57.021569+08:00"
+    created: "2021-04-21T20:03:49.314273+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -52,7 +67,7 @@ entries:
     version: 0.15.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:56.654352+08:00"
+    created: "2021-04-21T20:03:49.027783+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -71,7 +86,7 @@ entries:
     version: 0.15.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:56.344837+08:00"
+    created: "2021-04-21T20:03:48.744983+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -90,7 +105,7 @@ entries:
     version: 0.14.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:55.984382+08:00"
+    created: "2021-04-21T20:03:48.430811+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -114,7 +129,7 @@ entries:
     version: 0.13.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:55.661757+08:00"
+    created: "2021-04-21T20:03:48.14232+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -138,7 +153,7 @@ entries:
     version: 0.13.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:55.322308+08:00"
+    created: "2021-04-21T20:03:47.84398+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -167,7 +182,7 @@ entries:
     version: 0.12.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:54.972067+08:00"
+    created: "2021-04-21T20:03:47.551356+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -196,7 +211,7 @@ entries:
     version: 0.11.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:54.641889+08:00"
+    created: "2021-04-21T20:03:47.240872+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -225,7 +240,7 @@ entries:
     version: 0.10.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:37:00.170739+08:00"
+    created: "2021-04-21T20:03:51.955737+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -254,7 +269,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:59.828215+08:00"
+    created: "2021-04-21T20:03:51.656789+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -283,7 +298,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:59.494795+08:00"
+    created: "2021-04-21T20:03:51.360346+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -312,7 +327,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:59.143777+08:00"
+    created: "2021-04-21T20:03:51.061515+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -341,7 +356,7 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:58.796314+08:00"
+    created: "2021-04-21T20:03:50.75914+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -370,7 +385,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:58.448101+08:00"
+    created: "2021-04-21T20:03:50.460363+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -399,7 +414,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:58.0621+08:00"
+    created: "2021-04-21T20:03:50.155844+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -428,7 +443,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:57.714208+08:00"
+    created: "2021-04-21T20:03:49.851084+08:00"
     description: A Helm chart for Authgear
     digest: 749b338bd4f038b5a9696831ab28d0f24d136dfdd238d39129a0f9b2de09fd26
     name: authgear
@@ -438,7 +453,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:57.408424+08:00"
+    created: "2021-04-21T20:03:49.579372+08:00"
     description: A Helm chart for Authgear
     digest: 6eee42a5c860cb6a79794ed68634524a3e0e80613a1049856d8618d6311db8d6
     name: authgear
@@ -448,7 +463,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T19:36:54.304657+08:00"
+    created: "2021-04-21T20:03:46.925353+08:00"
     description: A Helm chart for Authgear
     digest: 2755874d34badde7f902d6502b5d0bdbb9c43019b9689e20b65f36dd5e991e4c
     name: authgear
@@ -456,4 +471,4 @@ entries:
     urls:
     - https://github.com/authgear/helm-charts/releases/download/authgear-0.1.0/authgear-0.1.0.tgz
     version: 0.1.0
-generated: "2021-04-21T19:36:53.565722+08:00"
+generated: "2021-04-21T20:03:46.326792+08:00"
