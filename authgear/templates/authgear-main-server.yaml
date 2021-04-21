@@ -69,20 +69,24 @@ spec:
           mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
         {{ end }}
         env:
+        - name: DATABASE_URL
+          value: {{ .Values.authgear.databaseURL | quote }}
         - name: TRUST_PROXY
-          value: {{ .Values.authgear.mainServer.env.TRUST_PROXY | quote }}
+          value: {{ .Values.authgear.trustProxy | quote }}
         - name: LOG_LEVEL
-          value: {{ .Values.authgear.mainServer.env.LOG_LEVEL | quote }}
+          value: {{ .Values.authgear.logLevel | quote }}
         - name: SENTRY_DSN
-          value: {{ .Values.authgear.mainServer.env.SENTRY_DSN | quote }}
-        - name: ADMIN_API_AUTH
-          value: {{ .Values.authgear.mainServer.env.ADMIN_API_AUTH | quote }}
+          value: {{ .Values.authgear.sentryDSN | quote }}
         - name: CONFIG_SOURCE_TYPE
-          value: {{ .Values.authgear.mainServer.env.CONFIG_SOURCE_TYPE | quote }}
+          value: {{ .Values.authgear.configSourceType | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
           value: {{ .Values.authgear.appNamespace | quote }}
         - name: CUSTOM_RESOURCE_DIRECTORY
           value: {{ .Values.authgear.appCustomResources.path | quote }}
+        {{- range $key, $val := .Values.authgear.mainServer.env }}
+        - name: {{ $key | quote }}
+          value: {{ $val | quote }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 3000
