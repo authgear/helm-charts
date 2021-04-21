@@ -3,7 +3,22 @@ entries:
   authgear:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:50.70412+08:00"
+    created: "2021-04-21T19:37:00.907937+08:00"
+    dependencies:
+    - condition: subcharts.redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.0.3
+    description: A Helm chart for Authgear
+    digest: edc8804e16ed781a1d6b4f3ac114d093e8c496745bd7a1a53060326a89db74e3
+    name: authgear
+    type: application
+    urls:
+    - https://github.com/authgear/helm-charts/releases/download/authgear-1.0.1/authgear-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2021-04-21T19:37:00.53501+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -18,7 +33,7 @@ entries:
     version: 1.0.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:47.296012+08:00"
+    created: "2021-04-21T19:36:57.021569+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -37,7 +52,7 @@ entries:
     version: 0.15.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:46.95388+08:00"
+    created: "2021-04-21T19:36:56.654352+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -56,7 +71,7 @@ entries:
     version: 0.15.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:46.642516+08:00"
+    created: "2021-04-21T19:36:56.344837+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -75,7 +90,7 @@ entries:
     version: 0.14.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:46.327745+08:00"
+    created: "2021-04-21T19:36:55.984382+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -99,7 +114,7 @@ entries:
     version: 0.13.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:46.01247+08:00"
+    created: "2021-04-21T19:36:55.661757+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -123,7 +138,7 @@ entries:
     version: 0.13.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:45.669058+08:00"
+    created: "2021-04-21T19:36:55.322308+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -152,7 +167,7 @@ entries:
     version: 0.12.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:45.305726+08:00"
+    created: "2021-04-21T19:36:54.972067+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -181,7 +196,7 @@ entries:
     version: 0.11.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:44.960112+08:00"
+    created: "2021-04-21T19:36:54.641889+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -210,7 +225,7 @@ entries:
     version: 0.10.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:50.378234+08:00"
+    created: "2021-04-21T19:37:00.170739+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -239,7 +254,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:50.0319+08:00"
+    created: "2021-04-21T19:36:59.828215+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -268,7 +283,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:49.695702+08:00"
+    created: "2021-04-21T19:36:59.494795+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -297,7 +312,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:49.346146+08:00"
+    created: "2021-04-21T19:36:59.143777+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -326,7 +341,7 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:48.999787+08:00"
+    created: "2021-04-21T19:36:58.796314+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -355,7 +370,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:48.659856+08:00"
+    created: "2021-04-21T19:36:58.448101+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -384,7 +399,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:48.339585+08:00"
+    created: "2021-04-21T19:36:58.0621+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -413,7 +428,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:47.974316+08:00"
+    created: "2021-04-21T19:36:57.714208+08:00"
     description: A Helm chart for Authgear
     digest: 749b338bd4f038b5a9696831ab28d0f24d136dfdd238d39129a0f9b2de09fd26
     name: authgear
@@ -423,7 +438,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:47.662698+08:00"
+    created: "2021-04-21T19:36:57.408424+08:00"
     description: A Helm chart for Authgear
     digest: 6eee42a5c860cb6a79794ed68634524a3e0e80613a1049856d8618d6311db8d6
     name: authgear
@@ -433,7 +448,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-04-21T14:15:44.61832+08:00"
+    created: "2021-04-21T19:36:54.304657+08:00"
     description: A Helm chart for Authgear
     digest: 2755874d34badde7f902d6502b5d0bdbb9c43019b9689e20b65f36dd5e991e4c
     name: authgear
@@ -441,4 +456,4 @@ entries:
     urls:
     - https://github.com/authgear/helm-charts/releases/download/authgear-0.1.0/authgear-0.1.0.tgz
     version: 0.1.0
-generated: "2021-04-21T14:15:43.895314+08:00"
+generated: "2021-04-21T19:36:53.565722+08:00"
