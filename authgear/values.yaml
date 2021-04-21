@@ -1,44 +1,7 @@
-skipCRDResources: false
-
 subcharts:
-  traefik:
-    enabled: true
   redis:
     enabled: true
     password: __replace_me__
-
-# Override the values of subchart "traefik"
-traefik:
-  # This default value is traefik
-  # However, when it is explicitly specified,
-  # only ingresses with the matching annotation will be processed.
-  #
-  # The traefik ingress controller installed by us is meant to be used by us only.
-  # Therefore we use a ingress class value that is likely to be unused.
-  # Then we do not need to list out the namespaces, which is very easy to do so.
-  # In typical setup, we want traefik to look at "authgear" and "authgear-apps" only.
-  # However, it is impossible to reference "helm install --namespace" inside a values YAML.
-  additionalArguments:
-  - "--providers.kubernetesingress.ingressclass=traefikauthgear"
-
-  # In most case we cannot use the following way to redirect ALL HTTP traffic to HTTPS.
-  # For example, when traefik is also used as ACME HTTP01 resolver, it must be able to serve HTTP traffic.
-  # ports:
-  #   web:
-  #     redirectTo: websecure
-
-  # Specify resources
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "64Mi"
-    limits:
-      cpu: "300m"
-      memory: "256Mi"
-
-  service:
-    spec:
-      externalTrafficPolicy: Local
 
 # The values of this chart.
 authgear:

@@ -5,10 +5,6 @@ description: A Helm chart for Authgear
 version: 0.15.1
 appVersion: 0.1.0
 dependencies:
-- name: traefik
-  version: 9.8.3
-  repository: "https://helm.traefik.io/traefik"
-  condition: subcharts.traefik.enabled
 - name: redis
   version: 11.0.3
   repository: "https://charts.bitnami.com/bitnami"
