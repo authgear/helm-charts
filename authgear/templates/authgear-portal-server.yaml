@@ -99,7 +99,8 @@ data:
                 internal;
                 proxy_pass http://{{ include "authgear.nameResolver" . }}.{{ .Release.Namespace }}.svc.cluster.local/resolve;
                 proxy_pass_request_body off;
-                proxy_set_header Host {{ .Values.authgear.portalServer.ingress.host | quote }};
+                proxy_set_header Host {{ .Values.authgear.portalServer.authgearHost | quote }};
+                proxy_set_header X-Forwarded-Host {{ .Values.authgear.portalServer.authgearHost | quote }};
                 proxy_set_header Content-Length "";
             }
         }
