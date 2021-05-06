@@ -8,7 +8,7 @@ authgear:
   appNamespace: "authgear-apps"
 
   databaseURL: postgres://localhost
-  configSourceType: "kubernetes"
+  configSourceType: "database"
   trustProxy: "true"
   logLevel: "info"
   sentryDSN: ""
@@ -77,14 +77,6 @@ authgear:
       ADMIN_API_ENDPOINT: __replace_me__.example.com
       ADMIN_API_HOST_TEMPLATE: "{{ .AppID }}.example.com"
       APP_HOST_SUFFIX: ".example.com"
-      APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_TYPE: none
-      APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_SECRET_NAME: __replace_me__
-      APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_KIND: Issuer
-      APP_KUBERNETES_DEFAULT_DOMAIN_TLS_CERT_ISSUER_NAME: __replace_me__
-      APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_TYPE: none
-      APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_SECRET_NAME: __replace_me__
-      APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_KIND: Issuer
-      APP_KUBERNETES_CUSTOM_DOMAIN_TLS_CERT_ISSUER_NAME: __replace_me__
       APP_MAX_OWNED_APPS: "-1"
       APP_SECRET_KEY_ALLOWLIST: admin-api.auth,sso.oauth.client,webhook
 
