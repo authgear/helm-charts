@@ -13,6 +13,13 @@ authgear:
   logLevel: "info"
   sentryDSN: ""
 
+  auditLog:
+    cronjob:
+      enabled: false
+      schedule: "0 0 * * *"
+    databaseURL: postgres://localhost
+    databaseSchema: public
+
   mainServer:
     image: __replace_me__
 
