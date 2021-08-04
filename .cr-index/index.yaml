@@ -3,7 +3,22 @@ entries:
   authgear:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:11.74696+08:00"
+    created: "2021-08-04T11:15:40.672159+08:00"
+    dependencies:
+    - condition: subcharts.redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.0.3
+    description: A Helm chart for Authgear
+    digest: c5818ca4cecc3f6cc9c4b5a8526aa4713d0738ebdc11eae29d0ede41bdc767ef
+    name: authgear
+    type: application
+    urls:
+    - https://github.com/authgear/helm-charts/releases/download/authgear-3.2.0/authgear-3.2.0.tgz
+    version: 3.2.0
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2021-08-04T11:15:40.32888+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -18,7 +33,7 @@ entries:
     version: 3.1.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:11.403723+08:00"
+    created: "2021-08-04T11:15:39.988962+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -33,7 +48,7 @@ entries:
     version: 3.1.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:11.054517+08:00"
+    created: "2021-08-04T11:15:39.613217+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -48,7 +63,7 @@ entries:
     version: 3.0.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:10.712899+08:00"
+    created: "2021-08-04T11:15:39.257535+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -63,7 +78,7 @@ entries:
     version: 2.0.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:10.335695+08:00"
+    created: "2021-08-04T11:15:38.901789+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -78,7 +93,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:09.993537+08:00"
+    created: "2021-08-04T11:15:38.559664+08:00"
     dependencies:
     - condition: subcharts.redis.enabled
       name: redis
@@ -93,7 +108,7 @@ entries:
     version: 1.0.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:06.37408+08:00"
+    created: "2021-08-04T11:15:34.891804+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -112,7 +127,7 @@ entries:
     version: 0.15.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:06.003412+08:00"
+    created: "2021-08-04T11:15:34.516835+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -131,7 +146,7 @@ entries:
     version: 0.15.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:05.635727+08:00"
+    created: "2021-08-04T11:15:34.15963+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -150,7 +165,7 @@ entries:
     version: 0.14.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:05.277656+08:00"
+    created: "2021-08-04T11:15:33.823826+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -174,7 +189,7 @@ entries:
     version: 0.13.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:04.91861+08:00"
+    created: "2021-08-04T11:15:33.456637+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -198,7 +213,7 @@ entries:
     version: 0.13.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:04.529208+08:00"
+    created: "2021-08-04T11:15:33.097163+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -227,7 +242,7 @@ entries:
     version: 0.12.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:04.086613+08:00"
+    created: "2021-08-04T11:15:32.726862+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -256,7 +271,7 @@ entries:
     version: 0.11.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:03.709493+08:00"
+    created: "2021-08-04T11:15:32.355687+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -285,7 +300,7 @@ entries:
     version: 0.10.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:09.649435+08:00"
+    created: "2021-08-04T11:15:38.20149+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -314,7 +329,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:09.27443+08:00"
+    created: "2021-08-04T11:15:37.836126+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -343,7 +358,7 @@ entries:
     version: 0.8.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:08.882157+08:00"
+    created: "2021-08-04T11:15:37.469682+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -372,7 +387,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:08.521095+08:00"
+    created: "2021-08-04T11:15:37.090702+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -401,7 +416,7 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:08.156719+08:00"
+    created: "2021-08-04T11:15:36.723626+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -430,7 +445,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:07.788643+08:00"
+    created: "2021-08-04T11:15:36.358871+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -459,7 +474,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:07.430908+08:00"
+    created: "2021-08-04T11:15:36.002031+08:00"
     dependencies:
     - condition: subcharts.traefik.enabled
       name: traefik
@@ -488,7 +503,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:07.065622+08:00"
+    created: "2021-08-04T11:15:35.624998+08:00"
     description: A Helm chart for Authgear
     digest: 749b338bd4f038b5a9696831ab28d0f24d136dfdd238d39129a0f9b2de09fd26
     name: authgear
@@ -498,7 +513,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:06.703892+08:00"
+    created: "2021-08-04T11:15:35.230845+08:00"
     description: A Helm chart for Authgear
     digest: 6eee42a5c860cb6a79794ed68634524a3e0e80613a1049856d8618d6311db8d6
     name: authgear
@@ -508,7 +523,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-06-29T15:55:03.297103+08:00"
+    created: "2021-08-04T11:15:31.980217+08:00"
     description: A Helm chart for Authgear
     digest: 2755874d34badde7f902d6502b5d0bdbb9c43019b9689e20b65f36dd5e991e4c
     name: authgear
@@ -516,4 +531,4 @@ entries:
     urls:
     - https://github.com/authgear/helm-charts/releases/download/authgear-0.1.0/authgear-0.1.0.tgz
     version: 0.1.0
-generated: "2021-06-29T15:55:02.846046+08:00"
+generated: "2021-08-04T11:15:31.560158+08:00"
