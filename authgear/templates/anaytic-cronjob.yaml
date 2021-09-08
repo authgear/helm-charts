@@ -1,0 +1,72 @@
+{{ if .Values.authgear.analytic.cronjob.enabled }}
+{{ if .Values.authgear.analytic.googleSheetsSecret.path }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: google-sheets-export-script
+data:
+  entrypoint.sh: |-
+    #!/bin/bash
+
+    set -e
+
+    authgear-portal analytic report user-weekly-report \
+      --google-client-credentials-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/client_credentials.json \
+      --google-token-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/token.json \
+      --output-type=google-sheets \
+      --google-spreadsheet-id={{ .Values.authgear.analytic.googleSpreadsheetID | quote }} \
+      --google-spreadsheet-range={{ .Values.authgear.analytic.googleSpreadsheetRange.userWeeklyReport | quote }}
+
+    authgear-portal analytic report project-weekly-report \
+      --google-client-credentials-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/client_credentials.json \
+      --google-token-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/token.json \
+      --output-type=google-sheets \
+      --google-spreadsheet-id={{ .Values.authgear.analytic.googleSpreadsheetID | quote }} \
+      --google-spreadsheet-range={{ .Values.authgear.analytic.googleSpreadsheetRange.projectWeeklyReport | quote }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "authgear.nameAnalyticCron" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.authgear.analytic.cronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+          - name: authgear-analytic-cronjob
+            image: {{ .Values.authgear.portalServer.image | quote }}
+            command:
+            - sh
+            - /bin/entrypoint.sh
+            volumeMounts:
+            - name: script-configmap-volume
+              mountPath: /bin/entrypoint.sh
+              readOnly: true
+              subPath: entrypoint.sh
+            - name: google-sheets-secret-volume
+              mountPath: {{ .Values.authgear.analytic.googleSheetsSecret.path | quote }}
+            env:
+            - name: DATABASE_URL
+              value: {{ .Values.authgear.analytic.databaseURL | quote }}
+            - name: DATABASE_SCHEMA
+              value: {{ .Values.authgear.analytic.databaseSchema | quote }}
+            - name: AUDIT_DATABASE_URL
+              value: {{ .Values.authgear.analytic.auditDatabaseURL | quote }}
+            - name: AUDIT_DATABASE_SCHEMA
+              value: {{ .Values.authgear.analytic.auditDatabaseSchema | quote }}
+          restartPolicy: Never
+          volumes:
+          - name: script-configmap-volume
+            configMap:
+              defaultMode: 0755
+              name: google-sheets-export-script
+          - name: google-sheets-secret-volume
+            {{- toYaml .Values.authgear.analytic.googleSheetsSecret.volume | nindent 12 }}
+{{ end }}
+{{ end }}

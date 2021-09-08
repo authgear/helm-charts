@@ -20,6 +20,22 @@ authgear:
     databaseURL: postgres://localhost
     databaseSchema: public
 
+  analytic:
+    cronjob:
+      enabled: false
+      schedule: "0 1 * * 1"
+    databaseURL: postgres://localhost
+    databaseSchema: public
+    auditDatabaseURL: postgres://localhost
+    auditDatabaseSchema: public
+    googleSpreadsheetID: __replace_me__
+    googleSpreadsheetRange:
+      userWeeklyReport: __replace_me__
+      projectWeeklyReport: __replace_me__
+    googleSheetsSecret:
+      path: ""
+      volume: {}
+
   mainServer:
     image: __replace_me__
 
