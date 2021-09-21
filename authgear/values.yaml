@@ -18,6 +18,7 @@ authgear:
     cronjob:
       enabled: false
       weeklySchedule: "0 1 * * 1"
+      monthlySchedule: "10 1 1 * *"
     databaseURL: postgres://localhost
     databaseSchema: public
     auditDatabaseURL: postgres://localhost
@@ -27,6 +28,7 @@ authgear:
     googleSpreadsheetRange:
       userWeeklyReport: __replace_me__
       projectWeeklyReport: __replace_me__
+      projectMonthlyReport: __replace_me__
     googleSheetsSecret:
       path: ""
       volume: {}
