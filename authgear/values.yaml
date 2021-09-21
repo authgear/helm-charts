@@ -19,6 +19,7 @@ authgear:
       enabled: false
       weeklySchedule: "0 1 * * 1"
       monthlySchedule: "10 1 1 * *"
+      dailySchedule: "20 1 * * *"
     databaseURL: postgres://localhost
     databaseSchema: public
     auditDatabaseURL: postgres://localhost

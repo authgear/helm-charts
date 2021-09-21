@@ -70,3 +70,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "authgear.nameAnalyticCronMonthly" -}}
 {{- printf "%s-%s" .Release.Name "analytic-cron-monthly" | trunc 63 | trimSuffix "-" }}
 {{- end }}
+
+{{- define "authgear.nameAnalyticCronDaily" -}}
+{{- printf "%s-%s" .Release.Name "analytic-cron-daily" | trunc 63 | trimSuffix "-" }}
+{{- end }}
