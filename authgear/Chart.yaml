@@ -4,8 +4,3 @@ name: authgear
 description: A Helm chart for Authgear
 version: 3.4.0
 appVersion: 0.1.0
-dependencies:
-- name: redis
-  version: 11.0.3
-  repository: "https://charts.bitnami.com/bitnami"
-  condition: subcharts.redis.enabled
