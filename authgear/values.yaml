@@ -22,6 +22,7 @@ authgear:
     databaseSchema: public
     auditDatabaseURL: postgres://localhost
     auditDatabaseSchema: public
+    analyticRedisURL: __replace_me__
     googleSpreadsheetID: __replace_me__
     googleSpreadsheetRange:
       userWeeklyReport: __replace_me__

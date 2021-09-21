@@ -10,6 +10,8 @@ data:
 
     set -e
 
+    authgear-portal analytic collect-count last-week
+
     authgear-portal analytic report user \
       --period=last-week \
       --google-client-credentials-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/client_credentials.json \
@@ -62,6 +64,8 @@ spec:
               value: {{ .Values.authgear.analytic.auditDatabaseURL | quote }}
             - name: AUDIT_DATABASE_SCHEMA
               value: {{ .Values.authgear.analytic.auditDatabaseSchema | quote }}
+            - name: ANALYTIC_REDIS_URL
+              value: {{ .Values.authgear.analytic.analyticRedisURL | quote }}
           restartPolicy: Never
           volumes:
           - name: script-configmap-volume
