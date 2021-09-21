@@ -63,6 +63,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-%s" .Release.Name "audit-log-cron" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{- define "authgear.nameAnalyticCron" -}}
-{{- printf "%s-%s" .Release.Name "analytic-cron" | trunc 63 | trimSuffix "-" }}
+{{- define "authgear.nameAnalyticCronWeekly" -}}
+{{- printf "%s-%s" .Release.Name "analytic-cron-weekly" | trunc 63 | trimSuffix "-" }}
 {{- end }}

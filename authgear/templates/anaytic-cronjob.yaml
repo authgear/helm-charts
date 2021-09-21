@@ -3,21 +3,23 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: google-sheets-export-script
+  name: analytic-weekly-script
 data:
   entrypoint.sh: |-
     #!/bin/bash
 
     set -e
 
-    authgear-portal analytic report user-weekly-report \
+    authgear-portal analytic report user \
+      --period=last-week \
       --google-client-credentials-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/client_credentials.json \
       --google-token-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/token.json \
       --output-type=google-sheets \
       --google-spreadsheet-id={{ .Values.authgear.analytic.googleSpreadsheetID | quote }} \
       --google-spreadsheet-range={{ .Values.authgear.analytic.googleSpreadsheetRange.userWeeklyReport | quote }}
 
-    authgear-portal analytic report project-weekly-report \
+    authgear-portal analytic report project \
+      --period=last-week \
       --google-client-credentials-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/client_credentials.json \
       --google-token-file={{ .Values.authgear.analytic.googleSheetsSecret.path }}/token.json \
       --output-type=google-sheets \
@@ -27,11 +29,11 @@ data:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ include "authgear.nameAnalyticCron" . | quote }}
+  name: {{ include "authgear.nameAnalyticCronWeekly" . | quote }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
-  schedule: {{ .Values.authgear.analytic.cronjob.schedule | quote }}
+  schedule: {{ .Values.authgear.analytic.cronjob.weeklySchedule | quote }}
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -39,7 +41,7 @@ spec:
       template:
         spec:
           containers:
-          - name: authgear-analytic-cronjob
+          - name: authgear-analytic-cronjob-weekly
             image: {{ .Values.authgear.portalServer.image | quote }}
             command:
             - sh
@@ -65,7 +67,7 @@ spec:
           - name: script-configmap-volume
             configMap:
               defaultMode: 0755
-              name: google-sheets-export-script
+              name: analytic-weekly-script
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSheetsSecret.volume | nindent 12 }}
 {{ end }}
