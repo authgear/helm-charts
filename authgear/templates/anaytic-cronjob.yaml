@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: analytic-weekly-script
+  name: {{ include "authgear.nameAnalyticCronWeeklyScript" . | quote }}
 data:
   entrypoint.sh: |-
     #!/bin/bash
@@ -71,14 +71,14 @@ spec:
           - name: script-configmap-volume
             configMap:
               defaultMode: 0755
-              name: analytic-weekly-script
+              name: {{ include "authgear.nameAnalyticCronWeeklyScript" . | quote }}
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSheetsSecret.volume | nindent 12 }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: analytic-monthly-script
+  name: {{ include "authgear.nameAnalyticCronMonthlyScript" . | quote }}
 data:
   entrypoint.sh: |-
     #!/bin/bash
@@ -138,14 +138,14 @@ spec:
           - name: script-configmap-volume
             configMap:
               defaultMode: 0755
-              name: analytic-monthly-script
+              name: {{ include "authgear.nameAnalyticCronMonthlyScript" . | quote }}
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSheetsSecret.volume | nindent 12 }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: analytic-daily-script
+  name: {{ include "authgear.nameAnalyticCronDailyScript" . | quote }}
 data:
   entrypoint.sh: |-
     #!/bin/bash
@@ -195,6 +195,6 @@ spec:
           - name: script-configmap-volume
             configMap:
               defaultMode: 0755
-              name: analytic-daily-script
+              name: {{ include "authgear.nameAnalyticCronDailyScript" . | quote }}
 {{ end }}
 {{ end }}
