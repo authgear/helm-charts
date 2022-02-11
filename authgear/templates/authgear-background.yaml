@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authgear.nameBackground" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "authgear.backgroundSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.backgroundSelectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: authgear-background
+        image: {{ .Values.authgear.mainServer.image | quote }}
+        args: ["authgear", "background"]
+        env:
+        - name: DATABASE_URL
+          value: {{ .Values.authgear.databaseURL | quote }}
+        - name: TRUST_PROXY
+          value: {{ .Values.authgear.trustProxy | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.authgear.logLevel | quote }}
+        - name: SENTRY_DSN
+          value: {{ .Values.authgear.sentryDSN | quote }}
+        - name: CONFIG_SOURCE_TYPE
+          value: {{ .Values.authgear.configSourceType | quote }}
+        - name: CONFIG_SOURCE_KUBE_NAMESPACE
+          value: {{ .Values.authgear.appNamespace | quote }}
+        - name: CUSTOM_RESOURCE_DIRECTORY
+          value: {{ .Values.authgear.appCustomResources.path | quote }}
+        {{- range $key, $val := .Values.authgear.mainServer.env }}
+        - name: {{ $key | quote }}
+          value: {{ $val | quote }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.authgear.background.resources | nindent 10 }}

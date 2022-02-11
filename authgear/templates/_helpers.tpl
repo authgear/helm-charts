@@ -86,3 +86,12 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "authgear.nameAnalyticCronDailyScript" -}}
 {{- printf "%s-%s" .Release.Name "analytic-cron-daily-script" | trunc 63 | trimSuffix "-" }}
 {{- end }}
+
+{{- define "authgear.nameBackground" -}}
+{{- printf "%s-%s" .Release.Name "background" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.backgroundSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "authgear.nameBackground" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

@@ -66,6 +66,15 @@ authgear:
         cpu: 300m
         memory: 64Mi
 
+  background:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 32Mi
+      limits:
+        cpu: 300m
+        memory: 64Mi
+
   portalServerProxy:
     image: nginx:1.18
 
