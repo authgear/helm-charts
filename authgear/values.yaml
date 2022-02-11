@@ -110,6 +110,14 @@ authgear:
       APP_MAX_OWNED_APPS: "-1"
       APP_SECRET_KEY_ALLOWLIST: admin-api.auth,sso.oauth.client,webhook
 
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
   appCustomResources:
     path: ""
     volume: {}
