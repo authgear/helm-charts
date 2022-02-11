@@ -46,7 +46,7 @@ authgear:
         memory: 64Mi
       limits:
         cpu: 500m
-        memory: 128Mi
+        memory: 256Mi
 
   adminServer:
     resources:
@@ -54,8 +54,8 @@ authgear:
         cpu: 100m
         memory: 32Mi
       limits:
-        cpu: 300m
-        memory: 64Mi
+        cpu: 500m
+        memory: 256Mi
 
   resolverServer:
     resources:
@@ -63,8 +63,8 @@ authgear:
         cpu: 100m
         memory: 32Mi
       limits:
-        cpu: 300m
-        memory: 64Mi
+        cpu: 500m
+        memory: 256Mi
 
   background:
     resources:
