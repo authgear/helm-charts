@@ -14,10 +14,20 @@ spec:
       labels:
         {{- include "authgear.backgroundSelectorLabels" . | nindent 8 }}
     spec:
+      {{ if .Values.authgear.appCustomResources.path }}
+      volumes:
+      - name: custom-resources
+        {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
+      {{ end }}
       containers:
       - name: authgear-background
         image: {{ .Values.authgear.mainServer.image | quote }}
         args: ["authgear", "background"]
+        {{ if .Values.authgear.appCustomResources.path }}
+        volumeMounts:
+        - name: custom-resources
+          mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
+        {{ end }}
         env:
         - name: DATABASE_URL
           value: {{ .Values.authgear.databaseURL | quote }}
