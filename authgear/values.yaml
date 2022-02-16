@@ -16,6 +16,9 @@ authgear:
     username: ""
     password: ""
 
+  elasticsearch:
+    enabled: false
+
   auditLog:
     cronjob:
       enabled: false
