@@ -2,6 +2,8 @@ authgear:
   appNamespace: "authgear-apps"
 
   databaseURL: postgres://localhost
+  databaseSchema: public
+
   configSourceType: "database"
   trustProxy: "true"
   logLevel: "info"
