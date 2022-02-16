@@ -108,6 +108,9 @@ authgear:
     adminAPI:
       endpoint: http://cluster.local
 
+    customDomain:
+      enabled: true
+
     env: {}
 
     resources:
