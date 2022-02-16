@@ -7,6 +7,13 @@ authgear:
   logLevel: "info"
   sentryDSN: ""
 
+  smtp:
+    host: __replace_me__
+    port: 587
+    mode: normal
+    username: ""
+    password: ""
+
   auditLog:
     cronjob:
       enabled: false
@@ -88,11 +95,6 @@ authgear:
         name: __replace_me__
 
     env:
-      SMTP_HOST: __replace_me__
-      SMTP_PORT: 587
-      SMTP_MODE: normal
-      SMTP_USERNAME: __replace_me__
-      SMTP_PASSWORD: __replace_me__
       MAIL_SENDER: __replace_me__
       MAIL_REPLY_TO: __replace_me__
       AUTHGEAR_APP_ID: __replace_me__

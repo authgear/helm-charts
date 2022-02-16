@@ -187,6 +187,26 @@ spec:
           value: {{ .Values.authgear.portalCustomResources.path | quote }}
         - name: APP_KUBERNETES_INGRESS_TEMPLATE_FILE
           value: /app/configmap/ingress-template/ingress.tpl.yaml
+        {{- if not .Values.authgear.portalServer.env.SMTP_HOST  }}
+        - name: SMTP_HOST
+          value: {{ .Values.authgear.smtp.host | quote }}
+        {{- end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_PORT  }}
+        - name: SMTP_PORT
+          value: {{ .Values.authgear.smtp.port | quote }}
+        {{- end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_MODE  }}
+        - name: SMTP_MODE
+          value: {{ .Values.authgear.smtp.mode | quote }}
+        {{- end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_USERNAME }}{{ if .Values.authgear.smtp.username  }}
+        - name: SMTP_USERNAME
+          value: {{ .Values.authgear.smtp.username | quote }}
+        {{- end }}{{ end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_PASSWORD }}{{ if .Values.authgear.smtp.password  }}
+        - name: SMTP_PASSWORD
+          value: {{ .Values.authgear.smtp.password | quote }}
+        {{- end }}{{ end }}
         {{- range $key, $val := .Values.authgear.portalServer.env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}
