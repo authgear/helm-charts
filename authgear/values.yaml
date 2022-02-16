@@ -81,11 +81,7 @@ authgear:
   portalServer:
     image: __replace_me__
 
-    ingress:
-      host: __replace_me__.example.com
-
     authgearHost: __replace_me__.example.com
-    appHostWildcard: "*.example.com"
 
     configMap:
       ingressTemplate:
