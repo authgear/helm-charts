@@ -7,6 +7,8 @@ authgear:
   logLevel: "info"
   sentryDSN: ""
 
+  baseHost: __replace_me__
+
   smtp:
     host: __replace_me__
     port: 587
@@ -103,14 +105,10 @@ authgear:
       clientID: __replace_me__
       endpoint: https://__replace_me__.example.com
 
-    env:
-      ADMIN_API_TYPE: "static"
-      ADMIN_API_AUTH: "jwt"
-      ADMIN_API_ENDPOINT: __replace_me__.example.com
-      ADMIN_API_HOST_TEMPLATE: "{{ .AppID }}.example.com"
-      APP_HOST_SUFFIX: ".example.com"
-      APP_MAX_OWNED_APPS: "-1"
-      APP_SECRET_KEY_ALLOWLIST: admin-api.auth,sso.oauth.client,webhook
+    adminAPI:
+      endpoint: http://cluster.local
+
+    env: {}
 
     resources:
       requests:

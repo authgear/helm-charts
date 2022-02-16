@@ -193,6 +193,12 @@ spec:
           value: {{ .Values.authgear.portalServer.authgear.clientID | quote }}
         - name: AUTHGEAR_ENDPOINT
           value: {{ .Values.authgear.portalServer.authgear.endpoint | quote }}
+        - name: ADMIN_API_ENDPOINT
+          value: {{ .Values.authgear.portalServer.adminAPI.endpoint | quote }}
+        - name: ADMIN_API_HOST_TEMPLATE
+          value: {{ printf "%s.%s" "{{ .AppID }}" .Values.authgear.baseHost | quote }}
+        - name: APP_HOST_SUFFIX
+          value: {{ printf ".%s" .Values.authgear.baseHost | quote }}
         {{- if not .Values.authgear.portalServer.env.SMTP_HOST  }}
         - name: SMTP_HOST
           value: {{ .Values.authgear.smtp.host | quote }}
