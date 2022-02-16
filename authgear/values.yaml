@@ -49,10 +49,7 @@ authgear:
 
   mainServer:
     image: __replace_me__
-
-    env:
-      ADMIN_API_AUTH: "jwt"
-
+    env: {}
     resources:
       requests:
         cpu: 100m
