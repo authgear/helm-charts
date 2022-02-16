@@ -57,13 +57,13 @@ spec:
               mountPath: {{ .Values.authgear.analytic.googleSheetsSecret.path | quote }}
             env:
             - name: DATABASE_URL
-              value: {{ .Values.authgear.analytic.databaseURL | quote }}
+              value: {{ .Values.authgear.databaseURL | quote }}
             - name: DATABASE_SCHEMA
-              value: {{ .Values.authgear.analytic.databaseSchema | quote }}
+              value: {{ .Values.authgear.databaseSchema | quote }}
             - name: AUDIT_DATABASE_URL
-              value: {{ .Values.authgear.analytic.auditDatabaseURL | quote }}
+              value: {{ .Values.authgear.auditLog.databaseURL | quote }}
             - name: AUDIT_DATABASE_SCHEMA
-              value: {{ .Values.authgear.analytic.auditDatabaseSchema | quote }}
+              value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
             - name: ANALYTIC_REDIS_URL
               value: {{ .Values.authgear.analytic.analyticRedisURL | quote }}
           restartPolicy: Never
@@ -124,13 +124,13 @@ spec:
               mountPath: {{ .Values.authgear.analytic.googleSheetsSecret.path | quote }}
             env:
             - name: DATABASE_URL
-              value: {{ .Values.authgear.analytic.databaseURL | quote }}
+              value: {{ .Values.authgear.databaseURL | quote }}
             - name: DATABASE_SCHEMA
-              value: {{ .Values.authgear.analytic.databaseSchema | quote }}
+              value: {{ .Values.authgear.databaseSchema | quote }}
             - name: AUDIT_DATABASE_URL
-              value: {{ .Values.authgear.analytic.auditDatabaseURL | quote }}
+              value: {{ .Values.authgear.auditLog.databaseURL | quote }}
             - name: AUDIT_DATABASE_SCHEMA
-              value: {{ .Values.authgear.analytic.auditDatabaseSchema | quote }}
+              value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
             - name: ANALYTIC_REDIS_URL
               value: {{ .Values.authgear.analytic.analyticRedisURL | quote }}
           restartPolicy: Never
@@ -181,13 +181,13 @@ spec:
               subPath: entrypoint.sh
             env:
             - name: DATABASE_URL
-              value: {{ .Values.authgear.analytic.databaseURL | quote }}
+              value: {{ .Values.authgear.databaseURL | quote }}
             - name: DATABASE_SCHEMA
-              value: {{ .Values.authgear.analytic.databaseSchema | quote }}
+              value: {{ .Values.authgear.databaseSchema | quote }}
             - name: AUDIT_DATABASE_URL
-              value: {{ .Values.authgear.analytic.auditDatabaseURL | quote }}
+              value: {{ .Values.authgear.auditLog.databaseURL | quote }}
             - name: AUDIT_DATABASE_SCHEMA
-              value: {{ .Values.authgear.analytic.auditDatabaseSchema | quote }}
+              value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
             - name: ANALYTIC_REDIS_URL
               value: {{ .Values.authgear.analytic.analyticRedisURL | quote }}
           restartPolicy: Never
