@@ -207,6 +207,14 @@ spec:
         - name: SMTP_PASSWORD
           value: {{ .Values.authgear.smtp.password | quote }}
         {{- end }}{{ end }}
+        {{- if not .Values.authgear.portalServer.env.MAIL_SENDER }}{{ if .Values.authgear.portalServer.email.sender }}
+        - name: MAIL_SENDER
+          value: {{ .Values.authgear.portalServer.email.sender | quote }}
+        {{- end }}{{ end }}
+        {{- if not .Values.authgear.portalServer.env.MAIL_REPLY_TO }}{{ if .Values.authgear.portalServer.email.replyTo }}
+        - name: MAIL_REPLY_TO
+          value: {{ .Values.authgear.portalServer.email.replyTo | quote }}
+        {{- end }}{{ end }}
         {{- range $key, $val := .Values.authgear.portalServer.env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}

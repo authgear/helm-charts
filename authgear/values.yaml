@@ -94,9 +94,11 @@ authgear:
       ingressTemplate:
         name: __replace_me__
 
+    email:
+      sender: ""
+      replyTo: ""
+
     env:
-      MAIL_SENDER: __replace_me__
-      MAIL_REPLY_TO: __replace_me__
       AUTHGEAR_APP_ID: __replace_me__
       AUTHGEAR_CLIENT_ID: __replace_me__
       AUTHGEAR_ENDPOINT: https://__replace_me__.example.com
