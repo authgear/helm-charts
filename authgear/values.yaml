@@ -20,6 +20,7 @@ authgear:
     enabled: false
 
   auditLog:
+    enabled: false
     cronjob:
       enabled: false
       schedule: "0 0 * * *"

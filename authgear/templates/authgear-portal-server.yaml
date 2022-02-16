@@ -205,6 +205,10 @@ spec:
         - name: SEARCH_ENABLED
           value: "true"
         {{- end }}
+        {{- if .Values.authgear.auditLog.enabled }}
+        - name: AUDIT_LOG_ENABLED
+          value: "true"
+        {{- end }}
         {{- if .Values.authgear.portalServer.customDomain.enabled }}
         - name: DOMAIN_IMPLEMENTATION
           value: kubernetes
