@@ -187,6 +187,12 @@ spec:
           value: {{ .Values.authgear.portalCustomResources.path | quote }}
         - name: APP_KUBERNETES_INGRESS_TEMPLATE_FILE
           value: /app/configmap/ingress-template/ingress.tpl.yaml
+        - name: AUTHGEAR_APP_ID
+          value: {{ .Values.authgear.portalServer.authgear.appID | quote }}
+        - name: AUTHGEAR_CLIENT_ID
+          value: {{ .Values.authgear.portalServer.authgear.clientID | quote }}
+        - name: AUTHGEAR_ENDPOINT
+          value: {{ .Values.authgear.portalServer.authgear.endpoint | quote }}
         {{- if not .Values.authgear.portalServer.env.SMTP_HOST  }}
         - name: SMTP_HOST
           value: {{ .Values.authgear.smtp.host | quote }}

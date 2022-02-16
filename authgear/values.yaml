@@ -98,10 +98,12 @@ authgear:
       sender: ""
       replyTo: ""
 
+    authgear:
+      appID: __replace_me__
+      clientID: __replace_me__
+      endpoint: https://__replace_me__.example.com
+
     env:
-      AUTHGEAR_APP_ID: __replace_me__
-      AUTHGEAR_CLIENT_ID: __replace_me__
-      AUTHGEAR_ENDPOINT: https://__replace_me__.example.com
       ADMIN_API_TYPE: "static"
       ADMIN_API_AUTH: "jwt"
       ADMIN_API_ENDPOINT: __replace_me__.example.com
