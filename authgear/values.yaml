@@ -9,6 +9,19 @@ authgear:
   logLevel: "info"
   sentryDSN: ""
 
+  ingress:
+    class: nginx
+
+  certManager:
+    enabled: true
+    issuer:
+      dns01:
+        name: __replace_me__
+
+  tls:
+    wildcard:
+      secretName: ""
+
   baseHost: __replace_me__
 
   smtp:

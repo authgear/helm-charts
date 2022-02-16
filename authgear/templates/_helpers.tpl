@@ -95,3 +95,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/name: {{ include "authgear.nameBackground" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "authgear.nameWildcard" -}}
+{{- printf "%s-%s" .Release.Name "wildcard" | trunc 63 | trimSuffix "-" }}
+{{- end }}
