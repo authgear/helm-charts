@@ -91,8 +91,6 @@ authgear:
   portalServer:
     image: __replace_me__
 
-    authgearHost: __replace_me__.example.com
-
     configMap:
       ingressTemplate:
         name: __replace_me__
