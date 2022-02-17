@@ -107,3 +107,39 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "authgear.nameIngressTemplate" -}}
 {{- printf "%s-%s" .Release.Name "ingress-template" | trunc 63 | trimSuffix "-" }}
 {{- end }}
+
+{{- define "authgear.authgearSecretsYAML" -}}
+secrets:
+- key: db
+  data:
+    database_schema: {{ .authgear.databaseSchema | quote }}
+    database_url: {{ .authgear.databaseURL | quote }}
+- key: audit.db
+  data:
+    database_schema: {{ .authgear.auditLog.databaseSchema | quote }}
+    database_url: {{ .authgear.auditLog.databaseURL | quote }}
+- key: redis
+  data:
+    redis_url: {{ .authgear.redisURL | quote }}
+- key: analytic.redis
+  data:
+    redis_url: {{ .authgear.analytic.analyticRedisURL | quote }}
+- key: mail.smtp
+  data:
+    host: {{ .authgear.smtp.host | quote }}
+    port: {{ .authgear.smtp.port }}
+    mode: {{ .authgear.smtp.mode | quote }}
+    username: {{ .authgear.smtp.username | quote }}
+    password: {{ .authgear.smtp.password | quote }}
+{{- if .authgear.twilio.accountSID }}
+- key: sms.twilio
+  data:
+    account_sid: {{ .authgear.twilio.accountSID | quote }}
+    auth_token: {{ .authgear.twilio.authToken | quote }}
+{{- end }}
+{{- if .authgear.elasticsearch.enabled }}
+- key: elasticsearch
+  data:
+    elasticsearch_url: {{ .authgear.elasticsearch.url | quote }}
+{{- end }}
+{{- end }}

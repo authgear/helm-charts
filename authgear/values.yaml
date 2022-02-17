@@ -4,6 +4,8 @@ authgear:
   databaseURL: postgres://localhost
   databaseSchema: public
 
+  redisURL: redis://localhost
+
   configSourceType: "database"
   trustProxy: "true"
   logLevel: "info"
@@ -39,6 +41,11 @@ authgear:
 
   elasticsearch:
     enabled: false
+    url: http://localhost:9200
+
+  twilio:
+    accountSID: ""
+    authToken: ""
 
   auditLog:
     enabled: false
