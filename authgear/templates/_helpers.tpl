@@ -54,6 +54,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-%s" .Release.Name "portal" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{- define "authgear.namePortalAuthgear" -}}
+{{- printf "%s-%s" .Release.Name "portal-authgear" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "authgear.portalSelectorLabels" -}}
 app.kubernetes.io/name: {{ include "authgear.namePortal" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}

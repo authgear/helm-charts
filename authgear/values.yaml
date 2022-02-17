@@ -17,9 +17,15 @@ authgear:
     issuer:
       dns01:
         name: __replace_me__
+      http01:
+        name: __replace_me__
 
   tls:
     wildcard:
+      secretName: ""
+    portal:
+      secretname: ""
+    portalAuthgear:
       secretName: ""
 
   baseHost: __replace_me__
