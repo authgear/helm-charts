@@ -62,14 +62,17 @@ authgear:
       weeklySchedule: "0 1 * * 1"
       monthlySchedule: "10 1 1 * *"
       dailySchedule: "20 1 * * *"
-    googleSpreadsheetID: __replace_me__
-    googleSpreadsheetRange:
-      userWeeklyReport: __replace_me__
-      projectWeeklyReport: __replace_me__
-      projectMonthlyReport: __replace_me__
-    googleSheetsSecret:
-      path: ""
-      volume: {}
+
+    googleSpreadsheet:
+      enabled: false
+      id: ""
+      range:
+        userWeeklyReport: ""
+        projectMonthlyReport: ""
+        projectMonthlyReport: ""
+      secret:
+        mountPath: ""
+        volume: {}
 
   mainServer:
     image: __replace_me__
