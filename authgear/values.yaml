@@ -56,12 +56,12 @@ authgear:
     databaseSchema: public
 
   analytic:
+    redisURL: __replace_me__
     cronjob:
       enabled: false
       weeklySchedule: "0 1 * * 1"
       monthlySchedule: "10 1 1 * *"
       dailySchedule: "20 1 * * *"
-    analyticRedisURL: __replace_me__
     googleSpreadsheetID: __replace_me__
     googleSpreadsheetRange:
       userWeeklyReport: __replace_me__

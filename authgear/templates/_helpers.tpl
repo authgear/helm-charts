@@ -123,7 +123,7 @@ secrets:
     redis_url: {{ .authgear.redisURL | quote }}
 - key: analytic.redis
   data:
-    redis_url: {{ .authgear.analytic.analyticRedisURL | quote }}
+    redis_url: {{ .authgear.analytic.redisURL | quote }}
 - key: mail.smtp
   data:
     host: {{ .authgear.smtp.host | quote }}

@@ -65,7 +65,7 @@ spec:
             - name: AUDIT_DATABASE_SCHEMA
               value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
             - name: ANALYTIC_REDIS_URL
-              value: {{ .Values.authgear.analytic.analyticRedisURL | quote }}
+              value: {{ .Values.authgear.analytic.redisURL | quote }}
           restartPolicy: Never
           volumes:
           - name: script-configmap-volume
@@ -132,7 +132,7 @@ spec:
             - name: AUDIT_DATABASE_SCHEMA
               value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
             - name: ANALYTIC_REDIS_URL
-              value: {{ .Values.authgear.analytic.analyticRedisURL | quote }}
+              value: {{ .Values.authgear.analytic.redisURL | quote }}
           restartPolicy: Never
           volumes:
           - name: script-configmap-volume
@@ -189,7 +189,7 @@ spec:
             - name: AUDIT_DATABASE_SCHEMA
               value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
             - name: ANALYTIC_REDIS_URL
-              value: {{ .Values.authgear.analytic.analyticRedisURL | quote }}
+              value: {{ .Values.authgear.analytic.redisURL | quote }}
           restartPolicy: Never
           volumes:
           - name: script-configmap-volume
