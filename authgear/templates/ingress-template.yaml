@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "authgear.nameIngressTemplate" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+data:
+  ingress.tpl.yaml: |-
+    {{ "{{ if .IsCustom }}" }}
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: nginx-{{ "{{ .Host }}" }}
+      annotations:
+        kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+      labels:
+        app.kubernetes.io/managed-by: authgear
+    spec:
+      tls:
+      - hosts:
+        - {{ "{{ .Host }}" }}
+        secretName: tls-{{ "{{ .Host }}" }}
+      rules:
+      - host: {{ "{{ .Host }}" }}
+        http:
+          paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "authgear.nameMain" . | quote }}
+                port:
+                  number: 80
+          - path: /_api/admin
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "authgear.nameAdmin" . | quote }}
+                port:
+                  number: 80
+          - path: /_resolver
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "authgear.nameResolver" . | quote }}
+                port:
+                  number: 80
+    ---
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: cert-{{ "{{ .Host }}" }}
+      labels:
+        app.kubernetes.io/managed-by: authgear
+    spec:
+      dnsNames:
+      - {{ "{{ .Host }}" }}
+      issuerRef:
+        kind: Issuer
+        name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
+      secretName: tls-{{ "{{ .Host }}" }}
+    {{ "{{ end }}" }}

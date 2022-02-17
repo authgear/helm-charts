@@ -103,3 +103,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "authgear.nameWildcard" -}}
 {{- printf "%s-%s" .Release.Name "wildcard" | trunc 63 | trimSuffix "-" }}
 {{- end }}
+
+{{- define "authgear.nameIngressTemplate" -}}
+{{- printf "%s-%s" .Release.Name "ingress-template" | trunc 63 | trimSuffix "-" }}
+{{- end }}

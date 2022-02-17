@@ -108,10 +108,6 @@ authgear:
   portalServer:
     image: __replace_me__
 
-    configMap:
-      ingressTemplate:
-        name: __replace_me__
-
     email:
       sender: ""
       replyTo: ""

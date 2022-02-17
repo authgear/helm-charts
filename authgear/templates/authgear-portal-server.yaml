@@ -132,7 +132,7 @@ spec:
           name: {{ include "authgear.namePortal" . | quote }}
       - name: volume-ingress-template
         configMap:
-          name: {{ .Values.authgear.portalServer.configMap.ingressTemplate.name | quote }}
+          name: {{ include "authgear.nameIngressTemplate" . | quote }}
           items:
           - key: ingress.tpl.yaml
             path: ingress.tpl.yaml
