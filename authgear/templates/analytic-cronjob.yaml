@@ -11,7 +11,7 @@ data:
 
     authgear-portal analytic collect-count last-week
 
-    {{ if .Values.authgear.analytic.googleSpreadsheet.enabled }}
+    {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
     authgear-portal analytic report user \
       --period=last-week \
       --google-client-credentials-file={{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath }}/client_credentials.json \
@@ -27,7 +27,7 @@ data:
       --output-type=google-sheets \
       --google-spreadsheet-id={{ .Values.authgear.analytic.googleSpreadsheet.id | quote }} \
       --google-spreadsheet-range={{ .Values.authgear.analytic.googleSpreadsheet.range.projectWeeklyReport | quote }}
-    {{ end }}
+    {{- end }}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -54,8 +54,10 @@ spec:
               mountPath: /bin/entrypoint.sh
               readOnly: true
               subPath: entrypoint.sh
+            {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
             - name: google-sheets-secret-volume
               mountPath: {{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath | quote }}
+            {{- end }}
             env:
             - name: DATABASE_URL
               value: {{ .Values.authgear.databaseURL | quote }}
@@ -73,8 +75,10 @@ spec:
             configMap:
               defaultMode: 0755
               name: {{ include "authgear.nameAnalyticCronWeeklyScript" . | quote }}
+          {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSpreadsheet.secret.volume | nindent 12 }}
+          {{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -123,8 +127,10 @@ spec:
               mountPath: /bin/entrypoint.sh
               readOnly: true
               subPath: entrypoint.sh
+            {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
             - name: google-sheets-secret-volume
               mountPath: {{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath | quote }}
+            {{- end }}
             env:
             - name: DATABASE_URL
               value: {{ .Values.authgear.databaseURL | quote }}
@@ -142,8 +148,10 @@ spec:
             configMap:
               defaultMode: 0755
               name: {{ include "authgear.nameAnalyticCronMonthlyScript" . | quote }}
+          {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSpreadsheet.secret.volume | nindent 12 }}
+          {{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
