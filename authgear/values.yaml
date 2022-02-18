@@ -12,6 +12,7 @@ authgear:
   sentryDSN: ""
 
   ingress:
+    enabled: true
     class: nginx
 
   certManager:

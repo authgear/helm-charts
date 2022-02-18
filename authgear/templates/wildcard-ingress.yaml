@@ -1,3 +1,4 @@
+{{- if .Values.authgear.ingress.enabled }}
 {{ $secretName := include "authgear.nameWildcard" . }}
 {{ if .Values.authgear.tls.wildcard.secretName }}
 {{ $secretName = .Values.authgear.tls.wildcard.secretName }}
@@ -58,3 +59,4 @@ spec:
     kind: {{ .Values.authgear.certManager.issuer.dns01.kind | quote }}
     group: {{ .Values.authgear.certManager.issuer.dns01.group | quote }}
 {{ end }}
+{{- end }}
