@@ -137,6 +137,12 @@ secrets:
     account_sid: {{ .authgear.twilio.accountSID | quote }}
     auth_token: {{ .authgear.twilio.authToken | quote }}
 {{- end }}
+{{- if .authgear.nexmo.apiKey }}
+- key: sms.nexmo
+  data:
+    api_key: {{ .authgear.nexmo.apiKey | quote }}
+    api_secret: {{ .authgear.nexmo.apiSecret | quote }}
+{{- end }}
 {{- if .authgear.elasticsearch.enabled }}
 - key: elasticsearch
   data:
