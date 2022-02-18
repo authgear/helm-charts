@@ -56,7 +56,8 @@ data:
       dnsNames:
       - {{ "{{ .Host }}" }}
       issuerRef:
-        kind: Issuer
         name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
+        kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
+        group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
       secretName: tls-{{ "{{ .Host }}" }}
     {{ "{{ end }}" }}

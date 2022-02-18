@@ -55,6 +55,6 @@ spec:
   - {{ .Values.authgear.baseHost | quote }}
   issuerRef:
     name: {{ .Values.authgear.certManager.issuer.dns01.name | quote }}
-    kind: Issuer
-    group: cert-manager.io
+    kind: {{ .Values.authgear.certManager.issuer.dns01.kind | quote }}
+    group: {{ .Values.authgear.certManager.issuer.dns01.group | quote }}
 {{ end }}

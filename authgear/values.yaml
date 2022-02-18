@@ -19,8 +19,12 @@ authgear:
     issuer:
       dns01:
         name: __replace_me__
+        kind: Issuer
+        group: cert-manager.io
       http01:
         name: __replace_me__
+        kind: Issuer
+        group: cert-manager.io
 
   tls:
     wildcard:
