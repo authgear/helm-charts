@@ -64,9 +64,9 @@ authgear:
     databaseSchema: public
 
   analytic:
+    enabled: false
     redisURL: __replace_me__
     cronjob:
-      enabled: false
       weeklySchedule: "0 1 * * 1"
       monthlySchedule: "10 1 1 * *"
       dailySchedule: "20 1 * * *"

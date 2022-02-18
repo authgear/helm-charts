@@ -121,9 +121,11 @@ secrets:
 - key: redis
   data:
     redis_url: {{ .authgear.redisURL | quote }}
+{{- if .authgear.analytic.enabled }}
 - key: analytic.redis
   data:
     redis_url: {{ .authgear.analytic.redisURL | quote }}
+{{- end }}
 - key: mail.smtp
   data:
     host: {{ .authgear.smtp.host | quote }}
