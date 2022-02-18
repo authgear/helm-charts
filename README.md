@@ -9,7 +9,28 @@
     + [Elasticsearch requirements](#elasticsearch-requirements)
     + [Web browser requirements](#web-browser-requirements)
     + [Hardware requirements summary](#hardware-requirements-summary)
+  * [How to install this Helm chart](#how-to-install-this-helm-chart)
+    + [Preparation on your local machine](#preparation-on-your-local-machine)
+    + [Obtain a domain name](#obtain-a-domain-name)
+    + [Overview of the subdomains](#overview-of-the-subdomains)
+    + [Provision the Kubernetes cluster](#provision-the-kubernetes-cluster)
+    + [Provision the PostgreSQL database instance](#provision-the-postgresql-database-instance)
+    + [Provision the Redis instance](#provision-the-redis-instance)
+    + [Provision the SMTP server](#provision-the-smtp-server)
+    + [Provision the NGINX ingress controller](#provision-the-nginx-ingress-controller)
+    + [Provision the cert-manager](#provision-the-cert-manager)
+    + [Create 2 namespaces](#create-2-namespaces)
+    + [Create your own Helm chart](#create-your-own-helm-chart)
+      - [Prepare the values.yaml](#prepare-the-valuesyaml)
+      - [Create cert-manager HTTP01 issuer and DNS01 issuer](#create-cert-manager-http01-issuer-and-dns01-issuer)
+      - [Run database migration](#run-database-migration)
+      - [Create Elasticsearch index](#create-elasticsearch-index)
+      - [Create deployment-specific authgear.secrets.yaml](#create-deployment-specific-authgearsecretsyaml)
+      - [Create the "accounts" app](#create-the-accounts-app)
+      - [Install your Helm chart](#install-your-helm-chart)
   * [Helm chart values reference](#helm-chart-values-reference)
+  * [Appendices](#appendices)
+    + [Customize the subdomain assignment](#customize-the-subdomain-assignment)
 
 # Authgear Helm chart
 
@@ -17,7 +38,7 @@
 
 ## Requirements
 
-This section include information about the software and the hardware requirements to run Authgear on Kubernetes.
+This section includes information about the software and the hardware requirements to run Authgear on Kubernetes.
 
 ### Kubernetes requirements
 
@@ -86,6 +107,209 @@ The latest two major versions of the supported browsers are supported.
 - PostgreSQL 12 with `pg_partman>=4.0`, at least 5GB storage
 - Redis 6, with 30kB per user. 10000 users require 300MB.
 
+## How to install this Helm chart
+
+This section provides detailed steps on how to install this Helm chart.
+
+### Preparation on your local machine
+
+You need to install the following tools on your local machine.
+
+- `kubectl` with a version matching the Kubernetes server version. For example, if the server is 1.21, then you should be using the latest version of `kubectl` 1.21.x.
+- Helm v3. You should use the latest version.
+
+### Obtain a domain name
+
+You need to obtain a domain name from a Internet domain registrar.
+If you already have a domain name, you can skip this step.
+
+### Overview of the subdomains
+
+This Helm chart assumes you have a apex domain dedicated to Authgear.
+Assume your apex domain is `myapp.com`.
+
+Here is the list of subdomain assignments.
+
+```
+Authgear App ID  Domain                        Description
+accounts         accounts.myapp.com            The default endpoint of the app "accounts"
+accounts         accounts.portal.myapp.com     The custom domain endpoint of the app "accounts"
+                 portal.myapp.com              The Authgear portal endpoint
+app1             app1.myapp.com                The default endpoint of the app "app1"
+...
+...
+```
+
+### Provision the Kubernetes cluster
+
+If you have a Kubernetes cluster already, you can skip creating a new one.
+Otherwise, follow the instructions from your cloud provider to create a new one.
+Refer to the [Hardware requirements summary](#hardware-requirements-summary) to configure the node pool.
+
+### Provision the PostgreSQL database instance
+
+> It is strongly recommended that you set up an external production-ready PostgreSQL instance, instead of relying on a in-cluster PostgreSQL deployment like [bitnami/postgresql](https://hub.docker.com/r/bitnami/postgresql).
+
+If you have a PostgreSQL database instance already, you can skip creating a new one.
+Otherwise, follow the instructions from your cloud provider to create a new one.
+Refer to the [Database requirements](#database-requirements) to configure the instance.
+
+Create 2 PostgreSQL databases within the instance.
+Create 1 PostgreSQL user for each PostgreSQL database. Make sure the PostgreSQL user has full access to the PostgreSQL database.
+See [Database requirements](#database-requirements) for details.
+
+### Provision the Redis instance
+
+> It is strongly recommended that you set up an external production-ready Redis instance, instead of relying on a in-cluster Redis deployment like [bitnami/redis](https://hub.docker.com/r/bitnami/redis).
+
+If you have a Redis instance already, you can skip creating a new one.
+Otherwise, follow the instructions from your cloud provider to create a new one.
+Refer to the [Redis requirements](#redis-requirements) to configure the instance.
+
+You should reserve 1 Redis database for Authgear.
+
+### Provision the SMTP server
+
+If you have a SMTP server already, you can skip this step.
+Otherwise, you can subscribe to services such as SendGrid.
+
+### Provision the NGINX ingress controller
+
+If the Kubernetes cluster has NGINX ingress controller set up already, you can skip this step.
+Otherwise, you can use the Helm chart from [NGINX ingress controller](https://kubernetes.github.io/ingress-nginx/).
+
+Note that Authgear expects the source IP of the incoming request to be correct.
+The source IP is used in rate limiting.
+If the source IP is incorrect, all requests are considered as coming the same source IP, making the limit being reached very soon.
+
+One way correct the source IP is to set `externalTrafficPolicy` to `Local`.
+The caveat of this approach is that if the request is routed to a node without any NGINX ingress controller running on,
+the request is dropped.
+The simplest way to ensure one NGINX ingress controller running on a node is to use [DaemonSet](https://github.com/kubernetes/ingress-nginx/blob/helm-chart-4.0.17/charts/ingress-nginx/values.yaml#L191).
+
+You need to change your DNS record so that all traffic of your domain go to the Kubernetes cluster.
+
+### Provision the cert-manager
+
+[cert-manager](https://cert-manager.io/docs/) automates the process of obtaining, renewing and using TLS certificates issued by [Let's Encrypt](https://letsencrypt.org/).
+
+If you decide to manage TLS certificates by yourself, you can skip this step.
+Otherwise, you can use the Helm chart from [cert-manager](https://cert-manager.io/docs/installation/helm/)
+
+Note that it is recommended that [you install the CRDs independent of the Helm chart](https://cert-manager.io/docs/installation/helm/#option-1-installing-crds-with-kubectl).
+The advantage of this approach is that the CRD resources can stay intact even if you uninstall the Helm chart.
+
+### Create 2 namespaces
+
+It is recommended to create these 2 namespaces.
+
+- `authgear`: Install the helm chart in this namespace
+- `authgear-apps`: Authgear-generated resources are in this namespace.
+
+### Create your own Helm chart
+
+You need to create a few Kubernetes resources to support the Authgear Helm chart.
+So the best way is to create your own Helm chart and make the Authgear Helm chart a dependency.
+
+Create your Helm chart with `helm create authgear-deploy`.
+Remove the generated boilerplate `.yaml` in the `templates/` directory.
+
+#### Prepare the values.yaml
+
+Refer to [Helm chart values reference](#helm-chart-values-reference) and
+prepare the `./authgear-deploy/values.yaml`.
+
+#### Create cert-manager HTTP01 issuer and DNS01 issuer
+
+You need to create a [HTTP01 issuer](https://cert-manager.io/docs/configuration/acme/http01/) and
+a [DNS01 issuer](https://cert-manager.io/docs/configuration/acme/dns01/) in both namespaces.
+So there are 4 issuers you need to create in total.
+
+#### Run database migration
+
+```sh
+$ docker run --rm -it quay.io/theauthgear/authgear-server authgear database migrate up \
+  --database-url DATABASE_URL \
+  --database-schema public
+$ docker run --rm -it quay.io/theauthgear/authgear-portal authgear-portal database migrate up \
+  --database-url DATABASE_URL \
+  --database-schema public
+```
+
+#### Create Elasticsearch index
+
+> This step is optional if you do not enable Elasticsearch.
+
+```sh
+$ docker run --rm -it quay.io/theauthgear/authgear-server authgear internal elasticsearch create-index \
+  --elasticsearch-url ELASTICSEARCH_URL
+```
+
+#### Create deployment-specific authgear.secrets.yaml
+
+Create a Secret that contains a `authgear.secrets.yaml` shared by all apps.
+
+For example,
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authgear-vendor-resources
+type: Opaque
+data:
+  authgear.secrets.yaml: |-
+    {{ include "authgear.authgearSecretsYAML" .Values.authgear | b64enc }}
+```
+
+#### Create the "accounts" app
+
+Create the following directory structure
+
+```sh
+$ mkdir -p resources/authgear
+```
+
+Generate the `authgear.yaml`.
+Save the output to `resources/authgear/authgear.yaml`.
+
+```sh
+$ docker run --rm -it quay.io/theauthgear/authgear-server authgear init authgear.yaml -o -
+App ID (default 'my-app'): accounts
+HTTP origin of authgear (default 'http://localhost:3000'): https://accounts.portal.myapp.com
+```
+
+Generate the `authgear.secrets.yaml`.
+Save the output to `resources/authgear/authgear.secrets.yaml`.
+You must remove the `"db"`, `"redis"` and `"elasticsearch"` items from it.
+These items are included in the Secret you created in the previous step.
+
+```sh
+$ docker run --rm -it quay.io/theauthgear/authgear-server authgear init authgear.secrets.yaml -o -
+Database URL (default 'postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable'):
+Database schema (default 'public'):
+Elasticsearch URL (default 'http://localhost:9200'):
+Redis URL (default 'redis://localhost'):
+```
+
+Create the "accounts" app
+
+```sh
+$ docker run -v "$PWD"/resources:/app/resources quay.io/theauthgear/authgear-portal authgear-portal internal setup-portal ./resources/authgear \
+  --database-url DATABASE_URL \
+  --database-schema public \
+  --default-authgear-domain accounts.myapp.com \
+  --custom-authgear-domain accounts.portal.myapp.com
+```
+
+#### Install your Helm chart
+
+Install your helm chart with
+
+```sh
+helm install authgear-deploy ./authgear-deploy --namespace authgear --values ./authgear-deploy/values.yaml
+```
+
 ## Helm chart values reference
 
 |Name|Type|Required|Description|
@@ -145,3 +369,11 @@ The latest two major versions of the supported browsers are supported.
 |`authgear.appCustomResources.volume`|Object|No|Kubernetes Volume without the name field|
 |`authgear.portalCustomResources.path`|String|No|The custom resources directory applied to the portal server. It provides theming for this particular deployment.|
 |`authgear.portalCustomResources.volume`|Object|No|Kubernetes Volume without the name field|
+
+## Appendices
+
+### Customize the subdomain assignment
+
+This Helm chart has its own convention on the subdomain assignment and CANNOT be customized.
+If you want to customize the assignment, you can set `authgear.ingress.enabled` to `false`.
+You can then study the source code of this Helm chart, and create the Ingresses to suit your needs.
