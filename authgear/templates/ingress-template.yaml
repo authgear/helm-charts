@@ -45,6 +45,7 @@ data:
                 name: {{ include "authgear.nameResolver" . | quote }}
                 port:
                   number: 80
+    {{- if .Values.authgear.certManager.enabled }}
     ---
     apiVersion: cert-manager.io/v1
     kind: Certificate
@@ -60,4 +61,5 @@ data:
         kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
         group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
       secretName: tls-{{ "{{ .Host }}" }}
+    {{- end }}
     {{ "{{ end }}" }}
