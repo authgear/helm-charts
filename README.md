@@ -30,6 +30,8 @@
       - [Install your Helm chart](#install-your-helm-chart)
   * [How to upgrade Authgear](#how-to-upgrade-authgear)
   * [Helm chart values reference](#helm-chart-values-reference)
+  * [Troubleshooting](#troubleshooting)
+    + [Duplicate Ingress definition](#duplicate-ingress-definition)
   * [Appendices](#appendices)
     + [Customize the subdomain assignment](#customize-the-subdomain-assignment)
 
@@ -381,6 +383,13 @@ which means older version of Authgear can run with a higher version of database 
 |`authgear.appCustomResources.volume`|Object|No|Kubernetes Volume without the name field|
 |`authgear.portalCustomResources.path`|String|No|The custom resources directory applied to the portal server. It provides theming for this particular deployment.|
 |`authgear.portalCustomResources.volume`|Object|No|Kubernetes Volume without the name field|
+
+## Troubleshooting
+
+### Duplicate Ingress definition
+
+When you upgrade the Helm chart from v5 to v6, the Ingress admission controller will complain about
+duplicate Ingress definition. To resolve this problem, you have to manually delete the existing Ingress resources first. So the upgrade has downtime.
 
 ## Appendices
 
