@@ -101,8 +101,9 @@ data:
                 internal;
                 proxy_pass http://{{ include "authgear.nameResolver" . }}.{{ .Release.Namespace }}.svc.cluster.local/resolve;
                 proxy_pass_request_body off;
-                proxy_set_header Host {{ .Values.authgear.portalServer.authgearHost | quote }};
-                proxy_set_header X-Forwarded-Host {{ .Values.authgear.portalServer.authgearHost | quote }};
+                {{ $authgearHost := .Values.authgear.portalServer.authgear.endpoint | trimPrefix "http://" | trimPrefix "https://" }}
+                proxy_set_header Host {{ $authgearHost | quote }};
+                proxy_set_header X-Forwarded-Host {{ $authgearHost | quote }};
                 proxy_set_header Content-Length "";
             }
         }
@@ -131,7 +132,7 @@ spec:
           name: {{ include "authgear.namePortal" . | quote }}
       - name: volume-ingress-template
         configMap:
-          name: {{ .Values.authgear.portalServer.configMap.ingressTemplate.name | quote }}
+          name: {{ include "authgear.nameIngressTemplate" . | quote }}
           items:
           - key: ingress.tpl.yaml
             path: ingress.tpl.yaml
@@ -171,6 +172,8 @@ spec:
         env:
         - name: DATABASE_URL
           value: {{ .Values.authgear.databaseURL | quote }}
+        - name: DATABASE_SCHEMA
+          value: {{ .Values.authgear.databaseSchema | quote }}
         - name: TRUST_PROXY
           value: {{ .Values.authgear.trustProxy | quote }}
         - name: LOG_LEVEL
@@ -187,6 +190,60 @@ spec:
           value: {{ .Values.authgear.portalCustomResources.path | quote }}
         - name: APP_KUBERNETES_INGRESS_TEMPLATE_FILE
           value: /app/configmap/ingress-template/ingress.tpl.yaml
+        - name: AUTHGEAR_APP_ID
+          value: {{ .Values.authgear.portalServer.authgear.appID | quote }}
+        - name: AUTHGEAR_CLIENT_ID
+          value: {{ .Values.authgear.portalServer.authgear.clientID | quote }}
+        - name: AUTHGEAR_ENDPOINT
+          value: {{ .Values.authgear.portalServer.authgear.endpoint | quote }}
+        - name: ADMIN_API_ENDPOINT
+          value: {{ .Values.authgear.portalServer.adminAPI.endpoint | quote }}
+        - name: ADMIN_API_HOST_TEMPLATE
+          value: {{ printf "%s.%s" "{{ .AppID }}" .Values.authgear.baseHost | quote }}
+        - name: APP_HOST_SUFFIX
+          value: {{ printf ".%s" .Values.authgear.baseHost | quote }}
+        - name: KUBERNETES_APP_NAMESPACE
+          value: {{ .Values.authgear.appNamespace | quote }}
+        {{- if .Values.authgear.elasticsearch.enabled }}
+        - name: SEARCH_ENABLED
+          value: "true"
+        {{- end }}
+        {{- if .Values.authgear.auditLog.enabled }}
+        - name: AUDIT_LOG_ENABLED
+          value: "true"
+        {{- end }}
+        {{- if .Values.authgear.portalServer.customDomain.enabled }}
+        - name: DOMAIN_IMPLEMENTATION
+          value: kubernetes
+        {{- end }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_HOST  }}
+        - name: SMTP_HOST
+          value: {{ .Values.authgear.smtp.host | quote }}
+        {{- end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_PORT  }}
+        - name: SMTP_PORT
+          value: {{ .Values.authgear.smtp.port | quote }}
+        {{- end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_MODE  }}
+        - name: SMTP_MODE
+          value: {{ .Values.authgear.smtp.mode | quote }}
+        {{- end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_USERNAME }}{{ if .Values.authgear.smtp.username  }}
+        - name: SMTP_USERNAME
+          value: {{ .Values.authgear.smtp.username | quote }}
+        {{- end }}{{ end  }}
+        {{- if not .Values.authgear.portalServer.env.SMTP_PASSWORD }}{{ if .Values.authgear.smtp.password  }}
+        - name: SMTP_PASSWORD
+          value: {{ .Values.authgear.smtp.password | quote }}
+        {{- end }}{{ end }}
+        {{- if not .Values.authgear.portalServer.env.MAIL_SENDER }}{{ if .Values.authgear.portalServer.email.sender }}
+        - name: MAIL_SENDER
+          value: {{ .Values.authgear.portalServer.email.sender | quote }}
+        {{- end }}{{ end }}
+        {{- if not .Values.authgear.portalServer.env.MAIL_REPLY_TO }}{{ if .Values.authgear.portalServer.email.replyTo }}
+        - name: MAIL_REPLY_TO
+          value: {{ .Values.authgear.portalServer.email.replyTo | quote }}
+        {{- end }}{{ end }}
         {{- range $key, $val := .Values.authgear.portalServer.env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}

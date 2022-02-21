@@ -2,12 +2,62 @@ authgear:
   appNamespace: "authgear-apps"
 
   databaseURL: postgres://localhost
+  databaseSchema: public
+
+  redisURL: redis://localhost
+
   configSourceType: "database"
   trustProxy: "true"
   logLevel: "info"
   sentryDSN: ""
 
+  ingress:
+    enabled: true
+    class: nginx
+
+  certManager:
+    enabled: true
+    issuer:
+      dns01:
+        name: __replace_me__
+        kind: Issuer
+        group: cert-manager.io
+      http01:
+        name: __replace_me__
+        kind: Issuer
+        group: cert-manager.io
+
+  tls:
+    wildcard:
+      secretName: ""
+    portal:
+      secretname: ""
+    portalAuthgear:
+      secretName: ""
+
+  baseHost: __replace_me__
+
+  smtp:
+    host: __replace_me__
+    port: 587
+    mode: normal
+    username: ""
+    password: ""
+
+  elasticsearch:
+    enabled: false
+    url: http://localhost:9200
+
+  twilio:
+    accountSID: ""
+    authToken: ""
+
+  nexmo:
+    apiKey: ""
+    apiSecret: ""
+
   auditLog:
+    enabled: false
     cronjob:
       enabled: false
       schedule: "0 0 * * *"
@@ -15,31 +65,27 @@ authgear:
     databaseSchema: public
 
   analytic:
+    enabled: false
+    redisURL: __replace_me__
     cronjob:
-      enabled: false
       weeklySchedule: "0 1 * * 1"
       monthlySchedule: "10 1 1 * *"
       dailySchedule: "20 1 * * *"
-    databaseURL: postgres://localhost
-    databaseSchema: public
-    auditDatabaseURL: postgres://localhost
-    auditDatabaseSchema: public
-    analyticRedisURL: __replace_me__
-    googleSpreadsheetID: __replace_me__
-    googleSpreadsheetRange:
-      userWeeklyReport: __replace_me__
-      projectWeeklyReport: __replace_me__
-      projectMonthlyReport: __replace_me__
-    googleSheetsSecret:
-      path: ""
-      volume: {}
+
+    googleSpreadsheet:
+      enabled: false
+      id: ""
+      range:
+        userWeeklyReport: ""
+        projectMonthlyReport: ""
+        projectMonthlyReport: ""
+      secret:
+        mountPath: ""
+        volume: {}
 
   mainServer:
     image: __replace_me__
-
-    env:
-      ADMIN_API_AUTH: "jwt"
-
+    env: {}
     resources:
       requests:
         cpu: 100m
@@ -81,34 +127,22 @@ authgear:
   portalServer:
     image: __replace_me__
 
-    ingress:
-      host: __replace_me__.example.com
+    email:
+      sender: ""
+      replyTo: ""
 
-    authgearHost: __replace_me__.example.com
-    appHostWildcard: "*.example.com"
+    authgear:
+      appID: __replace_me__
+      clientID: __replace_me__
+      endpoint: https://__replace_me__.example.com
 
-    configMap:
-      ingressTemplate:
-        name: __replace_me__
+    adminAPI:
+      endpoint: http://cluster.local
 
-    env:
-      SMTP_HOST: __replace_me__
-      SMTP_PORT: 587
-      SMTP_MODE: normal
-      SMTP_USERNAME: __replace_me__
-      SMTP_PASSWORD: __replace_me__
-      MAIL_SENDER: __replace_me__
-      MAIL_REPLY_TO: __replace_me__
-      AUTHGEAR_APP_ID: __replace_me__
-      AUTHGEAR_CLIENT_ID: __replace_me__
-      AUTHGEAR_ENDPOINT: https://__replace_me__.example.com
-      ADMIN_API_TYPE: "static"
-      ADMIN_API_AUTH: "jwt"
-      ADMIN_API_ENDPOINT: __replace_me__.example.com
-      ADMIN_API_HOST_TEMPLATE: "{{ .AppID }}.example.com"
-      APP_HOST_SUFFIX: ".example.com"
-      APP_MAX_OWNED_APPS: "-1"
-      APP_SECRET_KEY_ALLOWLIST: admin-api.auth,sso.oauth.client,webhook
+    customDomain:
+      enabled: true
+
+    env: {}
 
     resources:
       requests:

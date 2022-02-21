@@ -31,6 +31,8 @@ spec:
         env:
         - name: DATABASE_URL
           value: {{ .Values.authgear.databaseURL | quote }}
+        - name: DATABASE_SCHEMA
+          value: {{ .Values.authgear.databaseSchema | quote }}
         - name: TRUST_PROXY
           value: {{ .Values.authgear.trustProxy | quote }}
         - name: LOG_LEVEL

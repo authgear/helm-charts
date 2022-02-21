@@ -1,0 +1,107 @@
+{{- if .Values.authgear.ingress.enabled }}
+{{ $portalSecretName := include "authgear.namePortal" . }}
+{{ if .Values.authgear.tls.portal.secretName }}
+{{ $portalSecretName = .Values.authgear.tls.portal.secretName }}
+{{ end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "authgear.namePortal" . }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  tls:
+  - secretName: {{ $portalSecretName | quote }}
+    hosts:
+    - {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+  rules:
+  - host: {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "authgear.namePortal" . | quote }}
+            port:
+              name: http
+{{ if .Values.authgear.certManager.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "authgear.namePortal" . }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  secretName: {{ $portalSecretName | quote }}
+  dnsNames:
+  - {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+  issuerRef:
+    name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
+    kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
+    group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
+{{ end }}
+---
+{{ $portalAuthgearSecretName := include "authgear.namePortalAuthgear" . }}
+{{ if .Values.authgear.tls.portalAuthgear.secretName }}
+{{ $portalAuthgearSecretName = .Values.authgear.tls.portalAuthgear.secretName }}
+{{ end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "authgear.namePortalAuthgear" . }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  tls:
+  - secretName: {{ $portalAuthgearSecretName | quote }}
+    hosts:
+    - {{ printf "accounts.portal.%s" .Values.authgear.baseHost | quote }}
+  rules:
+  - host: {{ printf "accounts.portal.%s" .Values.authgear.baseHost | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "authgear.nameMain" . | quote }}
+            port:
+              name: http
+      - path: /_api/admin
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "authgear.nameAdmin" . | quote }}
+            port:
+              name: http
+      - path: /_resolver
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "authgear.nameResolver" . | quote }}
+            port:
+              name: http
+{{ if .Values.authgear.certManager.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "authgear.namePortalAuthgear" . }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  secretName: {{ $portalAuthgearSecretName | quote }}
+  dnsNames:
+  - {{ printf "accounts.portal.%s" .Values.authgear.baseHost | quote }}
+  issuerRef:
+    name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
+    kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
+    group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
+{{ end }}
+{{- end }}
