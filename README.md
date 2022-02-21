@@ -28,6 +28,7 @@
       - [Create deployment-specific authgear.secrets.yaml](#create-deployment-specific-authgearsecretsyaml)
       - [Create the "accounts" app](#create-the-accounts-app)
       - [Install your Helm chart](#install-your-helm-chart)
+  * [How to upgrade Authgear](#how-to-upgrade-authgear)
   * [Helm chart values reference](#helm-chart-values-reference)
   * [Appendices](#appendices)
     + [Customize the subdomain assignment](#customize-the-subdomain-assignment)
@@ -309,6 +310,17 @@ Install your helm chart with
 ```sh
 helm install authgear-deploy ./authgear-deploy --namespace authgear --values ./authgear-deploy/values.yaml
 ```
+
+## How to upgrade Authgear
+
+If there are no breaking changes that require migration to be performed between the running version and the target version, an upgrade is as simple as setting `authgear.mainServer.image` and `authgear.portalServer.image` to a newer value.
+
+If there are breaking changes, migration usually will be provided as a subcommand.
+
+New features usually require database migration to add new tables and new columns.
+You may need to [run database migration](#run-database-migration) before you run `helm upgrade`.
+We try hard to make sure the modification to the database is backward-compatible,
+which means older version of Authgear can run with a higher version of database schema.
 
 ## Helm chart values reference
 
