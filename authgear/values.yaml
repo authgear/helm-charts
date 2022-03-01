@@ -67,6 +67,7 @@ authgear:
   analytic:
     enabled: false
     redisURL: __replace_me__
+    epoch: ""
     cronjob:
       weeklySchedule: "0 1 * * 1"
       monthlySchedule: "10 1 1 * *"

@@ -216,6 +216,14 @@ spec:
         - name: DOMAIN_IMPLEMENTATION
           value: kubernetes
         {{- end }}
+        {{- if .Values.authgear.analytic.enabled }}
+        - name: ANALYTIC_ENABLED
+          value: "true"
+        {{- end }}
+        {{- if .Values.authgear.analytic.epoch }}
+        - name: ANALYTIC_EPOCH
+          value: {{ .Values.authgear.analytic.epoch | quote }}
+        {{- end }}
         {{- if not .Values.authgear.portalServer.env.SMTP_HOST  }}
         - name: SMTP_HOST
           value: {{ .Values.authgear.smtp.host | quote }}
