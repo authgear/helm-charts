@@ -219,6 +219,10 @@ spec:
         {{- if .Values.authgear.analytic.enabled }}
         - name: ANALYTIC_ENABLED
           value: "true"
+        - name: AUDIT_DATABASE_URL
+          value: {{ .Values.authgear.auditLog.databaseURL | quote }}
+        - name: AUDIT_DATABASE_SCHEMA
+          value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
         {{- end }}
         {{- if .Values.authgear.analytic.epoch }}
         - name: ANALYTIC_EPOCH
