@@ -123,6 +123,8 @@ authgear:
         memory: 64Mi
 
   imagesServer:
+    cdn:
+      host: ""
     objectStore:
       type: ""
       awsS3:

@@ -38,6 +38,10 @@ spec:
           value: {{ .Values.authgear.trustProxy | quote }}
         - name: CORS_ALLOWED_ORIGINS
           value: {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+        {{- if .Values.authgear.imagesServer.cdn.host }}
+        - name: IMAGES_CDN_HOST
+          value: {{ .Values.authgear.imagesServer.cdn.host | quote }}
+        {{- end }}
         - name: LOG_LEVEL
           value: {{ .Values.authgear.logLevel | quote }}
         - name: SENTRY_DSN
