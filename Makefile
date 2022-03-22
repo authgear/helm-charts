@@ -1,4 +1,4 @@
-# This makefile was authored against cr version 1.1.1
+# This makefile was authored against cr version 1.3.0
 
 
 .PHONY: helm-repo-add
@@ -22,8 +22,11 @@ upload-release:
 	cr upload --config ./.cr.yaml --package-path .deploy
 
 # Before you run this target, make ensure you have the gh-pages branch locally.
+# cr expects the push URL to be https, so this make target will change the url temporarily.
 .PHONY: update-index
 update-index:
 	git fetch --all
 	cr package authgear
+	git remote set-url origin https://github.com/authgear/helm-charts.git
 	cr index --config ./.cr.yaml --push
+	git remote set-url origin git@github.com:authgear/helm-charts.git
