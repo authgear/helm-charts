@@ -9,6 +9,7 @@ metadata:
   name: {{ include "authgear.nameWildcard" . }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
@@ -39,6 +40,13 @@ spec:
         backend:
           service:
             name: {{ include "authgear.nameResolver" . | quote }}
+            port:
+              name: http
+      - path: /_images
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "authgear.nameImages" . | quote }}
             port:
               name: http
 {{ if .Values.authgear.certManager.enabled }}

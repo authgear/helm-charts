@@ -1,0 +1,149 @@
+{{- if eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "authgear.nameImages" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+data:
+  credentials.json: {{ .Values.authgear.imagesServer.objectStore.gcpGCS.credentialsJSONContent | quote }}
+{{- end }}
+---
+{{ $has_volumes := (or .Values.authgear.appCustomResources.path (eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS")) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authgear.nameImages" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "authgear.imagesSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.imagesSelectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "authgear.nameMain" . | quote }}
+      {{- if $has_volumes }}
+      volumes:
+      {{- if .Values.authgear.appCustomResources.path }}
+      - name: custom-resources
+        {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
+      {{- end }}
+      {{- if eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS" }}
+      - name: gcp-credentials
+        configMap:
+          name: {{ include "authgear.nameImages" . | quote }}
+      {{- end }}
+      {{- end }}
+      containers:
+      - name: authgear-images-server
+        image: {{ .Values.authgear.mainServer.image | quote }}
+        args: ["authgear", "images", "start"]
+        {{- if $has_volumes }}
+        volumeMounts:
+        {{- if .Values.authgear.appCustomResources.path }}
+        - name: custom-resources
+          mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
+        {{- end }}
+        {{- if eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS" }}
+        - name: gcp-credentials
+          mountPath: /var/authgear/images/gcp
+        {{- end }}
+        {{- end }}
+        env:
+        - name: DATABASE_URL
+          value: {{ .Values.authgear.databaseURL | quote }}
+        - name: DATABASE_SCHEMA
+          value: {{ .Values.authgear.databaseSchema | quote }}
+        - name: TRUST_PROXY
+          value: {{ .Values.authgear.trustProxy | quote }}
+        - name: CORS_ALLOWED_ORIGINS
+          value: {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.authgear.logLevel | quote }}
+        - name: SENTRY_DSN
+          value: {{ .Values.authgear.sentryDSN | quote }}
+        - name: CONFIG_SOURCE_TYPE
+          value: {{ .Values.authgear.configSourceType | quote }}
+        - name: CONFIG_SOURCE_KUBE_NAMESPACE
+          value: {{ .Values.authgear.appNamespace | quote }}
+        - name: CUSTOM_RESOURCE_DIRECTORY
+          value: {{ .Values.authgear.appCustomResources.path | quote }}
+        - name: IMAGES_OBJECT_STORE_TYPE
+          value: {{ .Values.authgear.imagesServer.objectStore.type | quote }}
+        {{- if eq .Values.authgear.imagesServer.objectStore.type "AWS_S3" }}
+        - name: IMAGES_OBJECT_STORE_AWS_S3_REGION
+          value: {{ .Values.authgear.imagesServer.objectStore.awsS3.region | quote }}
+        - name: IMAGES_OBJECT_STORE_AWS_S3_BUCKET_NAME
+          value: {{ .Values.authgear.imagesServer.objectStore.awsS3.bucketName | quote }}
+        - name: IMAGES_OBJECT_STORE_AWS_S3_ACCESS_KEY_ID
+          value: {{ .Values.authgear.imagesServer.objectStore.awsS3.accessKeyID | quote }}
+        - name: IMAGES_OBJECT_STORE_AWS_S3_SECRET_ACCESS_KEY
+          value: {{ .Values.authgear.imagesServer.objectStore.awsS3.secretAccessKey | quote }}
+        {{- end }}
+        {{- if eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS" }}
+        - name: IMAGES_OBJECT_STORE_GCP_GCS_BUCKET_NAME
+          value: {{ .Values.authgear.imagesServer.objectStore.gcpGCS.bucketName | quote }}
+        - name: IMAGES_OBJECT_STORE_GCP_GCS_SERVICE_ACCOUNT
+          value: {{ .Values.authgear.imagesServer.objectStore.gcpGCS.serviceAccount | quote }}
+        - name: IMAGES_OBJECT_STORE_GCP_GCS_CREDENTIALS_JSON_PATH
+          value: /var/authgear/images/gcp/credentials.json
+        {{- end }}
+        {{- if eq .Values.authgear.imagesServer.objectStore.type "AZURE_BLOB_STORAGE" }}
+        - name: IMAGES_OBJECT_STORE_AZURE_BLOB_STORAGE_STORAGE_ACCOUNT
+          value: {{ .Values.authgear.imagesServer.objectStore.azureBlobStorage.storageAccount | quote }}
+        - name: IMAGES_OBJECT_STORE_AZURE_BLOB_STORAGE_CONTAINER
+          value: {{ .Values.authgear.imagesServer.objectStore.azureBlobStorage.container | quote }}
+        - name: IMAGES_OBJECT_STORE_AZURE_BLOB_STORAGE_ACCESS_KEY
+          value: {{ .Values.authgear.imagesServer.objectStore.azureBlobStorage.accessKey | quote }}
+        {{- end }}
+        {{- range $key, $val := .Values.authgear.imagesServer.env }}
+        - name: {{ $key | quote }}
+          value: {{ $val | quote }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 3004
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+        resources:
+          {{- toYaml .Values.authgear.imagesServer.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.nameImages" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "authgear.imagesSelectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.nameImages" . | quote }}
+  namespace: {{ .Values.authgear.appNamespace | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: {{ include "authgear.nameImages" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  ports:
+  - port: 80

@@ -13,6 +13,7 @@ data:
       name: nginx-{{ "{{ .Host }}" }}
       annotations:
         kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+        nginx.ingress.kubernetes.io/proxy-body-size: 10m
       labels:
         app.kubernetes.io/managed-by: authgear
     spec:
@@ -43,6 +44,13 @@ data:
             backend:
               service:
                 name: {{ include "authgear.nameResolver" . | quote }}
+                port:
+                  number: 80
+          - path: /_images
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ include "authgear.nameImages" . | quote }}
                 port:
                   number: 80
     {{- if .Values.authgear.certManager.enabled }}

@@ -50,6 +50,15 @@ app.kubernetes.io/name: {{ include "authgear.nameResolver" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "authgear.nameImages" -}}
+{{- printf "%s-%s" .Release.Name "images" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.imagesSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "authgear.nameImages" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
 {{- define "authgear.namePortal" -}}
 {{- printf "%s-%s" .Release.Name "portal" | trunc 63 | trimSuffix "-" }}
 {{- end }}

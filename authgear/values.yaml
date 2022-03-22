@@ -122,6 +122,31 @@ authgear:
         cpu: 300m
         memory: 64Mi
 
+  imagesServer:
+    objectStore:
+      type: ""
+      awsS3:
+        region: ""
+        bucketName: ""
+        accessKeyID: ""
+        secretAccessKey: ""
+      gcpGCS:
+        bucketName: ""
+        serviceAccount: ""
+        credentialsJSONContent: ""
+      azureBlobStorage:
+        storageAccount: ""
+        container: ""
+        accessKey: ""
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+
   portalServerProxy:
     image: nginx:1.18
 
