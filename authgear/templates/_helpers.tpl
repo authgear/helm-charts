@@ -159,4 +159,10 @@ secrets:
   data:
     elasticsearch_url: {{ .authgear.elasticsearch.url | quote }}
 {{- end }}
+{{- if .authgear.whatsappWATI.enabled }}
+- key: whatsapp.wati
+  data:
+    whatsapp_phone_number: {{ .authgear.whatsappWATI.whatsappPhoneNumber | quote }}
+    webhook_auth: {{ .authgear.whatsappWATI.webhookAuth | quote }}
+{{- end }}
 {{- end }}

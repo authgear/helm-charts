@@ -56,6 +56,11 @@ authgear:
     apiKey: ""
     apiSecret: ""
 
+  whatsappWATI:
+    enabled: false
+    whatsappPhoneNumber: ""
+    webhookAuth: ""
+
   auditLog:
     enabled: false
     cronjob:
