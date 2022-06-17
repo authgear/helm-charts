@@ -33,6 +33,8 @@ spec:
           value: {{ .Values.authgear.databaseURL | quote }}
         - name: DATABASE_SCHEMA
           value: {{ .Values.authgear.databaseSchema | quote }}
+        - name: REDIS_URL
+          value: {{ .Values.authgear.redisURL | quote }}
         - name: TRUST_PROXY
           value: {{ .Values.authgear.trustProxy | quote }}
         - name: LOG_LEVEL
