@@ -180,6 +180,10 @@ spec:
           value: {{ .Values.authgear.redisURL | quote }}
         - name: TRUST_PROXY
           value: {{ .Values.authgear.trustProxy | quote }}
+        - name: STRIPE_SECRET_KEY
+          value: {{ .Values.authgear.stripe.secretKey | quote }}
+        - name: STRIPE_WEBHOOK_SIGNING_KEY
+          value: {{ .Values.authgear.stripe.webhookSigningKey | quote }}
         - name: CORS_ALLOWED_ORIGINS
           value: {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
         {{- if .Values.authgear.imagesServer.cdn.host }}

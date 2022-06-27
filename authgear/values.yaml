@@ -6,6 +6,10 @@ authgear:
 
   redisURL: redis://localhost
 
+  stripe:
+    secretKey: ""
+    webhookSigningKey: ""
+
   configSourceType: "database"
   trustProxy: "true"
   logLevel: "info"
