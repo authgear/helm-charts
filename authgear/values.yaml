@@ -9,6 +9,15 @@ authgear:
   stripe:
     secretKey: ""
     webhookSigningKey: ""
+    cronjob:
+      enabled: false
+      # Stripe cronjob runs after usage record cronjob.
+      schedule: "0 3 * * *"
+
+  usageRecord:
+    cronjob:
+      enabled: false
+      schedule: "0 2 * * *"
 
   configSourceType: "database"
   trustProxy: "true"

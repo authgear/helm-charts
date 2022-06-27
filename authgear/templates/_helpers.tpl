@@ -72,6 +72,14 @@ app.kubernetes.io/name: {{ include "authgear.namePortal" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "authgear.nameUsageRecordCron" -}}
+{{- printf "%s-%s" .Release.Name "usage-record-cron" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.nameUploadStripeCron" -}}
+{{- printf "%s-%s" .Release.Name "upload-stripe" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "authgear.nameAuditLogCron" -}}
 {{- printf "%s-%s" .Release.Name "audit-log-cron" | trunc 63 | trimSuffix "-" }}
 {{- end }}

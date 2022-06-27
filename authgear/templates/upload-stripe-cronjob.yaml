@@ -1,0 +1,25 @@
+{{ if .Values.authgear.stripe.cronjob.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "authgear.nameUploadStripeCron" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.authgear.stripe.cronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: authgear-upload-stripe-cronjob
+            image: {{ .Values.authgear.portalServer.image | quote }}
+            args: ["authgear-portal", "pricing", "upload-usage-to-stripe", "--all"]
+            env:
+            - name: DATABASE_URL
+              value: {{ .Values.authgear.databaseURL | quote }}
+            - name: DATABASE_SCHEMA
+              value: {{ .Values.authgear.databaseSchema | quote }}
+{{ end }}

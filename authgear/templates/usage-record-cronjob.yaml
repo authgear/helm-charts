@@ -1,0 +1,58 @@
+{{ if .Values.authgear.usageRecord.cronjob.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "authgear.nameUsageRecordCron" . | quote }}
+data:
+  entrypoint.sh: |-
+    #!/bin/bash
+
+    set -e
+
+    authgear-portal usage collect-count active-user this-month
+    authgear-portal usage collect-count sms-sent yesterday
+    authgear-portal usage collect-count email-sent yesterday
+    authgear-portal usage collect-count whatsapp-otp-verified yesterday
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "authgear.nameUsageRecordCron" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.authgear.usageRecord.cronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          volumes:
+          - name: script-configmap-volume
+            configMap:
+              defaultMode: 0755
+              name: {{ include "authgear.nameUsageRecordCron" . | quote }}
+          containers:
+          - name: authgear-usage-record-cronjob
+            image: {{ .Values.authgear.portalServer.image | quote }}
+            command:
+            - sh
+            - /bin/entrypoint.sh
+            volumeMounts:
+            - name: script-configmap-volume
+              mountPath: /bin/entrypoint.sh
+              readOnly: true
+              subPath: entrypoint.sh
+            env:
+            - name: DATABASE_URL
+              value: {{ .Values.authgear.databaseURL | quote }}
+            - name: DATABASE_SCHEMA
+              value: {{ .Values.authgear.databaseSchema | quote }}
+            - name: AUDIT_DATABASE_URL
+              value: {{ .Values.authgear.auditLog.databaseURL | quote }}
+            - name: AUDIT_DATABASE_SCHEMA
+              value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
+            - name: ANALYTIC_REDIS_URL
+              value: {{ .Values.authgear.analytic.redisURL | quote }}
+{{ end }}
