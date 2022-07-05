@@ -22,4 +22,6 @@ spec:
               value: {{ .Values.authgear.databaseURL | quote }}
             - name: DATABASE_SCHEMA
               value: {{ .Values.authgear.databaseSchema | quote }}
+            - name: STRIPE_SECRET_KEY
+              value: {{ .Values.authgear.stripe.secretKey | quote }}
 {{ end }}
