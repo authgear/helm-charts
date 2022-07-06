@@ -55,4 +55,6 @@ spec:
               value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
             - name: ANALYTIC_REDIS_URL
               value: {{ .Values.authgear.analytic.redisURL | quote }}
+            - name: SENTRY_DSN
+              value: {{ .Values.authgear.sentryDSN | quote }}
 {{ end }}

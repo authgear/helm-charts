@@ -24,4 +24,6 @@ spec:
               value: {{ .Values.authgear.databaseSchema | quote }}
             - name: STRIPE_SECRET_KEY
               value: {{ .Values.authgear.stripe.secretKey | quote }}
+            - name: SENTRY_DSN
+              value: {{ .Values.authgear.sentryDSN | quote }}
 {{ end }}
