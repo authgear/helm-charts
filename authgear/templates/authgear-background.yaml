@@ -22,6 +22,7 @@ spec:
       containers:
       - name: authgear-background
         image: {{ .Values.authgear.mainServer.image | quote }}
+        imagePullPolicy: Always
         args: ["authgear", "background"]
         {{ if .Values.authgear.appCustomResources.path }}
         volumeMounts:

@@ -36,6 +36,7 @@ spec:
           containers:
           - name: authgear-usage-record-cronjob
             image: {{ .Values.authgear.portalServer.image | quote }}
+            imagePullPolicy: Always
             command:
             - sh
             - /bin/entrypoint.sh

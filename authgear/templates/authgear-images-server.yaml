@@ -42,6 +42,7 @@ spec:
       containers:
       - name: authgear-images-server
         image: {{ .Values.authgear.mainServer.image | quote }}
+        imagePullPolicy: Always
         args: ["authgear", "images", "start"]
         {{- if $has_volumes }}
         volumeMounts:

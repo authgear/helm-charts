@@ -16,6 +16,7 @@ spec:
           containers:
           - name: authgear-upload-stripe-cronjob
             image: {{ .Values.authgear.portalServer.image | quote }}
+            imagePullPolicy: Always
             args: ["authgear-portal", "pricing", "upload-usage-to-stripe", "--all"]
             env:
             - name: DATABASE_URL

@@ -62,6 +62,7 @@ spec:
       containers:
       - name: authgear-main-server
         image: {{ .Values.authgear.mainServer.image | quote }}
+        imagePullPolicy: Always
         args: ["authgear", "start", "main"]
         {{ if .Values.authgear.appCustomResources.path }}
         volumeMounts:

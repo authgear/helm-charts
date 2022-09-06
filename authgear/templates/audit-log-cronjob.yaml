@@ -15,6 +15,7 @@ spec:
           containers:
           - name: authgear-audit-log-cronjob
             image: {{ .Values.authgear.mainServer.image | quote }}
+            imagePullPolicy: Always
             args: ["authgear", "audit", "database", "maintain"]
             env:
             - name: DATABASE_URL

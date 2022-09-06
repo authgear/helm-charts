@@ -23,6 +23,7 @@ spec:
       containers:
       - name: authgear-resolver-server
         image: {{ .Values.authgear.mainServer.image | quote }}
+        imagePullPolicy: Always
         args: ["authgear", "start", "resolver"]
         {{ if .Values.authgear.appCustomResources.path }}
         volumeMounts:
