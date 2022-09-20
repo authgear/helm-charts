@@ -46,6 +46,7 @@ spec:
           containers:
           - name: authgear-analytic-cronjob-weekly
             image: {{ .Values.authgear.portalServer.image | quote }}
+            imagePullPolicy: Always
             command:
             - sh
             - /bin/entrypoint.sh
@@ -119,6 +120,7 @@ spec:
           containers:
           - name: authgear-analytic-cronjob-monthly
             image: {{ .Values.authgear.portalServer.image | quote }}
+            imagePullPolicy: Always
             command:
             - sh
             - /bin/entrypoint.sh
@@ -182,6 +184,7 @@ spec:
           containers:
           - name: authgear-analytic-cronjob-daily
             image: {{ .Values.authgear.portalServer.image | quote }}
+            imagePullPolicy: Always
             command:
             - sh
             - /bin/entrypoint.sh

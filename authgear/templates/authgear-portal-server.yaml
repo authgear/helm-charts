@@ -160,6 +160,7 @@ spec:
           protocol: TCP
       - name: authgear-portal-server
         image: {{ .Values.authgear.portalServer.image | quote }}
+        imagePullPolicy: Always
         volumeMounts:
         - name: volume-ingress-template
           mountPath: /app/configmap/ingress-template
