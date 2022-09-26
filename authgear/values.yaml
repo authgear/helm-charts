@@ -211,3 +211,7 @@ authgear:
   portalCustomResources:
     path: ""
     volume: {}
+
+  extraVolumes: []
+
+  extraVolumeMounts: []
