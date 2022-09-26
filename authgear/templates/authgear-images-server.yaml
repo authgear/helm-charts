@@ -9,7 +9,6 @@ data:
   credentials.json: {{ .Values.authgear.imagesServer.objectStore.gcpGCS.credentialsJSONContent | quote }}
 {{- end }}
 ---
-{{ $has_volumes := (or .Values.authgear.appCustomResources.path (eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS")) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,7 +26,6 @@ spec:
         {{- include "authgear.imagesSelectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "authgear.nameMain" . | quote }}
-      {{- if $has_volumes }}
       volumes:
       {{- if .Values.authgear.appCustomResources.path }}
       - name: custom-resources
@@ -38,13 +36,14 @@ spec:
         configMap:
           name: {{ include "authgear.nameImages" . | quote }}
       {{- end }}
+      {{- if .Values.authgear.extraVolumes }}
+      {{- toYaml .Values.authgear.extraVolumes | nindent 6 }}
       {{- end }}
       containers:
       - name: authgear-images-server
         image: {{ .Values.authgear.mainServer.image | quote }}
         imagePullPolicy: Always
         args: ["authgear", "images", "start"]
-        {{- if $has_volumes }}
         volumeMounts:
         {{- if .Values.authgear.appCustomResources.path }}
         - name: custom-resources
@@ -54,6 +53,8 @@ spec:
         - name: gcp-credentials
           mountPath: /var/authgear/images/gcp
         {{- end }}
+        {{- if .Values.authgear.extraVolumeMounts }}
+        {{- toYaml .Values.authgear.extraVolumeMounts | nindent 8 }}
         {{- end }}
         env:
         - name: DATABASE_URL
