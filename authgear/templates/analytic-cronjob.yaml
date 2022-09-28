@@ -117,6 +117,25 @@ spec:
       backoffLimit: 0
       template:
         spec:
+          {{- if .Values.authgear.portalServer.nodeSelector }}
+          nodeSelector:
+            {{- .Values.authgear.portalServer.nodeSelector | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.nodeName }}
+          nodeName: {{ .Values.authgear.portalServer.nodeName | quote }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.affinity }}
+          affinity:
+            {{- .Values.authgear.portalServer.affinity | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.tolerations }}
+          tolerations:
+          {{- .Values.authgear.portalServer.tolerations | toYaml | nindent 10 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.topologySpreadConstraints }}
+          topologySpreadConstraints:
+          {{- .Values.authgear.portalServer.topologySpreadConstraints | toYaml | nindent 10 }}
+          {{- end }}
           containers:
           - name: authgear-analytic-cronjob-monthly
             image: {{ .Values.authgear.portalServer.image | quote }}
@@ -181,6 +200,25 @@ spec:
       backoffLimit: 0
       template:
         spec:
+          {{- if .Values.authgear.portalServer.nodeSelector }}
+          nodeSelector:
+            {{- .Values.authgear.portalServer.nodeSelector | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.nodeName }}
+          nodeName: {{ .Values.authgear.portalServer.nodeName | quote }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.affinity }}
+          affinity:
+            {{- .Values.authgear.portalServer.affinity | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.tolerations }}
+          tolerations:
+          {{- .Values.authgear.portalServer.tolerations | toYaml | nindent 10 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.topologySpreadConstraints }}
+          topologySpreadConstraints:
+          {{- .Values.authgear.portalServer.topologySpreadConstraints | toYaml | nindent 10 }}
+          {{- end }}
           containers:
           - name: authgear-analytic-cronjob-daily
             image: {{ .Values.authgear.portalServer.image | quote }}
