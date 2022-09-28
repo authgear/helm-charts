@@ -149,6 +149,25 @@ spec:
       {{- if .Values.authgear.extraVolumes }}
       {{- toYaml .Values.authgear.extraVolumes | nindent 6 }}
       {{- end }}
+      {{- if .Values.authgear.portalServer.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.portalServer.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.portalServer.nodeName }}
+      nodeName: {{ .Values.authgear.portalServer.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.portalServer.affinity }}
+      affinity:
+        {{- .Values.authgear.portalServer.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.portalServer.tolerations }}
+      tolerations:
+      {{- .Values.authgear.portalServer.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.portalServer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.portalServer.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
       containers:
       - name: authgear-portal-server-proxy
         image: {{ .Values.authgear.portalServerProxy.image | quote }}

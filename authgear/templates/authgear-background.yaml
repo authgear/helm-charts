@@ -22,6 +22,25 @@ spec:
       {{- if .Values.authgear.extraVolumes }}
       {{- toYaml .Values.authgear.extraVolumes | nindent 6 }}
       {{- end }}
+      {{- if .Values.authgear.background.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.background.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.background.nodeName }}
+      nodeName: {{ .Values.authgear.background.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.background.affinity }}
+      affinity:
+        {{- .Values.authgear.background.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.background.tolerations }}
+      tolerations:
+      {{- .Values.authgear.background.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.background.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.background.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
       containers:
       - name: authgear-background
         image: {{ .Values.authgear.mainServer.image | quote }}

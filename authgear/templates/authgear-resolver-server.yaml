@@ -23,6 +23,25 @@ spec:
       {{- if .Values.authgear.extraVolumes }}
       {{- toYaml .Values.authgear.extraVolumes | nindent 6 }}
       {{- end }}
+      {{- if .Values.authgear.resolverServer.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.resolverServer.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.resolverServer.nodeName }}
+      nodeName: {{ .Values.authgear.resolverServer.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.resolverServer.affinity }}
+      affinity:
+        {{- .Values.authgear.resolverServer.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.resolverServer.tolerations }}
+      tolerations:
+      {{- .Values.authgear.resolverServer.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.resolverServer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.resolverServer.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
       containers:
       - name: authgear-resolver-server
         image: {{ .Values.authgear.mainServer.image | quote }}

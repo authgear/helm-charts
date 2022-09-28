@@ -39,6 +39,25 @@ spec:
       {{- if .Values.authgear.extraVolumes }}
       {{- toYaml .Values.authgear.extraVolumes | nindent 6 }}
       {{- end }}
+      {{- if .Values.authgear.imagesServer.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.imagesServer.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.imagesServer.nodeName }}
+      nodeName: {{ .Values.authgear.imagesServer.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.imagesServer.affinity }}
+      affinity:
+        {{- .Values.authgear.imagesServer.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.imagesServer.tolerations }}
+      tolerations:
+      {{- .Values.authgear.imagesServer.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.imagesServer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.imagesServer.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
       containers:
       - name: authgear-images-server
         image: {{ .Values.authgear.mainServer.image | quote }}
