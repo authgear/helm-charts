@@ -12,6 +12,25 @@ spec:
     spec:
       template:
         spec:
+          {{- if .Values.authgear.mainServer.nodeSelector }}
+          nodeSelector:
+            {{- .Values.authgear.mainServer.nodeSelector | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.nodeName }}
+          nodeName: {{ .Values.authgear.mainServer.nodeName | quote }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.affinity }}
+          affinity:
+            {{- .Values.authgear.mainServer.affinity | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.tolerations }}
+          tolerations:
+          {{- .Values.authgear.mainServer.tolerations | toYaml | nindent 10 }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.topologySpreadConstraints }}
+          topologySpreadConstraints:
+          {{- .Values.authgear.mainServer.topologySpreadConstraints | toYaml | nindent 10 }}
+          {{- end }}
           containers:
           - name: authgear-audit-log-cronjob
             image: {{ .Values.authgear.mainServer.image | quote }}
