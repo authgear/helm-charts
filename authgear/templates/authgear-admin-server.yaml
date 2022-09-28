@@ -23,6 +23,25 @@ spec:
       {{- if .Values.authgear.extraVolumes }}
       {{- toYaml .Values.authgear.extraVolumes | nindent 6 }}
       {{- end }}
+      {{- if .Values.authgear.adminServer.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.adminServer.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.adminServer.nodeName }}
+      nodeName: {{ .Values.authgear.adminServer.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.adminServer.affinity }}
+      affinity:
+        {{- .Values.authgear.adminServer.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.adminServer.tolerations }}
+      tolerations:
+      {{- .Values.authgear.adminServer.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.adminServer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.adminServer.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
       containers:
       - name: authgear-admin-server
         image: {{ .Values.authgear.mainServer.image | quote }}
