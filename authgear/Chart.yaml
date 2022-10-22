@@ -1,6 +1,32 @@
-apiVersion: v2
-type: application
-name: authgear
-description: A Helm chart for Authgear
-version: 7.8.0
-appVersion: 0.1.0
+{
+  "data": {
+    "updateUser": {
+      "user": {
+        "id": "VXNlcjo5N2IxYzkyOS04NDJjLTQxNWMtYTdkZi02OTY3ZWZkZGExNjA",
+        "standardAttributes": {
+          "name": "Name",
+          "given_name": "Given Name",
+          "family_name": "Family Name",
+          "middle_name": "Middle Name",
+          "nickname": "Nickname",
+          "profile": "https://<PROFILE_URL>",
+          "picture": "https://<PICTURE_URL>",
+          "website": "https://<WEBSITE_URL>",
+          "gender": "male",
+          "birthdate": "2020-01-01",
+          "zoneinfo": "Europe/London",
+          "locale": "en",
+          "address": {
+            "country": "GB",
+            "locality": "locality",
+            "postal_code": "postal code",
+            "region": "region",
+            "street_address": "full street address"
+          },
+          "updated_at": 1649428136
+        },
+        "updatedAt": "2022-04-08T14:40:16.410087Z"
+      }
+    }
+  }
+}
