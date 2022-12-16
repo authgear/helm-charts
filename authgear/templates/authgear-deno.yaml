@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authgear.nameDeno" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.authgear.deno.replicas }}
+  selector:
+    matchLabels:
+      {{- include "authgear.denoSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.denoSelectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: authgear-deno
+        image: {{ .Values.authgear.deno.image | quote }}
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8090
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.authgear.deno.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.nameDeno" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "authgear.denoSelectorLabels" . | nindent 4 }}

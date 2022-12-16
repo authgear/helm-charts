@@ -117,6 +117,15 @@ app.kubernetes.io/name: {{ include "authgear.nameBackground" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "authgear.nameDeno" -}}
+{{- printf "%s-%s" .Release.Name "deno" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.denoSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "authgear.nameDeno" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
 {{- define "authgear.nameWildcard" -}}
 {{- printf "%s-%s" .Release.Name "wildcard" | trunc 63 | trimSuffix "-" }}
 {{- end }}

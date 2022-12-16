@@ -234,6 +234,17 @@ authgear:
         cpu: 500m
         memory: 256Mi
 
+  deno:
+    image: __replace_me__
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
   appCustomResources:
     path: ""
     volume: {}
