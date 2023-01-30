@@ -64,6 +64,7 @@ authgear:
   twilio:
     accountSID: ""
     authToken: ""
+    messageServiceID: ""
 
   nexmo:
     apiKey: ""

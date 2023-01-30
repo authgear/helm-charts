@@ -164,6 +164,7 @@ secrets:
   data:
     account_sid: {{ .authgear.twilio.accountSID | quote }}
     auth_token: {{ .authgear.twilio.authToken | quote }}
+    message_service_sid: {{ .authgear.twilio.messageServiceID | quote }}
 {{- end }}
 {{- if .authgear.nexmo.apiKey }}
 - key: sms.nexmo
