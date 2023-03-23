@@ -91,13 +91,9 @@ spec:
           containerPort: 3002
           protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /healthz
-            port: http
+          {{- toYaml .Values.authgear.adminServer.livenessProbe | nindent 10 }}
         readinessProbe:
-          httpGet:
-            path: /healthz
-            port: http
+          {{- toYaml .Values.authgear.adminServer.readinessProbe | nindent 10 }}
         resources:
           {{- toYaml .Values.authgear.adminServer.resources | nindent 10 }}
 ---

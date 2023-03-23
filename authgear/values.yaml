@@ -119,6 +119,14 @@ authgear:
       limits:
         cpu: 500m
         memory: 256Mi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: http
 
   adminServer:
     replicas: 1
@@ -134,6 +142,14 @@ authgear:
       limits:
         cpu: 500m
         memory: 256Mi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: http
 
   resolverServer:
     replicas: 1
@@ -149,6 +165,14 @@ authgear:
       limits:
         cpu: 500m
         memory: 256Mi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: http
 
   background:
     replicas: 1
@@ -197,6 +221,14 @@ authgear:
       limits:
         cpu: 1000m
         memory: 1Gi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: http
 
   portalServerProxy:
     image: nginx:1.18
@@ -234,6 +266,14 @@ authgear:
       limits:
         cpu: 500m
         memory: 256Mi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: portal
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: portal
 
   deno:
     image: __replace_me__

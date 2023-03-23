@@ -307,13 +307,9 @@ spec:
           containerPort: 3003
           protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /healthz
-            port: portal
+          {{- toYaml .Values.authgear.portalServer.livenessProbe | nindent 10 }}
         readinessProbe:
-          httpGet:
-            path: /healthz
-            port: portal
+          {{- toYaml .Values.authgear.portalServer.readinessProbe | nindent 10 }}
         resources:
           {{- toYaml .Values.authgear.portalServer.resources | nindent 10 }}
 ---

@@ -139,13 +139,9 @@ spec:
           containerPort: 3004
           protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /healthz
-            port: http
+          {{- toYaml .Values.authgear.imagesServer.livenessProbe | nindent 10 }}
         readinessProbe:
-          httpGet:
-            path: /healthz
-            port: http
+          {{- toYaml .Values.authgear.imagesServer.readinessProbe | nindent 10 }}
         resources:
           {{- toYaml .Values.authgear.imagesServer.resources | nindent 10 }}
 ---
