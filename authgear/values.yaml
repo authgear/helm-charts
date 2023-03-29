@@ -98,7 +98,6 @@ authgear:
       range:
         userWeeklyReport: ""
         projectMonthlyReport: ""
-        projectMonthlyReport: ""
       secret:
         mountPath: ""
         volume: {}
