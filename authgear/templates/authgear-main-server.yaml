@@ -115,6 +115,8 @@ spec:
           value: {{ .Values.authgear.logLevel | quote }}
         - name: SENTRY_DSN
           value: {{ .Values.authgear.sentryDSN | quote }}
+        - name: AUTH_UI_SENTRY_DSN
+          value: {{ .Values.authgear.uiSentryDSN | quote }}
         - name: CONFIG_SOURCE_TYPE
           value: {{ .Values.authgear.configSourceType | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE

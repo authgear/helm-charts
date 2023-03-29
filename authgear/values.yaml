@@ -23,6 +23,7 @@ authgear:
   trustProxy: "true"
   logLevel: "info"
   sentryDSN: ""
+  uiSentryDSN: ""
 
   ingress:
     enabled: true
