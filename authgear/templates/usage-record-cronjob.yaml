@@ -14,7 +14,7 @@ data:
     authgear-portal usage collect-count email-sent yesterday
     authgear-portal usage collect-count whatsapp-otp-verified yesterday
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "authgear.nameUsageRecordCron" . | quote }}

@@ -1,5 +1,9 @@
 # Authgear Helm chart
 
+# Minimal supported k8s version
+
+1.21
+
 ## Release a new version
 
 1. Update version in [Chart.yaml](./authgear/Chart.yaml) and commit.
