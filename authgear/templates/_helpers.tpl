@@ -185,4 +185,14 @@ secrets:
     whatsapp_phone_number: {{ .authgear.whatsappWATI.whatsappPhoneNumber | quote }}
     webhook_auth: {{ .authgear.whatsappWATI.webhookAuth | quote }}
 {{- end }}
+{{- if .authgear.whatsappOnPremises.enabled }}
+- key: whatsapp.on-premises
+  data:
+    api_endpoint: {{ .authgear.whatsappOnPremises.apiEndpoint | quote }}
+    username: {{ .authgear.whatsappOnPremises.username | quote }}
+    password: {{ .authgear.whatsappOnPremises.password | quote }}
+    templates:
+      otp:
+        {{- toYaml .authgear.whatsappOnPremises.authenticationTemplate | nindent 8 }}
+{{- end}}
 {{- end }}

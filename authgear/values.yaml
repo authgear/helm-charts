@@ -76,6 +76,18 @@ authgear:
     whatsappPhoneNumber: ""
     webhookAuth: ""
 
+  whatsappOnPremises:
+    enabled: false
+    apiEndpoint: ""
+    username: ""
+    password: ""
+    authenticationTemplate:
+      name: ""
+      type: authentication
+      namespace: ""
+      languages:
+      - en
+
   auditLog:
     enabled: false
     cronjob:
