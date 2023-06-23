@@ -12,7 +12,7 @@ data:
     authgear-portal usage collect-count active-user this-month
     authgear-portal usage collect-count sms-sent yesterday
     authgear-portal usage collect-count email-sent yesterday
-    authgear-portal usage collect-count whatsapp-otp-verified yesterday
+    authgear-portal usage collect-count whatsapp-sent yesterday
 ---
 apiVersion: batch/v1
 kind: CronJob
