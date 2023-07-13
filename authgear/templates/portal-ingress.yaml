@@ -49,6 +49,7 @@ spec:
 {{ if .Values.authgear.tls.portalAuthgear.secretName }}
 {{ $portalAuthgearSecretName = .Values.authgear.tls.portalAuthgear.secretName }}
 {{ end }}
+{{ $portalAuthgearHost := .Values.authgear.portalServer.authgear.endpoint | trimPrefix "http://" | trimPrefix "https://" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -62,9 +63,9 @@ spec:
   tls:
   - secretName: {{ $portalAuthgearSecretName | quote }}
     hosts:
-    - {{ printf "accounts.portal.%s" .Values.authgear.baseHost | quote }}
+    - {{ $portalAuthgearHost | quote }}
   rules:
-  - host: {{ printf "accounts.portal.%s" .Values.authgear.baseHost | quote }}
+  - host: {{ $portalAuthgearHost | quote }}
     http:
       paths:
       - path: /
@@ -106,7 +107,7 @@ metadata:
 spec:
   secretName: {{ $portalAuthgearSecretName | quote }}
   dnsNames:
-  - {{ printf "accounts.portal.%s" .Values.authgear.baseHost | quote }}
+  - {{ $portalAuthgearHost | quote }}
   issuerRef:
     name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
     kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
