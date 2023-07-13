@@ -249,6 +249,8 @@ authgear:
     image: __replace_me__
     replicas: 1
 
+    host: ""
+
     email:
       sender: ""
       replyTo: ""

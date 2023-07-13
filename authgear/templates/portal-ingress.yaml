@@ -1,4 +1,8 @@
 {{- if .Values.authgear.ingress.enabled }}
+{{ $portalHost := printf "portal.%s" .Values.authgear.baseHost }}
+{{ if .Values.authgear.portalServer.host }}
+{{ $portalHost = .Values.authgear.portalServer.host }}
+{{ end }}
 {{ $portalSecretName := include "authgear.namePortal" . }}
 {{ if .Values.authgear.tls.portal.secretName }}
 {{ $portalSecretName = .Values.authgear.tls.portal.secretName }}
@@ -15,9 +19,9 @@ spec:
   tls:
   - secretName: {{ $portalSecretName | quote }}
     hosts:
-    - {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+    - {{ $portalHost | quote }}
   rules:
-  - host: {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+  - host: {{ $portalHost | quote }}
     http:
       paths:
       - path: /
@@ -38,7 +42,7 @@ metadata:
 spec:
   secretName: {{ $portalSecretName | quote }}
   dnsNames:
-  - {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+  - {{ $portalHost | quote }}
   issuerRef:
     name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
     kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
