@@ -196,3 +196,11 @@ secrets:
         {{- toYaml .authgear.whatsappOnPremises.authenticationTemplate | nindent 8 }}
 {{- end}}
 {{- end }}
+
+{{- define "authgear.portalHost" -}}
+{{- if .Values.authgear.portalServer.host }}
+{{- .Values.authgear.portalServer.host }}
+{{- else }}
+{{- printf "portal.%s" .Values.authgear.baseHost }}
+{{- end }}
+{{- end }}

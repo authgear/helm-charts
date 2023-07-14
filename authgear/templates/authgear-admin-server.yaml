@@ -67,7 +67,7 @@ spec:
         - name: TRUST_PROXY
           value: {{ .Values.authgear.trustProxy | quote }}
         - name: CORS_ALLOWED_ORIGINS
-          value: {{ printf "portal.%s" .Values.authgear.baseHost | quote }}
+          value: {{ include "authgear.portalHost" . | quote }}
         {{- if .Values.authgear.imagesServer.cdn.host }}
         - name: IMAGES_CDN_HOST
           value: {{ .Values.authgear.imagesServer.cdn.host | quote }}
