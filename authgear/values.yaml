@@ -205,6 +205,7 @@ authgear:
     replicas: 1
     cdn:
       host: ""
+      hosts: []
     objectStore:
       type: ""
       awsS3:
