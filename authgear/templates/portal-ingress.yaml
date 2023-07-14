@@ -22,10 +22,12 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.authgear.tls.portal.ingress.tls.enabled }}
   tls:
   - secretName: {{ $portalSecretName | quote }}
     hosts:
     - {{ include "authgear.portalHost" . | quote }}
+  {{- end }}
   rules:
   - host: {{ include "authgear.portalHost" . | quote }}
     http:
@@ -72,10 +74,12 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.authgear.tls.portalAuthgear.ingress.tls.enabled }}
   tls:
   - secretName: {{ $portalAuthgearSecretName | quote }}
     hosts:
     - {{ $portalAuthgearHost | quote }}
+  {{- end }}
   rules:
   - host: {{ $portalAuthgearHost | quote }}
     http:

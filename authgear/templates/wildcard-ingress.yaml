@@ -16,10 +16,12 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.authgear.tls.wildcard.ingress.tls.enabled }}
   tls:
   - secretName: {{ $secretName | quote }}
     hosts:
     - {{ printf "*.%s" .Values.authgear.baseHost | quote }}
+  {{- end }}
   rules:
   - host: {{ printf "*.%s" .Values.authgear.baseHost | quote }}
     http:

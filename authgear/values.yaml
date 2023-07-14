@@ -45,18 +45,24 @@ authgear:
     wildcard:
       ingress:
         enabled: true
+        tls:
+          enabled: true
       certManager:
         enabled: true
       secretName: ""
     portal:
       ingress:
         enabled: true
+        tls:
+          enabled: true
       certManager:
         enabled: true
       secretname: ""
     portalAuthgear:
       ingress:
         enabled: true
+        tls:
+          enabled: true
       certManager:
         enabled: true
       secretName: ""
