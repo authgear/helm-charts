@@ -43,10 +43,22 @@ authgear:
 
   tls:
     wildcard:
+      ingress:
+        enabled: true
+      certManager:
+        enabled: true
       secretName: ""
     portal:
+      ingress:
+        enabled: true
+      certManager:
+        enabled: true
       secretname: ""
     portalAuthgear:
+      ingress:
+        enabled: true
+      certManager:
+        enabled: true
       secretName: ""
 
   baseHost: __replace_me__

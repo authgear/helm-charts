@@ -1,8 +1,11 @@
+{{- $secretName := include "authgear.nameWildcard" . }}
+{{- if .Values.authgear.tls.wildcard.secretName }}
+{{- $secretName = .Values.authgear.tls.wildcard.secretName }}
+{{- end }}
+
 {{- if .Values.authgear.ingress.enabled }}
-{{ $secretName := include "authgear.nameWildcard" . }}
-{{ if .Values.authgear.tls.wildcard.secretName }}
-{{ $secretName = .Values.authgear.tls.wildcard.secretName }}
-{{ end }}
+
+{{- if .Values.authgear.tls.wildcard.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -49,7 +52,10 @@ spec:
             name: {{ include "authgear.nameImages" . | quote }}
             port:
               name: http
-{{ if .Values.authgear.certManager.enabled }}
+{{- end }}
+
+{{- if .Values.authgear.certManager.enabled }}
+{{- if .Values.authgear.tls.wildcard.certManager.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -66,5 +72,7 @@ spec:
     name: {{ .Values.authgear.certManager.issuer.dns01.name | quote }}
     kind: {{ .Values.authgear.certManager.issuer.dns01.kind | quote }}
     group: {{ .Values.authgear.certManager.issuer.dns01.group | quote }}
-{{ end }}
+{{- end }}
+{{- end }}
+
 {{- end }}

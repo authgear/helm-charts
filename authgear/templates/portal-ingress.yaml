@@ -1,8 +1,18 @@
+{{- $portalSecretName := include "authgear.namePortal" . }}
+{{- if .Values.authgear.tls.portal.secretName }}
+{{- $portalSecretName = .Values.authgear.tls.portal.secretName }}
+{{- end }}
+
+{{- $portalAuthgearSecretName := include "authgear.namePortalAuthgear" . }}
+{{- if .Values.authgear.tls.portalAuthgear.secretName }}
+{{- $portalAuthgearSecretName = .Values.authgear.tls.portalAuthgear.secretName }}
+{{- end }}
+
+{{- $portalAuthgearHost := .Values.authgear.portalServer.authgear.endpoint | trimPrefix "http://" | trimPrefix "https://" }}
+
 {{- if .Values.authgear.ingress.enabled }}
-{{ $portalSecretName := include "authgear.namePortal" . }}
-{{ if .Values.authgear.tls.portal.secretName }}
-{{ $portalSecretName = .Values.authgear.tls.portal.secretName }}
-{{ end }}
+
+{{- if .Values.authgear.tls.portal.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -27,7 +37,10 @@ spec:
             name: {{ include "authgear.namePortal" . | quote }}
             port:
               name: http
-{{ if .Values.authgear.certManager.enabled }}
+{{- end }}
+
+{{- if .Values.authgear.certManager.enabled }}
+{{- if .Values.authgear.tls.portal.certManager.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -43,13 +56,12 @@ spec:
     name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
     kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
     group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
-{{ end }}
+{{- end }}
+{{- end }}
+
+
+{{- if .Values.authgear.tls.portalAuthgear.ingress.enabled }}
 ---
-{{ $portalAuthgearSecretName := include "authgear.namePortalAuthgear" . }}
-{{ if .Values.authgear.tls.portalAuthgear.secretName }}
-{{ $portalAuthgearSecretName = .Values.authgear.tls.portalAuthgear.secretName }}
-{{ end }}
-{{ $portalAuthgearHost := .Values.authgear.portalServer.authgear.endpoint | trimPrefix "http://" | trimPrefix "https://" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -96,7 +108,10 @@ spec:
             name: {{ include "authgear.nameImages" . | quote }}
             port:
               name: http
-{{ if .Values.authgear.certManager.enabled }}
+{{- end }}
+
+{{- if .Values.authgear.certManager.enabled }}
+{{- if .Values.authgear.tls.portalAuthgear.certManager.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -112,5 +127,7 @@ spec:
     name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
     kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
     group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
-{{ end }}
+{{- end }}
+{{- end }}
+
 {{- end }}
