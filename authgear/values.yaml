@@ -18,6 +18,8 @@ authgear:
     cronjob:
       enabled: false
       schedule: "0 2 * * *"
+    whatsapp:
+      event: "whatsapp-sent"
 
   configSourceType: "database"
   trustProxy: "true"
