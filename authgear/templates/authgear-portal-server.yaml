@@ -244,9 +244,9 @@ spec:
           value: {{ printf "%s.%s" "{{ .AppID }}" .Values.authgear.defaultDomain | quote }}
         - name: APP_HOST_SUFFIX
           value: {{ printf ".%s" .Values.authgear.defaultDomain | quote }}
-        {{- if .Values.authgear.defaultDomains }}
+        {{- if .Values.authgear.allDefaultDomains }}
         {{- $suffixes := list }}
-        {{- range $index, $defaultDomain := .Values.authgear.defaultDomains }}
+        {{- range $index, $defaultDomain := .Values.authgear.allDefaultDomains }}
         {{- $suffixes = append $suffixes (printf ".%s" $defaultDomain.domain) }}
         {{- end }}
         - name: APP_HOST_SUFFIXES
