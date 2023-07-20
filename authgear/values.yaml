@@ -42,14 +42,6 @@ authgear:
         group: cert-manager.io
 
   tls:
-    wildcard:
-      ingress:
-        enabled: true
-        tls:
-          enabled: true
-      certManager:
-        enabled: true
-      secretName: ""
     portal:
       ingress:
         enabled: true
@@ -67,7 +59,16 @@ authgear:
         enabled: true
       secretName: ""
 
-  baseHost: __replace_me__
+  defaultDomain: ""
+  allDefaultDomains: []
+  #- domain: ""
+  #  ingress:
+  #    enabled: true
+  #    tls:
+  #      enabled: true
+  #  certManager:
+  #    enabled: true
+  #  secretName: ""
 
   smtp:
     host: __replace_me__

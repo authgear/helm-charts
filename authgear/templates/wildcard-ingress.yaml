@@ -1,80 +1,79 @@
-{{- $secretName := include "authgear.nameWildcard" . }}
-{{- if .Values.authgear.tls.wildcard.secretName }}
-{{- $secretName = .Values.authgear.tls.wildcard.secretName }}
-{{- end }}
-
 {{- if .Values.authgear.ingress.enabled }}
 
-{{- if .Values.authgear.tls.wildcard.ingress.enabled }}
+{{- range $index, $defaultDomain := .Values.authgear.allDefaultDomains }}
+
+{{- if $defaultDomain.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "authgear.nameWildcard" . }}
+  name: {{ $defaultDomain.domain | quote }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+    kubernetes.io/ingress.class: {{ $.Values.authgear.ingress.class | quote }}
     nginx.ingress.kubernetes.io/proxy-body-size: 10m
   labels:
-    {{- include "authgear.labels" . | nindent 4 }}
+    {{- include "authgear.labels" $ | nindent 4 }}
 spec:
-  {{- if .Values.authgear.tls.wildcard.ingress.tls.enabled }}
+  {{- if $defaultDomain.ingress.tls.enabled }}
   tls:
-  - secretName: {{ $secretName | quote }}
+  - secretName: {{ $defaultDomain.secretName | quote }}
     hosts:
-    - {{ printf "*.%s" .Values.authgear.baseHost | quote }}
+    - {{ printf "*.%s" $defaultDomain.domain | quote }}
   {{- end }}
   rules:
-  - host: {{ printf "*.%s" .Values.authgear.baseHost | quote }}
+  - host: {{ printf "*.%s" $defaultDomain.domain | quote }}
     http:
       paths:
       - path: /
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "authgear.nameMain" . | quote }}
+            name: {{ include "authgear.nameMain" $ | quote }}
             port:
               name: http
       - path: /_api/admin
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "authgear.nameAdmin" . | quote }}
+            name: {{ include "authgear.nameAdmin" $ | quote }}
             port:
               name: http
       - path: /_resolver
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "authgear.nameResolver" . | quote }}
+            name: {{ include "authgear.nameResolver" $ | quote }}
             port:
               name: http
       - path: /_images
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "authgear.nameImages" . | quote }}
+            name: {{ include "authgear.nameImages" $ | quote }}
             port:
               name: http
 {{- end }}
 
-{{- if .Values.authgear.certManager.enabled }}
-{{- if .Values.authgear.tls.wildcard.certManager.enabled }}
+{{- if $.Values.authgear.certManager.enabled }}
+{{- if $defaultDomain.certManager.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ include "authgear.nameWildcard" . }}
+  name: {{ $defaultDomain.domain | quote }}
   labels:
-    {{- include "authgear.labels" . | nindent 4 }}
+    {{- include "authgear.labels" $ | nindent 4 }}
 spec:
-  secretName: {{ $secretName | quote }}
+  secretName: {{ $defaultDomain.secretName | quote }}
   dnsNames:
-  - {{ printf "*.%s" .Values.authgear.baseHost | quote }}
-  - {{ .Values.authgear.baseHost | quote }}
+  - {{ printf "*.%s" $defaultDomain.domain | quote }}
+  - {{ $defaultDomain.domain | quote }}
   issuerRef:
-    name: {{ .Values.authgear.certManager.issuer.dns01.name | quote }}
-    kind: {{ .Values.authgear.certManager.issuer.dns01.kind | quote }}
-    group: {{ .Values.authgear.certManager.issuer.dns01.group | quote }}
+    name: {{ $.Values.authgear.certManager.issuer.dns01.name | quote }}
+    kind: {{ $.Values.authgear.certManager.issuer.dns01.kind | quote }}
+    group: {{ $.Values.authgear.certManager.issuer.dns01.group | quote }}
 {{- end }}
+{{- end }}
+
 {{- end }}
 
 {{- end }}

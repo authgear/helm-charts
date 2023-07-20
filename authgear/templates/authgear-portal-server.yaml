@@ -241,9 +241,9 @@ spec:
         - name: ADMIN_API_ENDPOINT
           value: {{ .Values.authgear.portalServer.adminAPI.endpoint | quote }}
         - name: ADMIN_API_HOST_TEMPLATE
-          value: {{ printf "%s.%s" "{{ .AppID }}" .Values.authgear.baseHost | quote }}
+          value: {{ printf "%s.%s" "{{ .AppID }}" .Values.authgear.defaultDomain | quote }}
         - name: APP_HOST_SUFFIX
-          value: {{ printf ".%s" .Values.authgear.baseHost | quote }}
+          value: {{ printf ".%s" .Values.authgear.defaultDomain | quote }}
         - name: KUBERNETES_APP_NAMESPACE
           value: {{ .Values.authgear.appNamespace | quote }}
         {{- if .Values.authgear.elasticsearch.enabled }}

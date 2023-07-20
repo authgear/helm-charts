@@ -126,10 +126,6 @@ app.kubernetes.io/name: {{ include "authgear.nameDeno" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{- define "authgear.nameWildcard" -}}
-{{- printf "%s-%s" .Release.Name "wildcard" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
 {{- define "authgear.nameIngressTemplate" -}}
 {{- printf "%s-%s" .Release.Name "ingress-template" | trunc 63 | trimSuffix "-" }}
 {{- end }}
@@ -201,6 +197,6 @@ secrets:
 {{- if .Values.authgear.portalServer.host }}
 {{- .Values.authgear.portalServer.host }}
 {{- else }}
-{{- printf "portal.%s" .Values.authgear.baseHost }}
+{{- printf "portal.%s" .Values.authgear.defaultDomain }}
 {{- end }}
 {{- end }}
