@@ -244,6 +244,14 @@ spec:
           value: {{ printf "%s.%s" "{{ .AppID }}" .Values.authgear.defaultDomain | quote }}
         - name: APP_HOST_SUFFIX
           value: {{ printf ".%s" .Values.authgear.defaultDomain | quote }}
+        {{- if .Values.authgear.defaultDomains }}
+        {{- $suffixes := list }}
+        {{- range $index, $defaultDomain := .Values.authgear.defaultDomains }}
+        {{- $suffixes = append $suffixes (printf ".%s" $defaultDomain.domain) }}
+        {{- end }}
+        - name: APP_HOST_SUFFIXES
+          value: {{ join "," $suffixes | quote }}
+        {{- end }}
         - name: KUBERNETES_APP_NAMESPACE
           value: {{ .Values.authgear.appNamespace | quote }}
         {{- if .Values.authgear.elasticsearch.enabled }}
