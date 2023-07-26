@@ -2,6 +2,80 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: {{ include "authgear.nameAnalyticCronHourlyScript" . | quote }}
+data:
+  entrypoint.sh: |-
+    #!/bin/bash
+
+    set -e
+
+    {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
+    {{- if .Values.authgear.analytic.googleSpreadsheet.range.projectHourlyReport }}
+    authgear-portal analytic report project \
+      --period=last-hour \
+      --google-client-credentials-file={{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath }}/client_credentials.json \
+      --google-token-file={{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath }}/token.json \
+      --output-type=google-sheets \
+      --google-spreadsheet-id={{ .Values.authgear.analytic.googleSpreadsheet.id | quote }} \
+      --google-spreadsheet-range={{ .Values.authgear.analytic.googleSpreadsheet.range.projectHourlyReport | quote }}
+    {{- end }}
+    {{- end }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "authgear.nameAnalyticCronHourly" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.authgear.analytic.cronjob.hourlySchedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+          - name: authgear-analytic-cronjob-hourly
+            image: {{ .Values.authgear.portalServer.image | quote }}
+            imagePullPolicy: Always
+            command:
+            - sh
+            - /bin/entrypoint.sh
+            volumeMounts:
+            - name: script-configmap-volume
+              mountPath: /bin/entrypoint.sh
+              readOnly: true
+              subPath: entrypoint.sh
+            {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
+            - name: google-sheets-secret-volume
+              mountPath: {{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath | quote }}
+            {{- end }}
+            env:
+            - name: DATABASE_URL
+              value: {{ .Values.authgear.databaseURL | quote }}
+            - name: DATABASE_SCHEMA
+              value: {{ .Values.authgear.databaseSchema | quote }}
+            - name: AUDIT_DATABASE_URL
+              value: {{ .Values.authgear.auditLog.databaseURL | quote }}
+            - name: AUDIT_DATABASE_SCHEMA
+              value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
+            - name: ANALYTIC_REDIS_URL
+              value: {{ .Values.authgear.analytic.redisURL | quote }}
+          restartPolicy: Never
+          volumes:
+          - name: script-configmap-volume
+            configMap:
+              defaultMode: 0755
+              name: {{ include "authgear.nameAnalyticCronHourlyScript" . | quote }}
+          {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
+          - name: google-sheets-secret-volume
+            {{- toYaml .Values.authgear.analytic.googleSpreadsheet.secret.volume | nindent 12 }}
+          {{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: {{ include "authgear.nameAnalyticCronWeeklyScript" . | quote }}
 data:
   entrypoint.sh: |-

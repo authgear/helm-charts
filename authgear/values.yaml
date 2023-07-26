@@ -123,6 +123,7 @@ authgear:
     redisURL: __replace_me__
     epoch: ""
     cronjob:
+      hourlySchedule: "30 * * * *"
       weeklySchedule: "0 1 * * 1"
       monthlySchedule: "10 1 1 * *"
       dailySchedule: "20 1 * * *"
@@ -132,6 +133,8 @@ authgear:
       id: ""
       range:
         userWeeklyReport: ""
+        projectHourlyReport: ""
+        projectWeeklyReport: ""
         projectMonthlyReport: ""
       secret:
         mountPath: ""

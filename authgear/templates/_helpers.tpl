@@ -84,6 +84,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-%s" .Release.Name "audit-log-cron" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{- define "authgear.nameAnalyticCronHourly" -}}
+{{- printf "%s-%s" .Release.Name "analytic-cron-hourly" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "authgear.nameAnalyticCronWeekly" -}}
 {{- printf "%s-%s" .Release.Name "analytic-cron-weekly" | trunc 63 | trimSuffix "-" }}
 {{- end }}
@@ -94,6 +98,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "authgear.nameAnalyticCronDaily" -}}
 {{- printf "%s-%s" .Release.Name "analytic-cron-daily" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.nameAnalyticCronHourlyScript" -}}
+{{- printf "%s-%s" .Release.Name "analytic-cron-hourly-script" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "authgear.nameAnalyticCronWeeklyScript" -}}
