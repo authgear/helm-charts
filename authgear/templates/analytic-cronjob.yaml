@@ -12,7 +12,7 @@ data:
     {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
     {{- if .Values.authgear.analytic.googleSpreadsheet.range.projectHourlyReport }}
     authgear-portal analytic report project \
-      --period=last-hour \
+      --period=this-hour \
       --google-client-credentials-file={{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath }}/client_credentials.json \
       --google-token-file={{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath }}/token.json \
       --output-type=google-sheets \
