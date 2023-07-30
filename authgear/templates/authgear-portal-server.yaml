@@ -222,6 +222,8 @@ spec:
           value: {{ .Values.authgear.logLevel | quote }}
         - name: SENTRY_DSN
           value: {{ .Values.authgear.sentryDSN | quote }}
+        - name: PORTAL_FRONTEND_SENTRY_DSN
+          value: {{ .Values.authgear.portalSentryDSN | quote }}
         - name: CONFIG_SOURCE_TYPE
           value: {{ .Values.authgear.configSourceType | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE

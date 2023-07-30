@@ -27,6 +27,7 @@ authgear:
   logLevel: "info"
   sentryDSN: ""
   uiSentryDSN: ""
+  portalSentryDSN: ""
 
   ingress:
     enabled: true
