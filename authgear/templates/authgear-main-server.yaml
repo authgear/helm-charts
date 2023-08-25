@@ -123,6 +123,14 @@ spec:
           value: {{ .Values.authgear.appNamespace | quote }}
         - name: CUSTOM_RESOURCE_DIRECTORY
           value: {{ .Values.authgear.appCustomResources.path | quote }}
+        {{- if .Values.authgear.allDefaultDomains }}
+        {{- $suffixes := list }}
+        {{- range $index, $defaultDomain := .Values.authgear.allDefaultDomains }}
+        {{- $suffixes = append $suffixes (printf ".%s" $defaultDomain.domain) }}
+        {{- end }}
+        - name: APP_HOST_SUFFIXES
+          value: {{ join "," $suffixes | quote }}
+        {{- end }}
         {{- range $key, $val := .Values.authgear.mainServer.env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}
