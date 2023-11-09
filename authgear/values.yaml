@@ -319,6 +319,11 @@ authgear:
   deno:
     image: __replace_me__
     replicas: 1
+    nodeSelector: {}
+    nodeName: ""
+    affinity: {}
+    tolerations: []
+    topologySpreadConstraints: []
     resources:
       requests:
         cpu: 100m

@@ -14,6 +14,25 @@ spec:
       labels:
         {{- include "authgear.denoSelectorLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.authgear.deno.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.deno.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.deno.nodeName }}
+      nodeName: {{ .Values.authgear.deno.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.deno.affinity }}
+      affinity:
+        {{- .Values.authgear.deno.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.deno.tolerations }}
+      tolerations:
+      {{- .Values.authgear.deno.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.deno.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.deno.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
       containers:
       - name: authgear-deno
         image: {{ .Values.authgear.deno.image | quote }}
