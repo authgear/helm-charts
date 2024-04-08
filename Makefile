@@ -1,4 +1,5 @@
 # This makefile was authored against cr version 1.3.0
+# https://github.com/helm/chart-releaser/releases/tag/v1.3.0
 
 
 .PHONY: helm-repo-add
