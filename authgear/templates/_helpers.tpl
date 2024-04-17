@@ -80,6 +80,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-%s" .Release.Name "upload-stripe" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{- define "authgear.namePosthogCron" -}}
+{{- printf "%s-%s" .Release.Name "posthog-cron" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "authgear.nameAuditLogCron" -}}
 {{- printf "%s-%s" .Release.Name "audit-log-cron" | trunc 63 | trimSuffix "-" }}
 {{- end }}
