@@ -1,0 +1,57 @@
+{{- if .Values.authgear.analytic.posthog.cronjob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "authgear.namePosthogCron" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.authgear.analytic.posthog.cronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          {{- if .Values.authgear.portalServer.nodeSelector }}
+          nodeSelector:
+            {{- .Values.authgear.portalServer.nodeSelector | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.nodeName }}
+          nodeName: {{ .Values.authgear.portalServer.nodeName | quote }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.affinity }}
+          affinity:
+            {{- .Values.authgear.portalServer.affinity | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.tolerations }}
+          tolerations:
+          {{- .Values.authgear.portalServer.tolerations | toYaml | nindent 10 }}
+          {{- end }}
+          {{- if .Values.authgear.portalServer.topologySpreadConstraints }}
+          topologySpreadConstraints:
+          {{- .Values.authgear.portalServer.topologySpreadConstraints | toYaml | nindent 10 }}
+          {{- end }}
+          containers:
+          - name: authgear-posthog-cronjob
+            image: {{ .Values.authgear.portalServer.image | quote }}
+            imagePullPolicy: Always
+            args: ["authgear-portal", "analytic", "posthog", "group"]
+            env:
+            - name: DATABASE_URL
+              value: {{ .Values.authgear.databaseURL | quote }}
+            - name: DATABASE_SCHEMA
+              value: {{ .Values.authgear.databaseSchema | quote }}
+            - name: AUDIT_DATABASE_URL
+              value: {{ .Values.authgear.auditLog.databaseURL | quote }}
+            - name: AUDIT_DATABASE_SCHEMA
+              value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
+            - name: ANALYTIC_REDIS_URL
+              value: {{ .Values.authgear.analytic.redisURL | quote }}
+            - name: POSTHOG_ENDPOINT
+              value: {{ .Values.authgear.analytic.posthog.endpoint | quote }}
+            - name: POSTHOG_API_KEY
+              value: {{ .Values.authgear.analytic.posthog.apiKey | quote }}
+            - name: SENTRY_DSN
+              value: {{ .Values.authgear.sentryDSN | quote }}
+{{- end }}

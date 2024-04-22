@@ -129,6 +129,13 @@ authgear:
       monthlySchedule: "10 1 1 * *"
       dailySchedule: "20 1 * * *"
 
+    posthog:
+      endpoint: ""
+      apiKey: ""
+      cronjob:
+        enabled: false
+        schedule: "0 4 * * *"
+
     googleSpreadsheet:
       enabled: false
       id: ""
