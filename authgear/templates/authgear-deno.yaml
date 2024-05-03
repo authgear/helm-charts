@@ -58,3 +58,19 @@ spec:
     name: http
   selector:
     {{- include "authgear.denoSelectorLabels" . | nindent 4 }}
+{{- if .Values.authgear.deno.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "authgear.nameDeno" . | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.deno.replicas }}
+  maxReplicas: {{ .Values.authgear.deno.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "authgear.nameDeno" . | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.deno.hpa.metrics | nindent 4 }}
+{{- end }}

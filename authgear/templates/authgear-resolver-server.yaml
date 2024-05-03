@@ -132,3 +132,19 @@ spec:
   externalName: {{ include "authgear.nameResolver" . }}.{{ .Release.Namespace }}.svc.cluster.local
   ports:
   - port: 80
+{{- if .Values.authgear.resolverServer.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "authgear.nameResolver" . | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.resolverServer.replicas }}
+  maxReplicas: {{ .Values.authgear.resolverServer.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "authgear.nameResolver" . | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.resolverServer.hpa.metrics | nindent 4 }}
+{{- end }}

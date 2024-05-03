@@ -338,3 +338,19 @@ spec:
     name: http
   selector:
     {{- include "authgear.portalSelectorLabels" . | nindent 4 }}
+{{- if .Values.authgear.portalServer.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.portalServer.replicas }}
+  maxReplicas: {{ .Values.authgear.portalServer.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "authgear.namePortal" . | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.portalServer.hpa.metrics | nindent 4 }}
+{{- end }}

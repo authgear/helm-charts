@@ -173,3 +173,19 @@ spec:
   externalName: {{ include "authgear.nameMain" . }}.{{ .Release.Namespace }}.svc.cluster.local
   ports:
   - port: 80
+{{- if .Values.authgear.mainServer.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.mainServer.replicas }}
+  maxReplicas: {{ .Values.authgear.mainServer.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "authgear.nameMain" . | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.mainServer.hpa.metrics | nindent 4 }}
+{{- end }}

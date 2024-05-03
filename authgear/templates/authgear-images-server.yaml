@@ -175,3 +175,19 @@ spec:
   externalName: {{ include "authgear.nameImages" . }}.{{ .Release.Namespace }}.svc.cluster.local
   ports:
   - port: 80
+{{- if .Values.authgear.imagesServer.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "authgear.nameImages" . | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.imagesServer.replicas }}
+  maxReplicas: {{ .Values.authgear.imagesServer.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "authgear.nameImages" . | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.imagesServer.hpa.metrics | nindent 4 }}
+{{- end }}

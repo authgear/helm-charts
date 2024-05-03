@@ -132,3 +132,19 @@ spec:
   externalName: {{ include "authgear.nameAdmin" . }}.{{ .Release.Namespace }}.svc.cluster.local
   ports:
   - port: 80
+{{- if .Values.authgear.adminServer.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "authgear.nameAdmin" . | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.adminServer.replicas }}
+  maxReplicas: {{ .Values.authgear.adminServer.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "authgear.nameAdmin" . | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.adminServer.hpa.metrics | nindent 4 }}
+{{- end }}

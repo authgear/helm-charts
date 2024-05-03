@@ -172,6 +172,16 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 1000
+            type: Utilization
+        type: Resource
 
   adminServer:
     replicas: 1
@@ -195,6 +205,16 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 1000
+            type: Utilization
+        type: Resource
 
   resolverServer:
     replicas: 1
@@ -218,6 +238,16 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 1000
+            type: Utilization
+        type: Resource
 
   background:
     replicas: 1
@@ -275,6 +305,16 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 200
+            type: Utilization
+        type: Resource
 
   portalServerProxy:
     image: nginx:1.18
@@ -322,6 +362,16 @@ authgear:
       httpGet:
         path: /healthz
         port: portal
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 1000
+            type: Utilization
+        type: Resource
 
   deno:
     image: __replace_me__
@@ -338,6 +388,16 @@ authgear:
       limits:
         cpu: 500m
         memory: 256Mi
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 1000
+            type: Utilization
+        type: Resource
 
   appCustomResources:
     path: ""
