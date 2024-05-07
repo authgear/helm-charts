@@ -68,10 +68,17 @@ spec:
   dnsNames:
   - {{ printf "*.%s" $defaultDomain.domain | quote }}
   - {{ $defaultDomain.domain | quote }}
+{{- if $defaultDomain.certManager.issuer }}
+  issuerRef:
+    name: {{ $defaultDomain.certManager.issuer.name | quote }}
+    kind: {{ $defaultDomain.certManager.issuer.kind | quote }}
+    group: {{ $defaultDomain.certManager.issuer.group | quote }}
+{{- else }}
   issuerRef:
     name: {{ $.Values.authgear.certManager.issuer.dns01.name | quote }}
     kind: {{ $.Values.authgear.certManager.issuer.dns01.kind | quote }}
     group: {{ $.Values.authgear.certManager.issuer.dns01.group | quote }}
+{{- end }}
 {{- end }}
 {{- end }}
 
