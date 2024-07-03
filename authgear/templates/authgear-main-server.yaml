@@ -109,6 +109,8 @@ spec:
           value: {{ include "authgear.portalHost" . | quote }}
         - name: ALLOWED_FRAME_ANCESTORS
           value: {{ include "authgear.portalHost" . | quote }}
+        - name: AUTH_UI_WINDOW_MESSAGE_ALLOWED_ORIGINS
+          value: {{ include "authgear.portalHost" . | quote }}
         {{- if .Values.authgear.imagesServer.cdn.host }}
         - name: IMAGES_CDN_HOST
           value: {{ .Values.authgear.imagesServer.cdn.host | quote }}
