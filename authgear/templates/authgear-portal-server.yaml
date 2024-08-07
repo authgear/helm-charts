@@ -245,6 +245,8 @@ spec:
           value: {{ .Values.authgear.portalServer.adminAPI.endpoint | quote }}
         - name: ADMIN_API_HOST_TEMPLATE
           value: {{ printf "%s.%s" "{{ .AppID }}" .Values.authgear.defaultDomain | quote }}
+        - name: SAML_IDP_ENTITY_ID_TEMPLATE
+          value: {{ .Values.authgear.saml.idpEntityIDTemplate | quote }}
         - name: APP_HOST_SUFFIX
           value: {{ printf ".%s" .Values.authgear.defaultDomain | quote }}
         {{- if .Values.authgear.allDefaultDomains }}

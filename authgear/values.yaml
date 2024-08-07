@@ -6,6 +6,9 @@ authgear:
 
   redisURL: redis://localhost
 
+  saml:
+    idpEntityIDTemplate: "__replace_me__"
+
   stripe:
     secretKey: ""
     webhookSigningKey: ""

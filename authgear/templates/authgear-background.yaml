@@ -76,6 +76,8 @@ spec:
         - name: CUSTOM_RESOURCE_DIRECTORY
           value: {{ .Values.authgear.appCustomResources.path | quote }}
         {{- range $key, $val := .Values.authgear.mainServer.env }}
+        - name: SAML_IDP_ENTITY_ID_TEMPLATE
+          value: {{ .Values.authgear.saml.idpEntityIDTemplate | quote }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}
         {{- end }}
