@@ -132,8 +132,10 @@ spec:
         {{- range $index, $defaultDomain := .Values.authgear.allDefaultDomains }}
         {{- $suffixes = append $suffixes (printf ".%s" $defaultDomain.domain) }}
         {{- end }}
+        {{- if .Values.authgear.saml.idpEntityIDTemplate }}
         - name: SAML_IDP_ENTITY_ID_TEMPLATE
           value: {{ .Values.authgear.saml.idpEntityIDTemplate | quote }}
+        {{- end }}
         - name: APP_HOST_SUFFIXES
           value: {{ join "," $suffixes | quote }}
         {{- end }}

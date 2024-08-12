@@ -7,7 +7,7 @@ authgear:
   redisURL: redis://localhost
 
   saml:
-    idpEntityIDTemplate: "__replace_me__"
+    idpEntityIDTemplate: ""
 
   stripe:
     secretKey: ""
