@@ -6,6 +6,10 @@ authgear:
 
   redisURL: redis://localhost
 
+  saml:
+    # The default is "urn:{{.app_id}}.localhost"
+    idpEntityIDTemplate: ""
+
   stripe:
     secretKey: ""
     webhookSigningKey: ""
