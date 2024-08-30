@@ -1,4 +1,4 @@
-{{- if eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS" }}
+{{- if .Values.authgear.imagesServer.objectStore.gcpGCS.credentialsJSONContent }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -25,13 +25,15 @@ spec:
       labels:
         {{- include "authgear.imagesSelectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "authgear.nameMain" . | quote }}
+      {{- if .Values.authgear.imagesServer.serviceAccountName }}
+      serviceAccountName: {{ .Values.authgear.imagesServer.serviceAccountName | quote }}
+      {{- end }}
       volumes:
       {{- if .Values.authgear.appCustomResources.path }}
       - name: custom-resources
         {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
       {{- end }}
-      {{- if eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS" }}
+      {{- if .Values.authgear.imagesServer.objectStore.gcpGCS.credentialsJSONContent }}
       - name: gcp-credentials
         configMap:
           name: {{ include "authgear.nameImages" . | quote }}
@@ -68,7 +70,7 @@ spec:
         - name: custom-resources
           mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
         {{- end }}
-        {{- if eq .Values.authgear.imagesServer.objectStore.type "GCP_GCS" }}
+        {{- if .Values.authgear.imagesServer.objectStore.gcpGCS.credentialsJSONContent }}
         - name: gcp-credentials
           mountPath: /var/authgear/images/gcp
         {{- end }}
@@ -122,8 +124,10 @@ spec:
           value: {{ .Values.authgear.imagesServer.objectStore.gcpGCS.bucketName | quote }}
         - name: IMAGES_OBJECT_STORE_GCP_GCS_SERVICE_ACCOUNT
           value: {{ .Values.authgear.imagesServer.objectStore.gcpGCS.serviceAccount | quote }}
+          {{- if .Values.authgear.imagesServer.objectStore.gcpGCS.credentialsJSONContent }}
         - name: IMAGES_OBJECT_STORE_GCP_GCS_CREDENTIALS_JSON_PATH
           value: /var/authgear/images/gcp/credentials.json
+          {{- end }}
         {{- end }}
         {{- if eq .Values.authgear.imagesServer.objectStore.type "AZURE_BLOB_STORAGE" }}
         - name: IMAGES_OBJECT_STORE_AZURE_BLOB_STORAGE_STORAGE_ACCOUNT

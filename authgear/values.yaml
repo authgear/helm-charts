@@ -293,6 +293,7 @@ authgear:
         container: ""
         accessKey: ""
 
+    serviceAccountName: ""
     nodeSelector: {}
     nodeName: ""
     affinity: {}
