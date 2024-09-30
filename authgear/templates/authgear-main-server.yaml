@@ -119,6 +119,34 @@ spec:
         - name: IMAGES_CDN_HOST
           value: {{ .Values.authgear.imagesServer.cdn.host | quote }}
         {{- end }}
+        {{- if .Values.authgear.userexport.objectStore.type }}
+        - name: USEREXPORT_OBJECT_STORE_TYPE
+          value: {{ .Values.authgear.userexport.objectStore.type | quote }}
+        {{- if eq .Values.authgear.userexport.objectStore.type "AWS_S3" }}
+        - name: USEREXPORT_OBJECT_STORE_AWS_S3_REGION
+          value: {{ .Values.authgear.userexport.objectStore.awsS3.region | quote }}
+        - name: USEREXPORT_OBJECT_STORE_AWS_S3_BUCKET_NAME
+          value: {{ .Values.authgear.userexport.objectStore.awsS3.bucketName | quote }}
+        - name: USEREXPORT_OBJECT_STORE_AWS_S3_ACCESS_KEY_ID
+          value: {{ .Values.authgear.userexport.objectStore.awsS3.accessKeyID | quote }}
+        - name: USEREXPORT_OBJECT_STORE_AWS_S3_SECRET_ACCESS_KEY
+          value: {{ .Values.authgear.userexport.objectStore.awsS3.secretAccessKey | quote }}
+        {{- end }}
+        {{- if eq .Values.authgear.userexport.objectStore.type "GCP_GCS" }}
+        - name: USEREXPORT_OBJECT_STORE_GCP_GCS_BUCKET_NAME
+          value: {{ .Values.authgear.userexport.objectStore.gcpGCS.bucketName | quote }}
+        - name: USEREXPORT_OBJECT_STORE_GCP_GCS_SERVICE_ACCOUNT
+          value: {{ .Values.authgear.userexport.objectStore.gcpGCS.serviceAccount | quote }}
+        {{- end }}
+        {{- if eq .Values.authgear.userexport.objectStore.type "AZURE_BLOB_STORAGE" }}
+        - name: USEREXPORT_OBJECT_STORE_AZURE_BLOB_STORAGE_STORAGE_ACCOUNT
+          value: {{ .Values.authgear.userexport.objectStore.azureBlobStorage.storageAccount | quote }}
+        - name: USEREXPORT_OBJECT_STORE_AZURE_BLOB_STORAGE_CONTAINER
+          value: {{ .Values.authgear.userexport.objectStore.azureBlobStorage.container | quote }}
+        - name: USEREXPORT_OBJECT_STORE_AZURE_BLOB_STORAGE_ACCESS_KEY
+          value: {{ .Values.authgear.userexport.objectStore.azureBlobStorage.accessKey | quote }}
+        {{- end }}
+        {{- end }}
         - name: LOG_LEVEL
           value: {{ .Values.authgear.logLevel | quote }}
         - name: SENTRY_DSN
