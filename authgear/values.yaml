@@ -159,6 +159,8 @@ authgear:
   mainServer:
     image: __replace_me__
     replicas: 1
+    serviceAccount:
+      annotations: {}
     env: {}
     nodeSelector: {}
     nodeName: ""
