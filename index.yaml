@@ -3,6 +3,16 @@ entries:
   authgear:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2024-09-30T18:54:58.921192+08:00"
+    description: A Helm chart for Authgear
+    digest: e2e07e6f09b3f652b149e184c97505513ffe5fc23237db51a0131fa7937a33fb
+    name: authgear
+    type: application
+    urls:
+    - https://github.com/authgear/helm-charts/releases/download/authgear-10.15.0/authgear-10.15.0.tgz
+    version: 10.15.0
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2024-09-06T17:03:25.994382+08:00"
     description: A Helm chart for Authgear
     digest: 4d8391b96f6d65ee197291ef590d7bc9e9ba5d8e8637ddba2c7a9e9f4173f417
@@ -1081,4 +1091,4 @@ entries:
     urls:
     - https://github.com/authgear/helm-charts/releases/download/authgear-0.1.0/authgear-0.1.0.tgz
     version: 0.1.0
-generated: "2024-09-06T17:03:43.958745+08:00"
+generated: "2024-09-30T18:55:18.573485+08:00"
