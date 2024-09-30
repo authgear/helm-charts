@@ -156,9 +156,28 @@ authgear:
         mountPath: ""
         volume: {}
 
+  userexport:
+    objectStore:
+      type: ""
+      awsS3:
+        region: ""
+        bucketName: ""
+        accessKeyID: ""
+        secretAccessKey: ""
+      gcpGCS:
+        # This is a new feature, so it does not suppport service account key.
+        bucketName: ""
+        serviceAccount: ""
+      azureBlobStorage:
+        storageAccount: ""
+        container: ""
+        accessKey: ""
+
   mainServer:
     image: __replace_me__
     replicas: 1
+    serviceAccount:
+      annotations: {}
     env: {}
     nodeSelector: {}
     nodeName: ""
