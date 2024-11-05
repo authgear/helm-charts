@@ -5,6 +5,9 @@ authgear:
   databaseSchema: public
 
   redisURL: redis://localhost
+  redisAutoRewriteAOF:
+    enabled: false
+    schedule: "0 3 * * *"
 
   saml:
     # The default is "urn:{{.app_id}}.localhost"
