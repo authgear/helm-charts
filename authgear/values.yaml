@@ -5,6 +5,17 @@ authgear:
   databaseSchema: public
 
   redisURL: redis://localhost
+  redisAutoRewriteAOFCronjob:
+    enabled: false
+    schedule: "0 3 * * *"
+    image: redis:6
+    resources:
+      requests:
+        cpu: 100m
+        memory: 32Mi
+      limits:
+        cpu: 200m
+        memory: 64Mi
 
   saml:
     # The default is "urn:{{.app_id}}.localhost"

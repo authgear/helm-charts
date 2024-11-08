@@ -1,0 +1,45 @@
+{{- if .Values.authgear.redisAutoRewriteAOFCronjob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "authgear.nameRedisAutoRewriteAOFCron" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.authgear.redisAutoRewriteAOFCronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          {{- if .Values.authgear.mainServer.nodeSelector }}
+          nodeSelector:
+            {{- .Values.authgear.mainServer.nodeSelector | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.nodeName }}
+          nodeName: {{ .Values.authgear.mainServer.nodeName | quote }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.affinity }}
+          affinity:
+            {{- .Values.authgear.mainServer.affinity | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.tolerations }}
+          tolerations:
+          {{- .Values.authgear.mainServer.tolerations | toYaml | nindent 10 }}
+          {{- end }}
+          {{- if .Values.authgear.mainServer.topologySpreadConstraints }}
+          topologySpreadConstraints:
+          {{- .Values.authgear.mainServer.topologySpreadConstraints | toYaml | nindent 10 }}
+          {{- end }}
+          containers:
+          - name: authgear-redis-rewriteaof-cronjob
+            image: {{ .Values.authgear.redisAutoRewriteAOFCronjob.image | quote }}
+            imagePullPolicy: Always
+            command: ["sh", "-c", "redis-cli -u $REDIS_URL BGREWRITEAOF"]
+            env:
+            - name: REDIS_URL
+              value: {{ .Values.authgear.redisURL | quote }}
+            resources:
+              {{- toYaml .Values.authgear.redisAutoRewriteAOFCronjob.resources | nindent 14 }}
+{{- end }}

@@ -128,6 +128,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-%s" .Release.Name "background" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{- define "authgear.nameRedisAutoRewriteAOFCron" -}}
+{{- printf "%s-%s" .Release.Name "redis-cron-rewriteaof" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "authgear.backgroundSelectorLabels" -}}
 app.kubernetes.io/name: {{ include "authgear.nameBackground" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
