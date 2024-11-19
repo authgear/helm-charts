@@ -104,6 +104,11 @@ authgear:
     enabled: false
     url: http://localhost:9200
 
+  postgresqlsearch:
+    enabled: true
+    databaseURL: postgres://localhost
+    databaseSchema: public
+
   twilio:
     accountSID: ""
     authToken: ""
