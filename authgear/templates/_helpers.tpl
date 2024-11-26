@@ -195,6 +195,12 @@ secrets:
   data:
     elasticsearch_url: {{ .authgear.elasticsearch.url | quote }}
 {{- end }}
+{{- if .authgear.postgresqlsearch.enabled }}
+- key: search.db
+  data:
+    database_schema: {{ .authgear.postgresqlsearch.databaseSchema | quote }}
+    database_url: {{ .authgear.postgresqlsearch.databaseURL | quote }}
+{{- end }}
 {{- if .authgear.whatsappWATI.enabled }}
 - key: whatsapp.wati
   data:
