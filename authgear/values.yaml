@@ -105,7 +105,7 @@ authgear:
     url: http://localhost:9200
 
   postgresqlsearch:
-    enabled: true
+    enabled: false
     databaseURL: postgres://localhost
     databaseSchema: public
 
