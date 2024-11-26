@@ -285,6 +285,12 @@ spec:
         - name: ANALYTIC_EPOCH
           value: {{ .Values.authgear.analytic.epoch | quote }}
         {{- end }}
+        {{- if .Values.authgear.postgresqlsearch.enabled }}
+        - name: SEARCH_DATABASE_URL
+          value: {{ .Values.authgear.postgresqlsearch.databaseURL | quote }}
+        - name: SEARCH_DATABASE_SCHEMA
+          value: {{ .Values.authgear.postgresqlsearch.databaseSchema | quote }}
+        {{- end }}
         {{- if not .Values.authgear.portalServer.env.SMTP_HOST  }}
         - name: SMTP_HOST
           value: {{ .Values.authgear.smtp.host | quote }}
