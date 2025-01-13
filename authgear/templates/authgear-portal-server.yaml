@@ -39,6 +39,7 @@ roleRef:
   kind: Role
   name: {{ include "authgear.namePortal" . | quote }}
   apiGroup: rbac.authorization.k8s.io
+{{- if (eq .Values.authgear.portalServer.authgear.webSDKSessionType "cookie") }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -111,6 +112,7 @@ data:
             }
         }
     }
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -130,9 +132,11 @@ spec:
     spec:
       serviceAccountName: {{ include "authgear.namePortal" . | quote }}
       volumes:
+      {{- if (eq .Values.authgear.portalServer.authgear.webSDKSessionType "cookie") }}
       - name: volume-nginx-conf
         configMap:
           name: {{ include "authgear.namePortal" . | quote }}
+      {{- end }}
       - name: volume-ingress-template
         configMap:
           name: {{ include "authgear.nameIngressTemplate" . | quote }}
@@ -170,6 +174,7 @@ spec:
       {{- .Values.authgear.portalServer.topologySpreadConstraints | toYaml | nindent 6 }}
       {{- end }}
       containers:
+      {{- if (eq .Values.authgear.portalServer.authgear.webSDKSessionType "cookie") }}
       - name: authgear-portal-server-proxy
         image: {{ .Values.authgear.portalServerProxy.image | quote }}
         imagePullPolicy: Always
@@ -181,6 +186,7 @@ spec:
         - name: proxy
           containerPort: 80
           protocol: TCP
+      {{- end }}
       - name: authgear-portal-server
         image: {{ .Values.authgear.portalServer.image | quote }}
         imagePullPolicy: Always
@@ -241,6 +247,8 @@ spec:
           value: {{ .Values.authgear.portalServer.authgear.clientID | quote }}
         - name: AUTHGEAR_ENDPOINT
           value: {{ .Values.authgear.portalServer.authgear.endpoint | quote }}
+        - name: AUTHGEAR_WEB_SDK_SESSION_TYPE
+          value: {{ .Values.authgear.portalServer.authgear.webSDKSessionType | quote }}
         - name: ADMIN_API_ENDPOINT
           value: {{ .Values.authgear.portalServer.adminAPI.endpoint | quote }}
         - name: ADMIN_API_HOST_TEMPLATE
@@ -342,10 +350,17 @@ metadata:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
   ports:
+{{- if (eq .Values.authgear.portalServer.authgear.webSDKSessionType "cookie") }}
   - port: 80
     targetPort: proxy
     protocol: TCP
     name: http
+{{- else }}
+  - port: 80
+    targetPort: portal
+    protocol: TCP
+    name: http
+{{- end }}
   selector:
     {{- include "authgear.portalSelectorLabels" . | nindent 4 }}
 {{- if .Values.authgear.portalServer.hpa.enabled }}
