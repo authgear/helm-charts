@@ -377,6 +377,9 @@ authgear:
       appID: __replace_me__
       clientID: __replace_me__
       endpoint: https://__replace_me__.example.com
+      # Consider changing the default to refresh_token in the next major version.
+      # cookie or refresh_token
+      webSDKSessionType: cookie
 
     adminAPI:
       endpoint: http://cluster.local
