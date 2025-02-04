@@ -13,14 +13,15 @@ helm-repo-add:
 helm-dependency-update:
 	helm dependency update authgear
 
-# cr is not smart enough to ignore previously uploaded packages.
+# cr supports --skip-existing to skip previously uploaded packages,
+# but it is very slow.
 # Therefore, when we run cr upload, we have to make sure --package-path contains
 # packages that have not been uploaded before.
 .PHONY: upload-release
 upload-release:
 	rm -rf .deploy
 	cr package authgear --package-path .deploy
-	cr upload --config ./.cr.yaml --package-path .deploy
+	cr upload --config ./.cr.yaml --package-path .deploy --skip-existing
 
 # Before you run this target, make ensure you have the gh-pages branch locally.
 # cr expects the push URL to be https, so this make target will change the url temporarily.
