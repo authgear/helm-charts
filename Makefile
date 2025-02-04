@@ -1,7 +1,3 @@
-# This makefile was authored against cr version 1.4.0
-# https://github.com/helm/chart-releaser/releases/tag/v1.4.0
-
-
 .PHONY: helm-repo-add
 helm-repo-add:
 	helm repo add ingress-traefik https://helm.traefik.io/traefik
@@ -13,21 +9,31 @@ helm-repo-add:
 helm-dependency-update:
 	helm dependency update authgear
 
+# This makefile was authored against cr version 1.7.0
+# https://github.com/helm/chart-releaser/releases/tag/v1.7.0
+.PHONY: check-cr-version
+check-cr-version:
+	command -v cr
+	test $$(cr version | grep GitVersion | awk '{ print $$2 }') = 'v1.7.0'
+
 # cr supports --skip-existing to skip previously uploaded packages,
 # but it is very slow.
 # Therefore, when we run cr upload, we have to make sure --package-path contains
 # packages that have not been uploaded before.
 .PHONY: upload-release
-upload-release:
+upload-release: check-cr-version
 	rm -rf .deploy
 	cr package authgear --package-path .deploy
 	cr upload --config ./.cr.yaml --package-path .deploy --skip-existing
 
-# Before you run this target, make ensure you have the gh-pages branch locally.
-# cr expects the push URL to be https, so this make target will change the url temporarily.
+# cr has the following conventions
+# 1. The remote is named "origin".
+# 2. The GitHub Pages branch is named "gh-pages".
+# 3. The GitHub Pages branch exists locally.
 .PHONY: update-index
-update-index:
-	git fetch --all
+update-index: check-cr-version
+	git branch -D gh-pages || true
+	git fetch origin gh-pages:gh-pages
 	cr package authgear
 	git remote set-url origin https://github.com/authgear/helm-charts.git
 	cr index --config ./.cr.yaml --push
