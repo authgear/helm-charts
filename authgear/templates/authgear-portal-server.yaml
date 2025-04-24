@@ -293,6 +293,12 @@ spec:
         - name: ANALYTIC_EPOCH
           value: {{ .Values.authgear.analytic.epoch | quote }}
         {{- end }}
+        {{- if .Values.authgear.analytic.posthog.endpoint }}
+        - name: ANALYTIC_POSTHOG_ENDPOINT
+          value: {{ .Values.authgear.analytic.posthog.endpoint | quote }}
+        - name: ANALYTIC_POSTHOG_APIKEY
+          value: {{ .Values.authgear.analytic.posthog.apiKey | quote }}
+        {{- end }}
         {{- if .Values.authgear.postgresqlsearch.enabled }}
         - name: SEARCH_DATABASE_URL
           value: {{ .Values.authgear.postgresqlsearch.databaseURL | quote }}

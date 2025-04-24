@@ -1,2 +1,3 @@
 .deploy/
 authgear/charts/*.tgz
+.DS_Store
