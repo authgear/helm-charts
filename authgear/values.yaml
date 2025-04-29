@@ -215,6 +215,11 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
     hpa:
       enabled: false
       maxReplicas: 1
@@ -248,6 +253,11 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
     hpa:
       enabled: false
       maxReplicas: 1
@@ -281,6 +291,11 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
     hpa:
       enabled: false
       maxReplicas: 1
@@ -349,6 +364,11 @@ authgear:
       httpGet:
         path: /healthz
         port: http
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
     hpa:
       enabled: false
       maxReplicas: 1
@@ -409,6 +429,11 @@ authgear:
       httpGet:
         path: /healthz
         port: portal
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
     hpa:
       enabled: false
       maxReplicas: 1
@@ -435,6 +460,11 @@ authgear:
       limits:
         cpu: 500m
         memory: 256Mi
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
     hpa:
       enabled: false
       maxReplicas: 1

@@ -219,6 +219,27 @@ spec:
   externalName: {{ include "authgear.nameMain" . }}.{{ .Release.Namespace }}.svc.cluster.local
   ports:
   - port: 80
+{{- if .Values.authgear.mainServer.pdb.enabled}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "authgear.nameMain" . | quote }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "authgear.mainSelectorLabels" . | nindent 6 }}
+  {{- if .Values.authgear.mainServer.pdb.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ .Values.authgear.mainServer.pdb.unhealthyPodEvictionPolicy | quote }}
+  {{- end }}
+  {{- if .Values.authgear.mainServer.pdb.minAvailable }}
+  minAvailable: {{ .Values.authgear.mainServer.pdb.minAvailable }}
+  {{- else if .Values.authgear.mainServer.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.authgear.mainServer.pdb.maxUnavailable }}
+  {{- else }}
+  {{ fail ".Values.authgear.mainServer.pdb has invalid configuration" }}
+  {{- end }}
+{{- end }}
 {{- if .Values.authgear.mainServer.hpa.enabled }}
 ---
 apiVersion: autoscaling/v2

@@ -164,6 +164,27 @@ spec:
   externalName: {{ include "authgear.nameResolver" . }}.{{ .Release.Namespace }}.svc.cluster.local
   ports:
   - port: 80
+{{- if .Values.authgear.resolverServer.pdb.enabled}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "authgear.nameResolver" . | quote }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "authgear.resolverSelectorLabels" . | nindent 6 }}
+  {{- if .Values.authgear.resolverServer.pdb.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ .Values.authgear.resolverServer.pdb.unhealthyPodEvictionPolicy | quote }}
+  {{- end }}
+  {{- if .Values.authgear.resolverServer.pdb.minAvailable }}
+  minAvailable: {{ .Values.authgear.resolverServer.pdb.minAvailable }}
+  {{- else if .Values.authgear.resolverServer.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.authgear.resolverServer.pdb.maxUnavailable }}
+  {{- else }}
+  {{ fail ".Values.authgear.resolverServer.pdb has invalid configuration" }}
+  {{- end }}
+{{- end }}
 {{- if .Values.authgear.resolverServer.hpa.enabled }}
 ---
 apiVersion: autoscaling/v2

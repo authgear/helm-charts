@@ -369,6 +369,27 @@ spec:
 {{- end }}
   selector:
     {{- include "authgear.portalSelectorLabels" . | nindent 4 }}
+{{- if .Values.authgear.portalServer.pdb.enabled}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "authgear.namePortal" . | quote }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "authgear.portalSelectorLabels" . | nindent 6 }}
+  {{- if .Values.authgear.portalServer.pdb.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ .Values.authgear.portalServer.pdb.unhealthyPodEvictionPolicy | quote }}
+  {{- end }}
+  {{- if .Values.authgear.portalServer.pdb.minAvailable }}
+  minAvailable: {{ .Values.authgear.portalServer.pdb.minAvailable }}
+  {{- else if .Values.authgear.portalServer.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.authgear.portalServer.pdb.maxUnavailable }}
+  {{- else }}
+  {{ fail ".Values.authgear.portalServer.pdb has invalid configuration" }}
+  {{- end }}
+{{- end }}
 {{- if .Values.authgear.portalServer.hpa.enabled }}
 ---
 apiVersion: autoscaling/v2
