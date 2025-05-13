@@ -12,8 +12,10 @@ data:
     metadata:
       name: nginx-{{ "{{ .Host }}" }}
       annotations:
-        kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
-        nginx.ingress.kubernetes.io/proxy-body-size: 10m
+        kubernetes.io/ingress.class: {{ $.Values.authgear.ingress.class | quote }}
+        {{- with $.Values.authgear.ingress.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/managed-by: authgear
     spec:
@@ -53,7 +55,7 @@ data:
                 name: {{ include "authgear.nameImages" . | quote }}
                 port:
                   number: 80
-    {{- if .Values.authgear.certManager.enabled }}
+    {{- if $.Values.authgear.certManager.enabled }}
     ---
     apiVersion: cert-manager.io/v1
     kind: Certificate
@@ -65,9 +67,9 @@ data:
       dnsNames:
       - {{ "{{ .Host }}" }}
       issuerRef:
-        name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
-        kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
-        group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
+        name: {{ $.Values.authgear.certManager.issuer.http01.name | quote }}
+        kind: {{ $.Values.authgear.certManager.issuer.http01.kind | quote }}
+        group: {{ $.Values.authgear.certManager.issuer.http01.group | quote }}
       secretName: tls-{{ "{{ .Host }}" }}
     {{- end }}
     {{ "{{ end }}" }}

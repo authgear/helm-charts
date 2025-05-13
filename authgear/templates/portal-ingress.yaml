@@ -19,6 +19,12 @@ metadata:
   name: {{ include "authgear.namePortal" . }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+    {{- with $.Values.authgear.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $.Values.authgear.tls.portal.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
@@ -70,7 +76,12 @@ metadata:
   name: {{ include "authgear.namePortalAuthgear" . }}
   annotations:
     kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
-    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    {{- with $.Values.authgear.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $.Values.authgear.tls.portalAuthgear.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
