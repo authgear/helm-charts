@@ -10,7 +10,12 @@ metadata:
   name: {{ $defaultDomain.domain | quote }}
   annotations:
     kubernetes.io/ingress.class: {{ $.Values.authgear.ingress.class | quote }}
-    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    {{- with $.Values.authgear.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $defaultDomain.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     {{- include "authgear.labels" $ | nindent 4 }}
 spec:
