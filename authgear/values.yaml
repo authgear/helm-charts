@@ -492,3 +492,7 @@ authgear:
   extraVolumes: []
 
   extraVolumeMounts: []
+
+  oauthDemoSecrets:
+    enabled: false
+    items: []
