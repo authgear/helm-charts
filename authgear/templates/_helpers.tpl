@@ -217,6 +217,12 @@ secrets:
       otp:
         {{- toYaml .authgear.whatsappOnPremises.authenticationTemplate | nindent 8 }}
 {{- end}}
+{{- if .authgear.oauthDemoSecrets.enabled }}
+- key: sso.oauth.demo_credentials
+  data:
+    items:
+      {{- toYaml .authgear.oauthDemoSecrets.items | nindent 6 }}
+{{- end }}
 {{- end }}
 
 {{- define "authgear.portalHost" -}}
