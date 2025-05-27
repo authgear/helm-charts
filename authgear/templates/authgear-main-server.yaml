@@ -165,6 +165,8 @@ spec:
           value: {{ .Values.authgear.appNamespace | quote }}
         - name: CUSTOM_RESOURCE_DIRECTORY
           value: {{ .Values.authgear.appCustomResources.path | quote }}
+        - name: SHARED_AUTHGEAR_ENDPOINT
+          value: {{ .Values.authgear.portalServer.authgear.endpoint }}
         {{- if .Values.authgear.allDefaultDomains }}
         {{- $suffixes := list }}
         {{- range $index, $defaultDomain := .Values.authgear.allDefaultDomains }}
