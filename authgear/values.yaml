@@ -140,6 +140,18 @@ authgear:
       languages:
       - en
 
+  whatsappCloudAPI:
+    enabled: false
+    phoneNumberID: ""
+    accessToken: ""
+    authenticationTemplate:
+      type: ""
+      copyCodeButton:
+        name: ""
+        languages: []
+    webhook:
+      verifyToken: ""
+
   auditLog:
     enabled: false
     cronjob:
