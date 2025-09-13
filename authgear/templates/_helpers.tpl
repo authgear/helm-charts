@@ -217,6 +217,20 @@ secrets:
       otp:
         {{- toYaml .authgear.whatsappOnPremises.authenticationTemplate | nindent 8 }}
 {{- end}}
+{{- if .authgear.whatsappCloudAPI.enabled }}
+- key: whatsapp.cloud-api
+  data:
+    phone_number_id: {{ .authgear.whatsappCloudAPI.phoneNumberID | quote }}
+    access_token: {{ .authgear.whatsappCloudAPI.accessToken | quote }}
+    authentication_template:
+      type: {{ .authgear.whatsappCloudAPI.authenticationTemplate.type | quote }}
+      copy_code_button:
+        name: {{ .authgear.whatsappCloudAPI.authenticationTemplate.copyCodeButton.name | quote }}
+        languages:
+{{ toYaml .authgear.whatsappCloudAPI.authenticationTemplate.copyCodeButton.languages | indent 10 }}
+    webhook:
+      verify_token: {{ .authgear.whatsappCloudAPI.webhook.verifyToken | quote }}
+{{- end }}
 {{- if .authgear.oauthDemoSecrets.enabled }}
 - key: sso.oauth.demo_credentials
   data:
