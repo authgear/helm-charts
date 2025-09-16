@@ -230,6 +230,7 @@ secrets:
 {{ toYaml .authgear.whatsappCloudAPI.authenticationTemplate.copyCodeButton.languages | indent 10 }}
     webhook:
       verify_token: {{ .authgear.whatsappCloudAPI.webhook.verifyToken | quote }}
+      app_secret: {{ .authgear.whatsappCloudAPI.webhook.appSecret | quote }}
 {{- end }}
 {{- if .authgear.oauthDemoSecrets.enabled }}
 - key: sso.oauth.demo_credentials
