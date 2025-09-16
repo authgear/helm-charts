@@ -137,6 +137,16 @@ spec:
         - name: IMAGES_OBJECT_STORE_AZURE_BLOB_STORAGE_ACCESS_KEY
           value: {{ .Values.authgear.imagesServer.objectStore.azureBlobStorage.accessKey | quote }}
         {{- end }}
+        {{- if eq .Values.authgear.imagesServer.objectStore.type "ALIBABA_CLOUD_OSS" }}
+        - name: IMAGES_OBJECT_STORE_ALIBABA_CLOUD_OSS_BUCKET_NAME
+          value: {{ .Values.authgear.imagesServer.objectStore.alibabaCloudOSS.bucketName | quote }}
+        - name: IMAGES_OBJECT_STORE_ALIBABA_CLOUD_OSS_REGION
+          value: {{ .Values.authgear.imagesServer.objectStore.alibabaCloudOSS.region | quote }}
+        - name: IMAGES_OBJECT_STORE_ALIBABA_CLOUD_OSS_ACCESS_KEY_ID
+          value: {{ .Values.authgear.imagesServer.objectStore.alibabaCloudOSS.accessKeyID | quote }}
+        - name: IMAGES_OBJECT_STORE_ALIBABA_CLOUD_OSS_SECRET_ACCESS_KEY
+          value: {{ .Values.authgear.imagesServer.objectStore.alibabaCloudOSS.secretAccessKey | quote }}
+        {{- end }}
         {{- range $key, $val := .Values.authgear.imagesServer.env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}
