@@ -152,6 +152,16 @@ spec:
         - name: USEREXPORT_OBJECT_STORE_AZURE_BLOB_STORAGE_ACCESS_KEY
           value: {{ .Values.authgear.userexport.objectStore.azureBlobStorage.accessKey | quote }}
         {{- end }}
+        {{- if eq .Values.authgear.userexport.objectStore.type "ALIBABA_CLOUD_OSS" }}
+        - name: USEREXPORT_OBJECT_STORE_ALIBABA_CLOUD_OSS_BUCKET_NAME
+          value: {{ .Values.authgear.userexport.objectStore.alibabaCloudOSS.bucketName | quote }}
+        - name: USEREXPORT_OBJECT_STORE_ALIBABA_CLOUD_OSS_REGION
+          value: {{ .Values.authgear.userexport.objectStore.alibabaCloudOSS.region | quote }}
+        - name: USEREXPORT_OBJECT_STORE_ALIBABA_CLOUD_OSS_ACCESS_KEY_ID
+          value: {{ .Values.authgear.userexport.objectStore.alibabaCloudOSS.accessKeyID | quote }}
+        - name: USEREXPORT_OBJECT_STORE_ALIBABA_CLOUD_OSS_SECRET_ACCESS_KEY
+          value: {{ .Values.authgear.userexport.objectStore.alibabaCloudOSS.secretAccessKey | quote }}
+        {{- end }}
         {{- end }}
         - name: LOG_LEVEL
           value: {{ .Values.authgear.logLevel | quote }}

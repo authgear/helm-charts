@@ -206,6 +206,11 @@ authgear:
         storageAccount: ""
         container: ""
         accessKey: ""
+      alibabaCloudOSS:
+        bucketName: ""
+        region: ""
+        accessKeyID: ""
+        secretAccessKey: ""
 
   mainServer:
     image: __replace_me__
@@ -360,6 +365,11 @@ authgear:
         storageAccount: ""
         container: ""
         accessKey: ""
+      alibabaCloudOSS:
+        bucketName: ""
+        region: ""
+        accessKeyID: ""
+        secretAccessKey: ""
 
     serviceAccountName: ""
     nodeSelector: {}
