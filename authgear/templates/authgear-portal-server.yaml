@@ -269,7 +269,7 @@ spec:
         {{- end }}
         - name: KUBERNETES_APP_NAMESPACE
           value: {{ .Values.authgear.appNamespace | quote }}
-        {{- if .Values.authgear.elasticsearch.enabled }}
+        {{- if or .Values.authgear.elasticsearch.enabled .Values.authgear.postgresqlsearch.enabled }}
         - name: SEARCH_ENABLED
           value: "true"
         {{- end }}
