@@ -70,6 +70,9 @@ spec:
             - name: google-sheets-secret-volume
               mountPath: {{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath | quote }}
             {{- end }}
+            {{- if .Values.authgear.extraVolumeMounts }}
+            {{- toYaml .Values.authgear.extraVolumeMounts | nindent 12 }}
+            {{- end }}
             env:
             - name: DATABASE_URL
               value: {{ .Values.authgear.databaseURL | quote }}
@@ -90,6 +93,9 @@ spec:
           {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSpreadsheet.secret.volume | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.extraVolumes }}
+          {{- toYaml .Values.authgear.extraVolumes | nindent 10 }}
           {{- end }}
 ---
 apiVersion: v1
@@ -171,6 +177,9 @@ spec:
             - name: google-sheets-secret-volume
               mountPath: {{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath | quote }}
             {{- end }}
+            {{- if .Values.authgear.extraVolumeMounts }}
+            {{- toYaml .Values.authgear.extraVolumeMounts | nindent 12 }}
+            {{- end }}
             env:
             - name: DATABASE_URL
               value: {{ .Values.authgear.databaseURL | quote }}
@@ -191,6 +200,9 @@ spec:
           {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSpreadsheet.secret.volume | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.extraVolumes }}
+          {{- toYaml .Values.authgear.extraVolumes | nindent 10 }}
           {{- end }}
 ---
 apiVersion: v1
@@ -264,6 +276,9 @@ spec:
             - name: google-sheets-secret-volume
               mountPath: {{ .Values.authgear.analytic.googleSpreadsheet.secret.mountPath | quote }}
             {{- end }}
+            {{- if .Values.authgear.extraVolumeMounts }}
+            {{- toYaml .Values.authgear.extraVolumeMounts | nindent 12 }}
+            {{- end }}
             env:
             - name: DATABASE_URL
               value: {{ .Values.authgear.databaseURL | quote }}
@@ -284,6 +299,9 @@ spec:
           {{- if .Values.authgear.analytic.googleSpreadsheet.enabled }}
           - name: google-sheets-secret-volume
             {{- toYaml .Values.authgear.analytic.googleSpreadsheet.secret.volume | nindent 12 }}
+          {{- end }}
+          {{- if .Values.authgear.extraVolumes }}
+          {{- toYaml .Values.authgear.extraVolumes | nindent 10 }}
           {{- end }}
 ---
 apiVersion: v1
@@ -343,6 +361,9 @@ spec:
               mountPath: /bin/entrypoint.sh
               readOnly: true
               subPath: entrypoint.sh
+            {{- if .Values.authgear.extraVolumeMounts }}
+            {{- toYaml .Values.authgear.extraVolumeMounts | nindent 12 }}
+            {{- end }}
             env:
             - name: DATABASE_URL
               value: {{ .Values.authgear.databaseURL | quote }}
@@ -360,4 +381,7 @@ spec:
             configMap:
               defaultMode: 0755
               name: {{ include "authgear.nameAnalyticCronDailyScript" . | quote }}
+          {{- if .Values.authgear.extraVolumes }}
+          {{- toYaml .Values.authgear.extraVolumes | nindent 10 }}
+          {{- end }}
 {{ end }}

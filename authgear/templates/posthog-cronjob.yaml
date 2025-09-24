@@ -32,6 +32,10 @@ spec:
           topologySpreadConstraints:
           {{- .Values.authgear.portalServer.topologySpreadConstraints | toYaml | nindent 10 }}
           {{- end }}
+          {{- if .Values.authgear.extraVolumes }}
+          volumes:
+          {{- toYaml .Values.authgear.extraVolumes | nindent 10 }}
+          {{- end }}
           containers:
           - name: authgear-posthog-cronjob
             image: {{ .Values.authgear.portalServer.image | quote }}
@@ -54,6 +58,10 @@ spec:
               value: {{ .Values.authgear.analytic.posthog.apiKey | quote }}
             - name: SENTRY_DSN
               value: {{ .Values.authgear.sentryDSN | quote }}
+            {{- if .Values.authgear.extraVolumeMounts }}
+            volumeMounts:
+            {{- toYaml .Values.authgear.extraVolumeMounts | nindent 12 }}
+            {{- end }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -88,6 +96,10 @@ spec:
           topologySpreadConstraints:
           {{- .Values.authgear.portalServer.topologySpreadConstraints | toYaml | nindent 10 }}
           {{- end }}
+          {{- if .Values.authgear.extraVolumes }}
+          volumes:
+          {{- toYaml .Values.authgear.extraVolumes | nindent 10 }}
+          {{- end }}
           containers:
           - name: authgear-posthog-cronjob
             image: {{ .Values.authgear.portalServer.image | quote }}
@@ -110,4 +122,8 @@ spec:
               value: {{ .Values.authgear.analytic.posthog.apiKey | quote }}
             - name: SENTRY_DSN
               value: {{ .Values.authgear.sentryDSN | quote }}
+            {{- if .Values.authgear.extraVolumeMounts }}
+            volumeMounts:
+            {{- toYaml .Values.authgear.extraVolumeMounts | nindent 12 }}
+            {{- end }}
 {{- end }}
