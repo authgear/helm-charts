@@ -58,9 +58,7 @@ spec:
           - name: authgear-analytic-cronjob-hourly
             image: {{ .Values.authgear.portalServer.image | quote }}
             imagePullPolicy: Always
-            command:
-            - sh
-            - /bin/entrypoint.sh
+            args: ["sh", "/bin/entrypoint.sh"]
             volumeMounts:
             - name: script-configmap-volume
               mountPath: /bin/entrypoint.sh
@@ -165,9 +163,7 @@ spec:
           - name: authgear-analytic-cronjob-weekly
             image: {{ .Values.authgear.portalServer.image | quote }}
             imagePullPolicy: Always
-            command:
-            - sh
-            - /bin/entrypoint.sh
+            args: ["sh", "/bin/entrypoint.sh"]
             volumeMounts:
             - name: script-configmap-volume
               mountPath: /bin/entrypoint.sh
@@ -264,9 +260,7 @@ spec:
           - name: authgear-analytic-cronjob-monthly
             image: {{ .Values.authgear.portalServer.image | quote }}
             imagePullPolicy: Always
-            command:
-            - sh
-            - /bin/entrypoint.sh
+            args: ["sh", "/bin/entrypoint.sh"]
             volumeMounts:
             - name: script-configmap-volume
               mountPath: /bin/entrypoint.sh
@@ -353,9 +347,7 @@ spec:
           - name: authgear-analytic-cronjob-daily
             image: {{ .Values.authgear.portalServer.image | quote }}
             imagePullPolicy: Always
-            command:
-            - sh
-            - /bin/entrypoint.sh
+            args: ["sh", "/bin/entrypoint.sh"]
             volumeMounts:
             - name: script-configmap-volume
               mountPath: /bin/entrypoint.sh

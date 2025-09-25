@@ -59,9 +59,7 @@ spec:
           - name: authgear-usage-record-cronjob
             image: {{ .Values.authgear.portalServer.image | quote }}
             imagePullPolicy: Always
-            command:
-            - sh
-            - /bin/entrypoint.sh
+            args: ["sh", "/bin/entrypoint.sh"]
             volumeMounts:
             - name: script-configmap-volume
               mountPath: /bin/entrypoint.sh
