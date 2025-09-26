@@ -40,7 +40,10 @@ spec:
           - name: authgear-redis-rewriteaof-cronjob
             image: {{ .Values.authgear.redisAutoRewriteAOFCronjob.image | quote }}
             imagePullPolicy: Always
-            command: ["sh", "-c", "redis-cli -u $REDIS_URL BGREWRITEAOF"]
+            command:
+            {{- .Values.authgear.redisAutoRewriteAOFCronjob.command | toYaml | nindent 12 }}
+            args:
+            {{- .Values.authgear.redisAutoRewriteAOFCronjob.args | toYaml | nindent 12 }}
             env:
             - name: REDIS_URL
               value: {{ .Values.authgear.redisURL | quote }}

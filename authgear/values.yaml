@@ -9,6 +9,11 @@ authgear:
     enabled: false
     schedule: "0 3 * * *"
     image: redis:6
+    command:
+    - "sh"
+    - "-c"
+    - "redis-cli -u $REDIS_URL BGREWRITEAOF"
+    args: []
     resources:
       requests:
         cpu: 100m
