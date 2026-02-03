@@ -45,6 +45,14 @@ authgear:
   configSourceType: "database"
   trustProxy: "true"
   logLevel: "info"
+  logging:
+    otlp:
+      enabled: false
+      otlpLogsEndpoint: "" # Required if otlp handler is enabled.
+      logLevel: "" # If not set, fallback to logLevel.
+    console:
+      enabled: true
+      logLevel: "" # If not set, fallback to logLevel.
   sentryDSN: ""
   uiSentryDSN: ""
   portalSentryDSN: ""

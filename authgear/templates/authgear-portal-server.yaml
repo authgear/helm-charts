@@ -225,8 +225,7 @@ spec:
         - name: IMAGES_CDN_HOST
           value: {{ .Values.authgear.imagesServer.cdn.host | quote }}
         {{- end }}
-        - name: LOG_LEVEL
-          value: {{ .Values.authgear.logLevel | quote }}
+        {{- include "authgear.loggingEnv" . | nindent 8 }}
         - name: SENTRY_DSN
           value: {{ .Values.authgear.sentryDSN | quote }}
         - name: PORTAL_FRONTEND_SENTRY_DSN

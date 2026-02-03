@@ -247,3 +247,36 @@ secrets:
 {{- printf "portal.%s" .Values.authgear.defaultDomain }}
 {{- end }}
 {{- end }}
+
+{{/*
+Logging environment variables
+*/}}
+{{- define "authgear.loggingEnv" -}}
+{{- $handlers := list -}}
+{{- if .Values.authgear.logging.console.enabled -}}
+{{- $handlers = append $handlers "console" -}}
+{{- end -}}
+{{- if .Values.authgear.logging.otlp.enabled -}}
+{{- $handlers = append $handlers "otlp" -}}
+{{- end -}}
+- name: LOG_LEVEL
+  value: {{ .Values.authgear.logLevel | quote }}
+- name: LOG_HANDLERS
+  value: {{ join "," $handlers | quote }}
+{{- if .Values.authgear.logging.console.enabled }}
+{{- if .Values.authgear.logging.console.logLevel }}
+- name: LOG_HANDLER_CONSOLE_LEVEL
+  value: {{ .Values.authgear.logging.console.logLevel | quote }}
+{{- end }}
+{{- end }}
+{{- if .Values.authgear.logging.otlp.enabled }}
+{{- if .Values.authgear.logging.otlp.logLevel }}
+- name: LOG_HANDLER_OTLP_LEVEL
+  value: {{ .Values.authgear.logging.otlp.logLevel | quote }}
+{{- end }}
+{{- if .Values.authgear.logging.otlp.otlpLogsEndpoint }}
+- name: LOG_HANDLER_OTLP_ENDPOINT
+  value: {{ .Values.authgear.logging.otlp.otlpLogsEndpoint | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

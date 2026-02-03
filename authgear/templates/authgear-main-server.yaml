@@ -163,8 +163,7 @@ spec:
           value: {{ .Values.authgear.userexport.objectStore.alibabaCloudOSS.secretAccessKey | quote }}
         {{- end }}
         {{- end }}
-        - name: LOG_LEVEL
-          value: {{ .Values.authgear.logLevel | quote }}
+        {{- include "authgear.loggingEnv" . | nindent 8 }}
         - name: SENTRY_DSN
           value: {{ .Values.authgear.sentryDSN | quote }}
         - name: AUTH_UI_SENTRY_DSN
