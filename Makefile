@@ -38,3 +38,7 @@ update-index: check-cr-version
 	git remote set-url origin https://github.com/authgear/helm-charts.git
 	cr index --config ./.cr.yaml --push
 	git remote set-url origin git@github.com:authgear/helm-charts.git
+
+.PHONY: debug
+debug:
+	helm install authgear ./authgear --dry-run --debug
