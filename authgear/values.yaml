@@ -12,8 +12,8 @@ authgear:
     command:
     - "sh"
     - "-c"
+    args:
     - "redis-cli -u $REDIS_URL BGREWRITEAOF"
-    args: []
     resources:
       requests:
         cpu: 100m
