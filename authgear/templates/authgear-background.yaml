@@ -78,7 +78,8 @@ spec:
         - name: SAML_IDP_ENTITY_ID_TEMPLATE
           value: {{ .Values.authgear.saml.idpEntityIDTemplate | quote }}
         {{- end }}
-        {{- range $key, $val := .Values.authgear.mainServer.env }}
+        {{- $env := mergeOverwrite (deepCopy .Values.authgear.mainServer.env) .Values.authgear.background.env }}
+        {{- range $key, $val := $env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}
         {{- end }}

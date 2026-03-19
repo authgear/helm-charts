@@ -37,6 +37,13 @@ spec:
       - name: authgear-deno
         image: {{ .Values.authgear.deno.image | quote }}
         imagePullPolicy: Always
+        {{- if .Values.authgear.deno.env }}
+        env:
+        {{- range $key, $val := .Values.authgear.deno.env }}
+        - name: {{ $key | quote }}
+          value: {{ $val | quote }}
+        {{- end }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 8090

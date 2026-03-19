@@ -269,6 +269,7 @@ authgear:
 
   adminServer:
     replicas: 1
+    env: {}
     nodeSelector: {}
     nodeName: ""
     affinity: {}
@@ -307,6 +308,7 @@ authgear:
 
   resolverServer:
     replicas: 1
+    env: {}
     nodeSelector: {}
     nodeName: ""
     affinity: {}
@@ -345,6 +347,7 @@ authgear:
 
   background:
     replicas: 1
+    env: {}
     nodeSelector: {}
     nodeName: ""
     affinity: {}
@@ -489,6 +492,7 @@ authgear:
   deno:
     image: __replace_me__
     replicas: 1
+    env: {}
     nodeSelector: {}
     nodeName: ""
     affinity: {}

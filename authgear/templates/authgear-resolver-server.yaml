@@ -131,7 +131,8 @@ spec:
         - name: APP_HOST_SUFFIXES
           value: {{ join "," $suffixes | quote }}
         {{- end }}
-        {{- range $key, $val := .Values.authgear.mainServer.env }}
+        {{- $env := mergeOverwrite (deepCopy .Values.authgear.mainServer.env) .Values.authgear.resolverServer.env }}
+        {{- range $key, $val := $env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}
         {{- end }}
