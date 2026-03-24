@@ -72,6 +72,15 @@ app.kubernetes.io/name: {{ include "authgear.namePortal" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "authgear.nameSiteadmin" -}}
+{{- printf "%s-%s" .Release.Name "siteadmin" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.siteadminSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "authgear.nameSiteadmin" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
 {{- define "authgear.nameUsageRecordCron" -}}
 {{- printf "%s-%s" .Release.Name "usage-record-cron" | trunc 63 | trimSuffix "-" }}
 {{- end }}

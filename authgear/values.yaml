@@ -427,6 +427,51 @@ authgear:
   portalServerProxy:
     image: nginx:1.18
 
+  siteadminServer:
+    enabled: false
+    replicas: 1
+    corsAllowedOrigins: ""
+    authgear:
+      appID: __replace_me__
+      clientID: __replace_me__
+      endpoint: https://__replace_me__.example.com
+    env: {}
+    nodeSelector: {}
+    nodeName: ""
+    affinity: {}
+    tolerations: []
+    topologySpreadConstraints: []
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: siteadmin
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: siteadmin
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 1000
+            type: Utilization
+        type: Resource
+
   portalServer:
     image: __replace_me__
     replicas: 1

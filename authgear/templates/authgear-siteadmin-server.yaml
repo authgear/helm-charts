@@ -1,0 +1,132 @@
+{{- if .Values.authgear.siteadminServer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authgear.nameSiteadmin" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.authgear.siteadminServer.replicas }}
+  selector:
+    matchLabels:
+      {{- include "authgear.siteadminSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.siteadminSelectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.authgear.siteadminServer.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.siteadminServer.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminServer.nodeName }}
+      nodeName: {{ .Values.authgear.siteadminServer.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminServer.affinity }}
+      affinity:
+        {{- .Values.authgear.siteadminServer.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminServer.tolerations }}
+      tolerations:
+      {{- .Values.authgear.siteadminServer.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminServer.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.siteadminServer.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: authgear-siteadmin-server
+        image: {{ .Values.authgear.portalServer.image | quote }}
+        imagePullPolicy: Always
+        args: ["authgear-portal", "start", "siteadmin"]
+        env:
+        - name: DATABASE_URL
+          value: {{ .Values.authgear.databaseURL | quote }}
+        - name: DATABASE_SCHEMA
+          value: {{ .Values.authgear.databaseSchema | quote }}
+        - name: REDIS_URL
+          value: {{ .Values.authgear.redisURL | quote }}
+        - name: TRUST_PROXY
+          value: {{ .Values.authgear.trustProxy | quote }}
+        - name: SENTRY_DSN
+          value: {{ .Values.authgear.sentryDSN | quote }}
+        - name: CONFIG_SOURCE_TYPE
+          value: {{ .Values.authgear.configSourceType | quote }}
+        - name: CONFIG_SOURCE_KUBE_NAMESPACE
+          value: {{ .Values.authgear.appNamespace | quote }}
+        - name: AUTHGEAR_APP_ID
+          value: {{ .Values.authgear.siteadminServer.authgear.appID | quote }}
+        - name: AUTHGEAR_CLIENT_ID
+          value: {{ .Values.authgear.siteadminServer.authgear.clientID | quote }}
+        - name: AUTHGEAR_ENDPOINT
+          value: {{ .Values.authgear.siteadminServer.authgear.endpoint | quote }}
+        - name: CORS_ALLOWED_ORIGINS
+          value: {{ .Values.authgear.siteadminServer.corsAllowedOrigins | quote }}
+        {{- include "authgear.loggingEnv" . | nindent 8 }}
+        {{- range $key, $val := .Values.authgear.siteadminServer.env }}
+        - name: {{ $key | quote }}
+          value: {{ $val | quote }}
+        {{- end }}
+        ports:
+        - name: siteadmin
+          containerPort: 3005
+          protocol: TCP
+        livenessProbe:
+          {{- toYaml .Values.authgear.siteadminServer.livenessProbe | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .Values.authgear.siteadminServer.readinessProbe | nindent 10 }}
+        resources:
+          {{- toYaml .Values.authgear.siteadminServer.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "authgear.nameSiteadmin" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 80
+    targetPort: siteadmin
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "authgear.siteadminSelectorLabels" . | nindent 4 }}
+{{- if .Values.authgear.siteadminServer.pdb.enabled }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "authgear.nameSiteadmin" . | quote }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "authgear.siteadminSelectorLabels" . | nindent 6 }}
+  {{- if .Values.authgear.siteadminServer.pdb.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ .Values.authgear.siteadminServer.pdb.unhealthyPodEvictionPolicy | quote }}
+  {{- end }}
+  {{- if .Values.authgear.siteadminServer.pdb.minAvailable }}
+  minAvailable: {{ .Values.authgear.siteadminServer.pdb.minAvailable }}
+  {{- else if .Values.authgear.siteadminServer.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.authgear.siteadminServer.pdb.maxUnavailable }}
+  {{- else }}
+  {{ fail ".Values.authgear.siteadminServer.pdb has invalid configuration" }}
+  {{- end }}
+{{- end }}
+{{- if .Values.authgear.siteadminServer.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "authgear.nameSiteadmin" . | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.siteadminServer.replicas }}
+  maxReplicas: {{ .Values.authgear.siteadminServer.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "authgear.nameSiteadmin" . | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.siteadminServer.hpa.metrics | nindent 4 }}
+{{- end }}
+{{- end }}
