@@ -1,0 +1,66 @@
+{{- if .Values.authgear.siteadminServer.enabled }}
+
+{{- $siteadminSecretName := include "authgear.nameSiteadmin" . }}
+{{- if .Values.authgear.tls.siteadmin.secretName }}
+{{- $siteadminSecretName = .Values.authgear.tls.siteadmin.secretName }}
+{{- end }}
+
+{{- if .Values.authgear.ingress.enabled }}
+
+{{- if .Values.authgear.tls.siteadmin.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "authgear.nameSiteadmin" . | quote }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
+    {{- with $.Values.authgear.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with $.Values.authgear.tls.siteadmin.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.authgear.tls.siteadmin.ingress.tls.enabled }}
+  tls:
+  - secretName: {{ $siteadminSecretName | quote }}
+    hosts:
+    - {{ include "authgear.siteadminHost" . | quote }}
+  {{- end }}
+  rules:
+  - host: {{ include "authgear.siteadminHost" . | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "authgear.nameSiteadmin" . | quote }}
+            port:
+              name: http
+{{- end }}
+
+{{- if .Values.authgear.certManager.enabled }}
+{{- if .Values.authgear.tls.siteadmin.certManager.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "authgear.nameSiteadmin" . | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  secretName: {{ $siteadminSecretName | quote }}
+  dnsNames:
+  - {{ include "authgear.siteadminHost" . | quote }}
+  issuerRef:
+    name: {{ .Values.authgear.certManager.issuer.http01.name | quote }}
+    kind: {{ .Values.authgear.certManager.issuer.http01.kind | quote }}
+    group: {{ .Values.authgear.certManager.issuer.http01.group | quote }}
+{{- end }}
+{{- end }}
+
+{{- end }}
+{{- end }}

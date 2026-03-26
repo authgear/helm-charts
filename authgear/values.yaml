@@ -94,6 +94,15 @@ authgear:
       certManager:
         enabled: true
       secretName: ""
+    siteadmin:
+      ingress:
+        enabled: true
+        tls:
+          enabled: true
+        annotations: {}
+      certManager:
+        enabled: true
+      secretName: ""
 
   defaultDomain: ""
   allDefaultDomains: []
@@ -430,6 +439,7 @@ authgear:
   siteadminServer:
     enabled: false
     replicas: 1
+    host: ""
     corsAllowedOrigins: ""
     authgear:
       appID: __replace_me__

@@ -81,6 +81,14 @@ app.kubernetes.io/name: {{ include "authgear.nameSiteadmin" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "authgear.siteadminHost" -}}
+{{- if .Values.authgear.siteadminServer.host }}
+{{- .Values.authgear.siteadminServer.host }}
+{{- else }}
+{{- printf "siteadmin.%s" .Values.authgear.defaultDomain }}
+{{- end }}
+{{- end }}
+
 {{- define "authgear.nameUsageRecordCron" -}}
 {{- printf "%s-%s" .Release.Name "usage-record-cron" | trunc 63 | trimSuffix "-" }}
 {{- end }}
