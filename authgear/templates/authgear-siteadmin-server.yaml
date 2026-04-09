@@ -54,12 +54,14 @@ spec:
           value: {{ .Values.authgear.configSourceType | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
           value: {{ .Values.authgear.appNamespace | quote }}
-        - name: AUTHGEAR_APP_ID
+        - name: SITEADMIN_AUTHGEAR_APP_ID
           value: {{ .Values.authgear.siteadminServer.authgear.appID | quote }}
-        - name: AUTHGEAR_CLIENT_ID
+        - name: SITEADMIN_AUTHGEAR_CLIENT_ID
           value: {{ .Values.authgear.siteadminServer.authgear.clientID | quote }}
-        - name: AUTHGEAR_ENDPOINT
+        - name: SITEADMIN_AUTHGEAR_ENDPOINT
           value: {{ .Values.authgear.siteadminServer.authgear.endpoint | quote }}
+        - name: SITEADMIN_AUTHGEAR_WEB_SDK_SESSION_TYPE
+          value: {{ .Values.authgear.siteadminServer.authgear.webSDKSessionType | quote }}
         - name: CORS_ALLOWED_ORIGINS
           value: {{ .Values.authgear.siteadminServer.corsAllowedOrigins | quote }}
         {{- include "authgear.loggingEnv" . | nindent 8 }}

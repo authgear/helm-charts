@@ -445,6 +445,7 @@ authgear:
       appID: __replace_me__
       clientID: __replace_me__
       endpoint: https://__replace_me__.example.com
+      webSDKSessionType: refresh_token
     env: {}
     nodeSelector: {}
     nodeName: ""
