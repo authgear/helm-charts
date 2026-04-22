@@ -34,11 +34,21 @@ spec:
       topologySpreadConstraints:
       {{- .Values.authgear.siteadminServer.topologySpreadConstraints | toYaml | nindent 6 }}
       {{- end }}
+      {{- if .Values.authgear.appCustomResources.path }}
+      volumes:
+      - name: app-custom-resources
+        {{- toYaml .Values.authgear.appCustomResources.volume | nindent 8 }}
+      {{- end }}
       containers:
       - name: authgear-siteadmin-server
         image: {{ .Values.authgear.portalServer.image | quote }}
         imagePullPolicy: Always
         args: ["authgear-portal", "start", "siteadmin"]
+        {{- if .Values.authgear.appCustomResources.path }}
+        volumeMounts:
+        - name: app-custom-resources
+          mountPath: {{ .Values.authgear.appCustomResources.path | quote }}
+        {{- end }}
         env:
         - name: DATABASE_URL
           value: {{ .Values.authgear.databaseURL | quote }}
@@ -46,12 +56,18 @@ spec:
           value: {{ .Values.authgear.databaseSchema | quote }}
         - name: REDIS_URL
           value: {{ .Values.authgear.redisURL | quote }}
+        - name: AUDIT_DATABASE_URL
+          value: {{ .Values.authgear.auditLog.databaseURL | quote }}
+        - name: AUDIT_DATABASE_SCHEMA
+          value: {{ .Values.authgear.auditLog.databaseSchema | quote }}
         - name: TRUST_PROXY
           value: {{ .Values.authgear.trustProxy | quote }}
         - name: SENTRY_DSN
           value: {{ .Values.authgear.sentryDSN | quote }}
         - name: CONFIG_SOURCE_TYPE
           value: {{ .Values.authgear.configSourceType | quote }}
+        - name: APP_CUSTOM_RESOURCE_DIRECTORY
+          value: {{ .Values.authgear.appCustomResources.path | quote }}
         - name: CONFIG_SOURCE_KUBE_NAMESPACE
           value: {{ .Values.authgear.appNamespace | quote }}
         - name: SITEADMIN_AUTHGEAR_APP_ID
@@ -64,6 +80,10 @@ spec:
           value: {{ .Values.authgear.siteadminServer.authgear.webSDKSessionType | quote }}
         - name: CORS_ALLOWED_ORIGINS
           value: {{ .Values.authgear.siteadminServer.corsAllowedOrigins | quote }}
+        - name: ADMIN_API_ENDPOINT
+          value: {{ .Values.authgear.portalServer.adminAPI.endpoint | quote }}
+        - name: APP_HOST_SUFFIX
+          value: {{ printf ".%s" .Values.authgear.defaultDomain | quote }}
         {{- include "authgear.loggingEnv" . | nindent 8 }}
         {{- range $key, $val := .Values.authgear.siteadminServer.env }}
         - name: {{ $key | quote }}
