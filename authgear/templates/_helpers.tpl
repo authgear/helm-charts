@@ -81,6 +81,15 @@ app.kubernetes.io/name: {{ include "authgear.nameSiteadmin" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "authgear.nameSiteadminPortal" -}}
+{{- printf "%s-%s" .Release.Name "siteadmin-portal" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "authgear.siteadminPortalSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "authgear.nameSiteadminPortal" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
 {{- define "authgear.siteadminHost" -}}
 {{- if .Values.authgear.siteadminServer.host }}
 {{- .Values.authgear.siteadminServer.host }}

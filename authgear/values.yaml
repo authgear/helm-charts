@@ -483,6 +483,48 @@ authgear:
             type: Utilization
         type: Resource
 
+  siteadminPortal:
+    enabled: false
+    image: __replace_me__
+    replicas: 1
+    externalURL: ""
+    env: {}
+    nodeSelector: {}
+    nodeName: ""
+    affinity: {}
+    tolerations: []
+    topologySpreadConstraints: []
+    resources:
+      requests:
+        cpu: 50m
+        memory: 32Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+    livenessProbe:
+      httpGet:
+        path: /
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /
+        port: http
+    pdb:
+      enabled: false
+      minAvailable: ""
+      maxUnavailable: ""
+      unhealthyPodEvictionPolicy: ""
+    hpa:
+      enabled: false
+      maxReplicas: 1
+      metrics:
+      - resource:
+          name: cpu
+          target:
+            averageUtilization: 1000
+            type: Utilization
+        type: Resource
+
   portalServer:
     image: __replace_me__
     replicas: 1
