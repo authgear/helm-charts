@@ -275,6 +275,32 @@ secrets:
 {{- end }}
 
 {{/*
+OpenTelemetry (metrics and traces) environment variables
+*/}}
+{{- define "authgear.otelEnv" -}}
+{{- if .Values.authgear.otel.serviceName }}
+- name: OTEL_SERVICE_NAME
+  value: {{ .Values.authgear.otel.serviceName | quote }}
+{{- end }}
+{{- if .Values.authgear.metrics.otlp.enabled }}
+- name: OTEL_METRICS_EXPORTER
+  value: "otlp"
+- name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+  value: {{ .Values.authgear.metrics.otlp.endpoint | quote }}
+{{- if .Values.authgear.metrics.otlp.exportInterval }}
+- name: OTEL_METRIC_EXPORT_INTERVAL
+  value: {{ .Values.authgear.metrics.otlp.exportInterval | quote }}
+{{- end }}
+{{- end }}
+{{- if .Values.authgear.traces.otlp.enabled }}
+- name: OTEL_TRACES_EXPORTER
+  value: "otlp"
+- name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+  value: {{ .Values.authgear.traces.otlp.endpoint | quote }}
+{{- end }}
+{{- end }}
+
+{{/*
 Logging environment variables
 */}}
 {{- define "authgear.loggingEnv" -}}

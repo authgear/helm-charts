@@ -98,6 +98,7 @@ spec:
           value: {{ .Values.authgear.imagesServer.cdn.host | quote }}
         {{- end }}
         {{- include "authgear.loggingEnv" . | nindent 8 }}
+        {{- include "authgear.otelEnv" . | nindent 8 }}
         - name: SENTRY_DSN
           value: {{ .Values.authgear.sentryDSN | quote }}
         - name: CONFIG_SOURCE_TYPE
