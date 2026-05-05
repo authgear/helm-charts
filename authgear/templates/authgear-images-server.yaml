@@ -146,6 +146,16 @@ spec:
         - name: IMAGES_OBJECT_STORE_ALIBABA_CLOUD_OSS_SECRET_ACCESS_KEY
           value: {{ .Values.authgear.imagesServer.objectStore.alibabaCloudOSS.secretAccessKey | quote }}
         {{- end }}
+        {{- if eq .Values.authgear.imagesServer.objectStore.type "MINIO" }}
+        - name: IMAGES_OBJECT_STORE_MINIO_ENDPOINT
+          value: {{ .Values.authgear.imagesServer.objectStore.minio.endpoint | quote }}
+        - name: IMAGES_OBJECT_STORE_MINIO_BUCKET_NAME
+          value: {{ .Values.authgear.imagesServer.objectStore.minio.bucketName | quote }}
+        - name: IMAGES_OBJECT_STORE_MINIO_ACCESS_KEY_ID
+          value: {{ .Values.authgear.imagesServer.objectStore.minio.accessKeyID | quote }}
+        - name: IMAGES_OBJECT_STORE_MINIO_SECRET_ACCESS_KEY
+          value: {{ .Values.authgear.imagesServer.objectStore.minio.secretAccessKey | quote }}
+        {{- end }}
         {{- range $key, $val := .Values.authgear.imagesServer.env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}

@@ -233,6 +233,11 @@ authgear:
         region: ""
         accessKeyID: ""
         secretAccessKey: ""
+      minio:
+        endpoint: ""
+        bucketName: ""
+        accessKeyID: ""
+        secretAccessKey: ""
 
   mainServer:
     image: __replace_me__
@@ -393,6 +398,11 @@ authgear:
       alibabaCloudOSS:
         bucketName: ""
         region: ""
+        accessKeyID: ""
+        secretAccessKey: ""
+      minio:
+        endpoint: ""
+        bucketName: ""
         accessKeyID: ""
         secretAccessKey: ""
 
