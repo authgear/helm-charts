@@ -1,4 +1,9 @@
 {{- if .Values.authgear.siteadminServer.enabled }}
+{{- $siteadminPortalName := include "authgear.nameSiteadminPortal" . }}
+{{- $siteadminExternalURL := .Values.authgear.siteadminPortal.externalURL }}
+{{- if not $siteadminExternalURL }}
+{{- $siteadminExternalURL = printf "https://%s" (include "authgear.siteadminHost" .) }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -150,5 +155,124 @@ spec:
     name: {{ include "authgear.nameSiteadmin" . | quote }}
   metrics:
     {{- toYaml .Values.authgear.siteadminServer.hpa.metrics | nindent 4 }}
+{{- end }}
+{{- if .Values.authgear.siteadminPortal.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $siteadminPortalName | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.authgear.siteadminPortal.replicas }}
+  selector:
+    matchLabels:
+      {{- include "authgear.siteadminPortalSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "authgear.siteadminPortalSelectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.authgear.siteadminPortal.nodeSelector }}
+      nodeSelector:
+        {{- .Values.authgear.siteadminPortal.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminPortal.nodeName }}
+      nodeName: {{ .Values.authgear.siteadminPortal.nodeName | quote }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminPortal.affinity }}
+      affinity:
+        {{- .Values.authgear.siteadminPortal.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminPortal.tolerations }}
+      tolerations:
+      {{- .Values.authgear.siteadminPortal.tolerations | toYaml | nindent 6 }}
+      {{- end }}
+      {{- if .Values.authgear.siteadminPortal.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- .Values.authgear.siteadminPortal.topologySpreadConstraints | toYaml | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: authgear-siteadmin-portal
+        image: {{ .Values.authgear.siteadminPortal.image | quote }}
+        imagePullPolicy: Always
+        env:
+        - name: VITE_AUTHGEAR_ENDPOINT
+          value: {{ .Values.authgear.siteadminServer.authgear.endpoint | quote }}
+        - name: VITE_AUTHGEAR_CLIENT_ID
+          value: {{ .Values.authgear.siteadminServer.authgear.clientID | quote }}
+        - name: VITE_AUTHGEAR_REDIRECT_URL
+          value: {{ printf "%s/auth-redirect" $siteadminExternalURL | quote }}
+        - name: VITE_PORTAL_URL
+          value: {{ include "authgear.portalHost" . | quote }}
+        - name: VITE_SITEADMIN_API_URL
+          value: {{ $siteadminExternalURL | quote }}
+        {{- range $key, $val := .Values.authgear.siteadminPortal.env }}
+        - name: {{ $key | quote }}
+          value: {{ $val | quote }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          {{- toYaml .Values.authgear.siteadminPortal.livenessProbe | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .Values.authgear.siteadminPortal.readinessProbe | nindent 10 }}
+        resources:
+          {{- toYaml .Values.authgear.siteadminPortal.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $siteadminPortalName | quote }}
+  labels:
+    {{- include "authgear.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "authgear.siteadminPortalSelectorLabels" . | nindent 4 }}
+{{- if .Values.authgear.siteadminPortal.pdb.enabled }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $siteadminPortalName | quote }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "authgear.siteadminPortalSelectorLabels" . | nindent 6 }}
+  {{- if .Values.authgear.siteadminPortal.pdb.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ .Values.authgear.siteadminPortal.pdb.unhealthyPodEvictionPolicy | quote }}
+  {{- end }}
+  {{- if .Values.authgear.siteadminPortal.pdb.minAvailable }}
+  minAvailable: {{ .Values.authgear.siteadminPortal.pdb.minAvailable }}
+  {{- else if .Values.authgear.siteadminPortal.pdb.maxUnavailable }}
+  maxUnavailable: {{ .Values.authgear.siteadminPortal.pdb.maxUnavailable }}
+  {{- else }}
+  {{ fail ".Values.authgear.siteadminPortal.pdb has invalid configuration" }}
+  {{- end }}
+{{- end }}
+{{- if .Values.authgear.siteadminPortal.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $siteadminPortalName | quote }}
+spec:
+  minReplicas: {{ .Values.authgear.siteadminPortal.replicas }}
+  maxReplicas: {{ .Values.authgear.siteadminPortal.hpa.maxReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $siteadminPortalName | quote }}
+  metrics:
+    {{- toYaml .Values.authgear.siteadminPortal.hpa.metrics | nindent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}

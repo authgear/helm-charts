@@ -33,6 +33,22 @@ spec:
   - host: {{ include "authgear.siteadminHost" . | quote }}
     http:
       paths:
+      {{- if .Values.authgear.siteadminPortal.enabled }}
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "authgear.nameSiteadmin" . | quote }}
+            port:
+              name: http
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "authgear.nameSiteadminPortal" . | quote }}
+            port:
+              name: http
+      {{- else }}
       - path: /
         pathType: ImplementationSpecific
         backend:
@@ -40,6 +56,7 @@ spec:
             name: {{ include "authgear.nameSiteadmin" . | quote }}
             port:
               name: http
+      {{- end }}
 {{- end }}
 
 {{- if .Values.authgear.certManager.enabled }}
