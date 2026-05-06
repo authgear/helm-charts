@@ -45,6 +45,13 @@ authgear:
   configSourceType: "database"
   trustProxy: "true"
   logLevel: "info"
+  sentryDSN: ""
+  uiSentryDSN: ""
+  portalSentryDSN: ""
+
+  otel:
+    serviceName: "authgear"
+
   logging:
     otlp:
       enabled: false
@@ -53,9 +60,17 @@ authgear:
     console:
       enabled: true
       logLevel: "" # If not set, fallback to logLevel.
-  sentryDSN: ""
-  uiSentryDSN: ""
-  portalSentryDSN: ""
+
+  metrics:
+    otlp:
+      enabled: false
+      endpoint: "" # Required if otlp is enabled.
+      exportInterval: "15000" # In milliseconds. e.g. "15000"
+
+  traces:
+    otlp:
+      enabled: false
+      endpoint: "" # Required if otlp is enabled.
 
   ingress:
     enabled: true
@@ -233,6 +248,11 @@ authgear:
         region: ""
         accessKeyID: ""
         secretAccessKey: ""
+      minio:
+        endpoint: ""
+        bucketName: ""
+        accessKeyID: ""
+        secretAccessKey: ""
 
   mainServer:
     image: __replace_me__
@@ -393,6 +413,11 @@ authgear:
       alibabaCloudOSS:
         bucketName: ""
         region: ""
+        accessKeyID: ""
+        secretAccessKey: ""
+      minio:
+        endpoint: ""
+        bucketName: ""
         accessKeyID: ""
         secretAccessKey: ""
 

@@ -90,6 +90,7 @@ spec:
         - name: APP_HOST_SUFFIX
           value: {{ printf ".%s" .Values.authgear.defaultDomain | quote }}
         {{- include "authgear.loggingEnv" . | nindent 8 }}
+        {{- include "authgear.otelEnv" . | nindent 8 }}
         {{- range $key, $val := .Values.authgear.siteadminServer.env }}
         - name: {{ $key | quote }}
           value: {{ $val | quote }}
