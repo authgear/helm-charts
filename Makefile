@@ -24,7 +24,7 @@ check-cr-version:
 upload-release: check-cr-version
 	rm -rf .deploy
 	cr package authgear --package-path .deploy
-	cr upload --config ./.cr.yaml --package-path .deploy --skip-existing
+	cr upload --config ./.cr.yaml --package-path .deploy --skip-existing --commit $$(git rev-parse HEAD)
 
 # cr has the following conventions
 # 1. The remote is named "origin".
