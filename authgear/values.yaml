@@ -65,7 +65,7 @@ authgear:
     otlp:
       enabled: false
       endpoint: "" # Required if otlp is enabled.
-      exportInterval: "" # In milliseconds. e.g. "15000"
+      exportInterval: "15000" # In milliseconds. e.g. "15000"
 
   traces:
     otlp:
