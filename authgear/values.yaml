@@ -1,10 +1,17 @@
 authgear:
+  # -- Kubernetes namespace where authgear app resources are created
   appNamespace: "authgear-apps"
 
+  # -- PostgreSQL connection URL for the main authgear database
+  # Format: postgres://<user>:<password>@<host>:<port>/<dbname>
   databaseURL: postgres://localhost
+  # -- PostgreSQL schema where authgear tables reside (typically "public")
   databaseSchema: public
 
+  # -- Redis connection URL for sessions, caching, and jobs
+  # Format: redis://[:<password>@]<host>:<port>/<db>
   redisURL: redis://localhost
+  # -- Periodically optimize Redis AOF (append-only file) file to reduce disk usage
   redisAutoRewriteAOFCronjob:
     enabled: false
     schedule: "0 3 * * *"
@@ -23,27 +30,34 @@ authgear:
         memory: 64Mi
 
   saml:
-    # The default is "urn:{{.app_id}}.localhost"
+    # -- SAML identity provider entity ID template. The default is "urn:{{.app_id}}.localhost"
+    # Use {{.app_id}} as placeholder which will be replaced with the actual app ID
     idpEntityIDTemplate: ""
 
   stripe:
+    # -- Stripe API secret key (optional, only needed if using Stripe integration)
     secretKey: ""
+    # -- Stripe webhook signing key for verifying webhook authenticity
     webhookSigningKey: ""
     cronjob:
+      # -- Enable cronjob for Stripe synchronization (runs after usage record cronjob)
       enabled: false
-      # Stripe cronjob runs after usage record cronjob.
       schedule: "0 3 * * *"
 
   usageRecord:
     whatsapp:
-      # whatsapp-sent or whatsapp-otp-verified
+      # -- WhatsApp usage event type: "whatsapp-sent" (message sent) or "whatsapp-otp-verified" (OTP verified)
       event: "whatsapp-sent"
     cronjob:
+      # -- Enable scheduled synchronization of usage records (e.g., for billing)
       enabled: false
       schedule: "0 2 * * *"
 
+  # -- Configuration source: "database" (multi-tenant) or "local_fs" (single project)
   configSourceType: "database"
+  # -- Trust X-Forwarded-* headers from proxy (set to "true" when behind reverse proxy/load balancer)
   trustProxy: "true"
+  # -- Global log level: debug, info, warn, error
   logLevel: "info"
   sentryDSN: ""
   uiSentryDSN: ""
@@ -54,256 +68,489 @@ authgear:
 
   logging:
     otlp:
+      # -- Enable OpenTelemetry Protocol (OTLP) log export for observability
       enabled: false
-      otlpLogsEndpoint: "" # Required if otlp handler is enabled.
-      logLevel: "" # If not set, fallback to logLevel.
+      # -- OTLP endpoint for sending logs (required if otlp.enabled is true)
+      otlpLogsEndpoint: ""
+      # -- Log level override for OTLP (falls back to global logLevel if not set)
+      logLevel: ""
     console:
+      # -- Enable console/stdout logging
       enabled: true
-      logLevel: "" # If not set, fallback to logLevel.
+      # -- Log level override for console output (falls back to global logLevel if not set)
+      logLevel: ""
 
+  # -- Metrics collection and export via OpenTelemetry Protocol (OTLP)
   metrics:
+    # -- OpenTelemetry Protocol (OTLP) metrics export configuration
     otlp:
+      # -- Enable OpenTelemetry metrics export for observability (requires otlpMetricsEndpoint if enabled)
       enabled: false
-      endpoint: "" # Required if otlp is enabled.
-      exportInterval: "15000" # In milliseconds. e.g. "15000"
+      # -- OTLP collector HTTP endpoint for sending metrics (e.g., http://otel-collector:4318)
+      endpoint: ""
+      # -- Metrics export interval in milliseconds (e.g., "15000" = 15 seconds)
+      exportInterval: "15000"
 
+  # -- Distributed traces collection and export via OpenTelemetry Protocol (OTLP)
   traces:
+    # -- OpenTelemetry Protocol (OTLP) traces export configuration
     otlp:
+      # -- Enable OpenTelemetry traces export for distributed tracing (requires otlpTracesEndpoint if enabled)
       enabled: false
-      endpoint: "" # Required if otlp is enabled.
+      # -- OTLP collector HTTP endpoint for sending traces (e.g., http://otel-collector:4318)
 
+  # -- Sentry DSN for error tracking in main server (optional)
+  sentryDSN: ""
+  # -- Sentry DSN for error tracking in UI/frontend (optional)
+  uiSentryDSN: ""
+  # -- Sentry DSN for error tracking in portal (optional)
+  portalSentryDSN: ""
+
+  # -- Global ingress configuration for all Authgear services
+  # nginx is the default; to use a different controller update class and replace annotations
   ingress:
+    # -- Enable Kubernetes ingress resources
     enabled: true
+    # -- Ingress controller class (default: nginx; change for traefik, etc.)
     class: nginx
+    # -- Global ingress annotations (controller-specific configuration)
     annotations:
+      # -- Maximum request body size for file uploads (nginx annotation)
       nginx.ingress.kubernetes.io/proxy-body-size: 10m
 
+  # -- cert-manager integration for automatic TLS certificate provisioning
+  # Enabled by default. Requires cert-manager to be installed in the cluster and issuer names configured.
   certManager:
+    # -- Enable automatic TLS certificate management via cert-manager (requires cert-manager installed)
     enabled: true
+    # -- ACME challenge issuer configuration (cert-manager ClusterIssuer or Issuer resources)
     issuer:
+      # -- DNS01 challenge issuer for wildcard domain certificates (*.domain.com)
+      # Used by: allDefaultDomains entries (wildcard app domains)
+      # Requires DNS API access to create validation records (Google Cloud DNS, Route53, Azure DNS, etc.)
+      # Example names: letsencrypt-googleclouddns, letsencrypt-route53, etc.
       dns01:
+        # -- ClusterIssuer or Issuer resource name
         name: __replace_me__
+        # -- Kind: ClusterIssuer (cluster-wide) or Issuer (namespace-scoped)
         kind: Issuer
+        # -- Issuer API group (cert-manager.io for standard installations)
         group: cert-manager.io
+      # -- HTTP01 challenge issuer for single-host certificates (non-wildcard)
+      # Used by: portal frontend, portal's authgear endpoint, custom app domains
+      # Requires public HTTP:80 access to the domain (ingress controller listens on port 80)
+      # Example names: letsencrypt-http01, etc.
       http01:
+        # -- ClusterIssuer or Issuer resource name
         name: __replace_me__
+        # -- Kind: ClusterIssuer (cluster-wide) or Issuer (namespace-scoped)
         kind: Issuer
+        # -- Issuer API group (cert-manager.io for standard installations)
         group: cert-manager.io
 
+  # -- Per-component TLS certificate configuration
+  # Each component can use manual Secrets (default) or auto-provisioned certs via cert-manager
+  # Manually created Secrets must be named in secretName and exist in the authgear namespace
   tls:
+    # -- Portal frontend server TLS (e.g., portal.example.com)
+    # Uses HTTP01 challenge (requires public HTTP:80 access)
     portal:
+      # -- Ingress configuration for portal frontend
       ingress:
+        # -- Enable ingress for portal
         enabled: true
+        # -- Enable TLS termination on ingress
         tls:
           enabled: true
+        # -- Portal ingress annotations (ingress class-specific, e.g., nginx annotations)
         annotations: {}
+      # -- cert-manager configuration for portal (overrides global certManager if specified)
       certManager:
+        # -- Enable automatic certificate provisioning for portal (uses HTTP01 issuer)
         enabled: true
-      secretname: ""
+      # -- Kubernetes TLS Secret name (must exist in authgear namespace)
+      # Required when certManager.enabled is false
+      secretName: ""
+    # -- Portal's own Authgear endpoint TLS (e.g., accounts.portal.example.com)
+    # The portal uses Authgear itself for admin authentication
+    # Uses HTTP01 challenge (requires public HTTP:80 access)
     portalAuthgear:
+      # -- Ingress configuration for portal's Authgear endpoint
       ingress:
+        # -- Enable ingress for portal Authgear endpoint
         enabled: true
+        # -- Enable TLS termination on ingress
         tls:
           enabled: true
+        # -- Portal Authgear ingress annotations
         annotations: {}
+      # -- cert-manager configuration for portal Authgear (overrides global certManager if specified)
       certManager:
+        # -- Enable automatic certificate provisioning for portal Authgear (uses HTTP01 issuer)
         enabled: true
+      # -- Kubernetes TLS Secret name (must exist in authgear namespace)
+      # Required when certManager.enabled is false
       secretName: ""
+    # -- Siteadmin server TLS configuration (optional)
+    # Only relevant if siteadminServer.enabled is true
+    # Uses HTTP01 challenge (requires public HTTP:80 access)
     siteadmin:
+      # -- Ingress configuration for siteadmin
       ingress:
+        # -- Enable ingress for siteadmin
         enabled: true
+        # -- Enable TLS termination on ingress
         tls:
           enabled: true
+        # -- Siteadmin ingress annotations
         annotations: {}
+      # -- cert-manager configuration for siteadmin (overrides global certManager if specified)
       certManager:
+        # -- Enable automatic certificate provisioning for siteadmin (uses HTTP01 issuer)
         enabled: true
+      # -- Kubernetes TLS Secret name (must exist in authgear namespace)
+      # Required when certManager.enabled is false
       secretName: ""
 
+  # -- Primary domain for Authgear (e.g., authgear.example.com)
+  # This is used as the default domain suffix for all apps (e.g., app1.authgear.example.com)
+  # Wildcard certificate covers *.authgear.example.com
   defaultDomain: ""
+  # -- List of additional wildcard domains and their configurations
+  # Each domain creates a wildcard Ingress (*.domain.com) for multi-tenant app hosting.
+  # Useful for multi-domain deployments with different domain names.
+  # A single wildcard certificate can be reused by setting the same secretName.
   allDefaultDomains: []
-  #- domain: ""
-  #  ingress:
-  #    enabled: true
-  #    tls:
-  #      enabled: true
-  #    annotations: {}
-  #  certManager:
-  #    enabled: true
-  #    issuer:
-  #     name: __replace_me__
-  #     kind: Issuer
-  #     group: cert-manager.io
-  #  secretName: ""
+  # -- Example: single domain with wildcard certificate (*.authgear.example.com)
+  # - domain: "authgear.example.com"
+  #   ingress:
+  #     enabled: true
+  #     tls:
+  #       enabled: true
+  #     annotations: {}
+  #   # Wildcard domains use DNS01 issuer (requires DNS API access)
+  #   certManager:
+  #     enabled: true
+  #     # Optional: override global dns01 issuer for this domain
+  #     # If not set, uses global certManager.issuer.dns01
+  #     issuer:
+  #       name: __replace_me__
+  #       kind: Issuer
+  #       group: cert-manager.io
+  #   # TLS Secret name: must exist in authgear namespace (when not using cert-manager)
+  #   # For wildcard *.authgear.example.com, name typically: tls-star-authgear-example-com
+  #   secretName: "tls-star-authgear-example-com"
 
+  # -- SMTP configuration for email sending (transactional emails, password resets, etc.)
   smtp:
+    # -- SMTP server hostname (required)
     host: __replace_me__
+    # -- SMTP server port (typically 587 for STARTTLS, 465 for TLS, 25 for plain)
     port: 587
+    # -- SMTP mode: "normal" (STARTTLS), "tls" (implicit TLS), or "plain"
     mode: normal
+    # -- SMTP authentication username
     username: ""
+    # -- SMTP authentication password
     password: ""
 
+  # -- Elasticsearch configuration for full-text search and analytics (optional)
   elasticsearch:
+    # -- Enable Elasticsearch for advanced search capabilities
     enabled: false
+    # -- Elasticsearch cluster URL
     url: http://localhost:9200
 
+  # -- PostgreSQL full-text search configuration as alternative to Elasticsearch (optional)
   postgresqlsearch:
+    # -- Enable PostgreSQL-based full-text search (simpler alternative to Elasticsearch)
     enabled: false
+    # -- Separate PostgreSQL database for search indices
     databaseURL: postgres://localhost
+    # -- Schema for search data in PostgreSQL
     databaseSchema: public
 
+  # -- Twilio SMS configuration (optional, alternative to Nexmo)
   twilio:
+    # -- Twilio Account SID
     accountSID: ""
+    # -- Twilio Authentication Token
     authToken: ""
+    # -- Twilio Message Service ID (for sending messages)
     messageServiceID: ""
 
+  # -- Nexmo (Vonage) SMS configuration (optional, alternative to Twilio)
   nexmo:
+    # -- Nexmo API Key
     apiKey: ""
+    # -- Nexmo API Secret
     apiSecret: ""
 
+  # -- WATI WhatsApp Business API configuration (optional)
   whatsappWATI:
+    # -- Enable WATI WhatsApp integration
     enabled: false
+    # -- WhatsApp phone number registered with WATI
     whatsappPhoneNumber: ""
+    # -- WATI webhook authentication token
     webhookAuth: ""
 
+  # -- On-premises WhatsApp Business Solution configuration (optional)
   whatsappOnPremises:
+    # -- Enable on-premises WhatsApp integration
     enabled: false
+    # -- WhatsApp API endpoint URL
     apiEndpoint: ""
+    # -- WhatsApp API username
     username: ""
+    # -- WhatsApp API password
     password: ""
+    # -- WhatsApp message authentication template configuration
     authenticationTemplate:
+      # -- Template name in WhatsApp
       name: ""
+      # -- Template type (usually "authentication")
       type: authentication
+      # -- WhatsApp namespace for the template
       namespace: ""
+      # -- Supported language codes
       languages:
       - en
 
+  # -- Meta WhatsApp Cloud API configuration (recommended) (optional)
   whatsappCloudAPI:
+    # -- Enable Meta WhatsApp Cloud API integration
     enabled: false
+    # -- WhatsApp phone number ID from Meta
     phoneNumberID: ""
+    # -- Meta API access token
     accessToken: ""
+    # -- WhatsApp message authentication template configuration
     authenticationTemplate:
+      # -- Template type (e.g., "copy_code_button")
       type: ""
+      # -- Copy code button template configuration
       copyCodeButton:
+        # -- Copy code parameter name
         name: ""
+        # -- Supported language codes
         languages: []
+    # -- Webhook configuration for receiving WhatsApp messages
     webhook:
+      # -- Webhook verification token
       verifyToken: ""
+      # -- Meta app secret for webhook signature verification
       appSecret: ""
 
+  # -- Audit logging configuration for compliance and security (optional)
   auditLog:
+    # -- Enable audit log collection and storage
     enabled: false
+    # -- Scheduled cleanup/archival of audit logs
     cronjob:
+      # -- Enable audit log retention cronjob
       enabled: false
+      # -- Cleanup schedule (cron format, default: daily at midnight)
       schedule: "0 0 * * *"
+    # -- Separate PostgreSQL database for audit logs (recommended)
     databaseURL: postgres://localhost
+    # -- Schema for audit log data
     databaseSchema: public
 
+  # -- Analytics and reporting configuration (optional)
   analytic:
+    # -- Enable analytics data collection and reporting
     enabled: false
+    # -- Redis database for temporary analytics data
     redisURL: __replace_me__
+    # -- Earliest date from which analytics data can be queried (YYYY-MM-DD format)
     epoch: ""
+    # -- Scheduled analytics processing jobs
     cronjob:
+      # -- Process hourly analytics data
       hourlySchedule: "30 * * * *"
+      # -- Process weekly analytics data (Mondays at 01:00)
       weeklySchedule: "0 1 * * 1"
+      # -- Process monthly analytics data (1st of month at 01:10)
       monthlySchedule: "10 1 1 * *"
+      # -- Process daily analytics data
       dailySchedule: "20 1 * * *"
 
+    # -- PostHog analytics integration (optional)
     posthog:
+      # -- PostHog API endpoint (e.g., https://eu.posthog.com for EU)
       endpoint: ""
+      # -- PostHog API key
       apiKey: ""
+      # -- Scheduled PostHog sync job
       cronjob:
+        # -- Enable PostHog sync cronjob
         enabled: false
+        # -- PostHog sync schedule
         schedule: "0 4 * * *"
 
+    # -- Google Sheets export for analytics reports (optional)
     googleSpreadsheet:
+      # -- Enable Google Sheets export
       enabled: false
+      # -- Google Spreadsheet ID
       id: ""
+      # -- Named ranges in Google Sheets for each report type
       range:
+        # -- Range for user weekly report
         userWeeklyReport: ""
+        # -- Range for project hourly report
         projectHourlyReport: ""
+        # -- Range for project weekly report
         projectWeeklyReport: ""
+        # -- Range for project monthly report
         projectMonthlyReport: ""
+      # -- Google service account secret configuration
       secret:
+        # -- Mount path for Google service account credentials
         mountPath: ""
+        # -- Kubernetes volume definition for Google credentials
         volume: {}
 
+  # -- User data export configuration for GDPR/privacy compliance (optional)
   userexport:
+    # -- Object storage backend for user export files
     objectStore:
+      # -- Storage type: "AWS_S3", "GCP_GCS", "AZURE_BLOB_STORAGE", "ALIBABA_CLOUD_OSS", or "MINIO"
       type: ""
+      # -- AWS S3 configuration
       awsS3:
+        # -- AWS region (e.g., us-east-1)
         region: ""
+        # -- S3 bucket name
         bucketName: ""
+        # -- AWS access key ID
         accessKeyID: ""
+        # -- AWS secret access key
         secretAccessKey: ""
+      # -- Google Cloud Storage configuration
       gcpGCS:
-        # This is a new feature, so it does not suppport service account key.
+        # -- GCS bucket name
         bucketName: ""
+        # -- GCP service account email (does not support key file currently)
         serviceAccount: ""
+      # -- Azure Blob Storage configuration
       azureBlobStorage:
+        # -- Azure storage account name
         storageAccount: ""
+        # -- Blob container name
         container: ""
+        # -- Azure storage account access key
         accessKey: ""
+      # -- Alibaba Cloud Object Storage Service configuration
       alibabaCloudOSS:
+        # -- OSS bucket name
         bucketName: ""
+        # -- OSS region (e.g., oss-cn-beijing)
         region: ""
+        # -- Alibaba access key ID
         accessKeyID: ""
+        # -- Alibaba secret access key
         secretAccessKey: ""
+      # -- MinIO S3-compatible object storage configuration
       minio:
+        # -- MinIO server endpoint (e.g., http://minio:9000 or https://minio.example.com)
         endpoint: ""
+        # -- MinIO bucket name for storing exported user data
         bucketName: ""
+        # -- MinIO access key ID for authentication
         accessKeyID: ""
+        # -- MinIO secret access key for authentication
         secretAccessKey: ""
 
+  # -- Main Authgear server (handles authentication, authorization, user management)
   mainServer:
+    # -- Container image (format: quay.io/theauthgear/authgear-server:VERSION)
     image: __replace_me__
+    # -- Number of replicas for high availability
     replicas: 1
+    # -- Kubernetes service account configuration
     serviceAccount:
+      # -- Service account annotations (e.g., for IAM roles)
       annotations: {}
+    # -- Additional environment variables
     env: {}
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints for even distribution
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
+        # -- Minimum CPU allocated (100m = 0.1 CPU cores)
         cpu: 100m
+        # -- Minimum memory allocated
         memory: 64Mi
       limits:
+        # -- Maximum CPU allowed (may be throttled)
         cpu: 500m
+        # -- Maximum memory allowed (pod OOMKilled if exceeded)
         memory: 256Mi
+    # -- Kubernetes liveness probe (restarts pod if fails)
     livenessProbe:
       httpGet:
         path: /healthz
         port: http
+    # -- Kubernetes readiness probe (removes from service if fails)
     readinessProbe:
       httpGet:
         path: /healthz
         port: http
+    # -- Pod Disruption Budget for high availability during maintenance
     pdb:
+      # -- Enable PDB to prevent disruptions during cluster maintenance
       enabled: false
+      # -- Minimum pods that must be available
       minAvailable: ""
+      # -- Maximum pods that can be unavailable
       maxUnavailable: ""
+      # -- Policy for evicting unhealthy pods
       unhealthyPodEvictionPolicy: ""
+    # -- Horizontal Pod Autoscaler for automatic scaling
     hpa:
+      # -- Enable HPA for automatic replica scaling based on metrics
       enabled: false
+      # -- Maximum number of replicas
       maxReplicas: 1
+      # -- Metrics for autoscaling
       metrics:
       - resource:
+          # -- Scale based on CPU usage
           name: cpu
           target:
+            # -- Target CPU utilization (1000m = 100%)
             averageUtilization: 1000
             type: Utilization
         type: Resource
 
+  # -- Admin API server (for portal and siteadmin management)
   adminServer:
+    # -- Number of replicas for high availability
     replicas: 1
+    # -- Additional environment variables
     env: {}
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
         cpu: 100m
@@ -335,14 +582,23 @@ authgear:
             type: Utilization
         type: Resource
 
+  # -- Resolver server (resolves identity references like email/username)
   resolverServer:
+    # -- Number of replicas for high availability
     replicas: 1
+    # -- Additional environment variables
     env: {}
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
         cpu: 100m
@@ -374,14 +630,23 @@ authgear:
             type: Utilization
         type: Resource
 
+  # -- Background worker (processes async jobs: emails, SMS, hooks, etc.)
   background:
+    # -- Number of replicas for parallel job processing
     replicas: 1
+    # -- Additional environment variables
     env: {}
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
         cpu: 100m
@@ -390,46 +655,87 @@ authgear:
         cpu: 300m
         memory: 64Mi
 
+  # -- Images server (serves user profile pictures and app logos)
   imagesServer:
+    # -- Number of replicas for high availability
     replicas: 1
+    # -- CDN configuration for image delivery
     cdn:
+      # -- Primary CDN host (legacy, use hosts for multiple)
       host: ""
+      # -- List of CDN hosts for image URLs
       hosts: []
+    # -- Object storage backend for images
     objectStore:
+      # -- Storage type: "AWS_S3", "GCP_GCS", "AZURE_BLOB_STORAGE", "ALIBABA_CLOUD_OSS", or "MINIO"
       type: ""
+      # -- AWS S3 configuration
       awsS3:
+        # -- AWS region (e.g., us-east-1)
         region: ""
+        # -- S3 bucket name
         bucketName: ""
+        # -- AWS access key ID
         accessKeyID: ""
+        # -- AWS secret access key
         secretAccessKey: ""
+      # -- Google Cloud Storage configuration
       gcpGCS:
+        # -- GCS bucket name
         bucketName: ""
+        # -- GCP service account email
         serviceAccount: ""
+        # -- GCP service account JSON credentials (inline JSON content)
         credentialsJSONContent: ""
+      # -- Azure Blob Storage configuration
       azureBlobStorage:
+        # -- Azure storage account name
         storageAccount: ""
+        # -- Blob container name
         container: ""
+        # -- Azure storage account access key
         accessKey: ""
+      # -- Alibaba Cloud Object Storage Service configuration
       alibabaCloudOSS:
+        # -- OSS bucket name
         bucketName: ""
+        # -- OSS region
         region: ""
+        # -- Alibaba access key ID
         accessKeyID: ""
+        # -- Alibaba secret access key
         secretAccessKey: ""
+      # -- MinIO S3-compatible object storage configuration
       minio:
+        # -- MinIO server endpoint (e.g., http://minio:9000 or https://minio.example.com)
         endpoint: ""
+        # -- MinIO bucket name for storing images (profile pictures, app logos)
         bucketName: ""
+        # -- MinIO access key ID for authentication
         accessKeyID: ""
+        # -- MinIO secret access key for authentication
         secretAccessKey: ""
 
+    # -- Additional environment variables
+    env: {}
+    # -- Kubernetes service account name for accessing cloud storage
     serviceAccountName: ""
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
+        # -- Higher baseline CPU for image processing/serving
         cpu: 500m
+        # -- Higher baseline memory for image buffering
         memory: 512Mi
       limits:
         cpu: 1000m
@@ -458,25 +764,44 @@ authgear:
             type: Utilization
         type: Resource
 
+  # -- Nginx proxy for portal server
   portalServerProxy:
+    # -- Nginx container image
     image: nginx:1.18
 
+  # -- Siteadmin server for system administration (optional)
   siteadminServer:
+    # -- Enable siteadmin server for site-wide management
     enabled: false
+    # -- Number of replicas for high availability
     replicas: 1
+    # -- Hostname for siteadmin server
     host: ""
+    # -- CORS allowed origins for siteadmin API
     corsAllowedOrigins: ""
+    # -- Siteadmin authentication via authgear
     authgear:
+      # -- Authgear app ID for siteadmin authentication
       appID: __replace_me__
+      # -- OAuth client ID for siteadmin
       clientID: __replace_me__
+      # -- Authgear endpoint URL
       endpoint: https://__replace_me__.example.com
+      # -- Session type for siteadmin (refresh_token recommended)
       webSDKSessionType: refresh_token
+    # -- Additional environment variables
     env: {}
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
         cpu: 100m
@@ -508,17 +833,29 @@ authgear:
             type: Utilization
         type: Resource
 
+  # -- Siteadmin portal UI (optional)
   siteadminPortal:
+    # -- Enable siteadmin portal UI
     enabled: false
+    # -- Siteadmin portal container image
     image: __replace_me__
+    # -- Number of replicas for high availability
     replicas: 1
+    # -- External URL where siteadmin portal is accessible
     externalURL: ""
+    # -- Additional environment variables
     env: {}
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
         cpu: 50m
@@ -526,10 +863,12 @@ authgear:
       limits:
         cpu: 200m
         memory: 128Mi
+    # -- Kubernetes liveness probe (restarts pod if fails)
     livenessProbe:
       httpGet:
         path: /
         port: http
+    # -- Kubernetes readiness probe (removes from service if fails)
     readinessProbe:
       httpGet:
         path: /
@@ -550,37 +889,58 @@ authgear:
             type: Utilization
         type: Resource
 
+  # -- Portal server (admin console for app management)
   portalServer:
+    # -- Portal server container image
     image: __replace_me__
+    # -- Number of replicas for high availability
     replicas: 1
 
+    # -- Hostname for portal server
     host: ""
 
+    # -- Email configuration for portal transactional emails
     email:
+      # -- Email sender address (From header)
       sender: ""
+      # -- Email reply-to address
       replyTo: ""
 
+    # -- Portal authentication via authgear
     authgear:
+      # -- Authgear app ID for portal authentication (typically "accounts")
       appID: __replace_me__
+      # -- OAuth client ID for portal
       clientID: __replace_me__
+      # -- Authgear endpoint URL for portal
       endpoint: https://__replace_me__.example.com
-      # Consider changing the default to refresh_token in the next major version.
-      # cookie or refresh_token
+      # -- Session type: "cookie" or "refresh_token" (refresh_token recommended)
       webSDKSessionType: cookie
 
+    # -- Admin API endpoint (service-to-service communication)
     adminAPI:
+      # -- Admin API URL (typically internal service DNS)
       endpoint: http://cluster.local
 
+    # -- Custom domain support for portal
     customDomain:
+      # -- Enable custom domain feature for portal
       enabled: true
 
+    # -- Additional environment variables
     env: {}
 
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
         cpu: 100m
@@ -588,10 +948,12 @@ authgear:
       limits:
         cpu: 500m
         memory: 256Mi
+    # -- Kubernetes liveness probe (restarts pod if fails)
     livenessProbe:
       httpGet:
         path: /healthz
         port: portal
+    # -- Kubernetes readiness probe (removes from service if fails)
     readinessProbe:
       httpGet:
         path: /healthz
@@ -612,15 +974,25 @@ authgear:
             type: Utilization
         type: Resource
 
+  # -- Deno runtime server (executes hooks and serverless functions)
   deno:
+    # -- Deno runtime container image
     image: __replace_me__
+    # -- Number of replicas for parallel hook execution
     replicas: 1
+    # -- Additional environment variables
     env: {}
+    # -- Kubernetes node selector for pod scheduling
     nodeSelector: {}
+    # -- Pin pod to a specific node by name
     nodeName: ""
+    # -- Pod affinity/anti-affinity rules
     affinity: {}
+    # -- Node taints toleration
     tolerations: []
+    # -- Pod topology spread constraints
     topologySpreadConstraints: []
+    # -- Container resource requests and limits
     resources:
       requests:
         cpu: 100m
@@ -644,18 +1016,29 @@ authgear:
             type: Utilization
         type: Resource
 
+  # -- Custom resources for app (feature flags, translations, secrets)
   appCustomResources:
+    # -- Mount path for custom resources inside container
     path: ""
+    # -- Kubernetes volume configuration for custom resources (usually ConfigMap or Secret)
     volume: {}
 
+  # -- Custom resources for portal (translations, branding overrides)
   portalCustomResources:
+    # -- Mount path for portal custom resources inside container
     path: ""
+    # -- Kubernetes volume configuration for portal resources
     volume: {}
 
+  # -- Extra volumes to attach to all pods (e.g., for shared storage)
   extraVolumes: []
 
+  # -- Extra volume mounts to attach to all pods
   extraVolumeMounts: []
 
+  # -- OAuth demo provider credentials (for testing OAuth integrations)
   oauthDemoSecrets:
+    # -- Enable demo OAuth secrets for testing
     enabled: false
+    # -- List of OAuth provider demo credentials
     items: []
