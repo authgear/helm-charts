@@ -491,12 +491,12 @@ authgear:
         # -- Minimum CPU allocated (100m = 0.1 CPU cores)
         cpu: 100m
         # -- Minimum memory allocated
-        memory: 64Mi
+        memory: 128Mi
       limits:
         # -- Maximum CPU allowed (may be throttled)
         cpu: 500m
         # -- Maximum memory allowed (pod OOMKilled if exceeded)
-        memory: 256Mi
+        memory: 512Mi
     # -- Kubernetes liveness probe (restarts pod if fails)
     livenessProbe:
       httpGet:
@@ -554,7 +554,7 @@ authgear:
     resources:
       requests:
         cpu: 100m
-        memory: 32Mi
+        memory: 128Mi
       limits:
         cpu: 500m
         memory: 256Mi
@@ -602,7 +602,7 @@ authgear:
     resources:
       requests:
         cpu: 100m
-        memory: 32Mi
+        memory: 128Mi
       limits:
         cpu: 500m
         memory: 256Mi
@@ -650,10 +650,10 @@ authgear:
     resources:
       requests:
         cpu: 100m
-        memory: 32Mi
+        memory: 64Mi
       limits:
         cpu: 300m
-        memory: 64Mi
+        memory: 256Mi
 
   # -- Images server (serves user profile pictures and app logos)
   imagesServer:
@@ -805,7 +805,7 @@ authgear:
     resources:
       requests:
         cpu: 100m
-        memory: 64Mi
+        memory: 128Mi
       limits:
         cpu: 500m
         memory: 256Mi
@@ -944,7 +944,7 @@ authgear:
     resources:
       requests:
         cpu: 100m
-        memory: 64Mi
+        memory: 128Mi
       limits:
         cpu: 500m
         memory: 256Mi
@@ -996,7 +996,7 @@ authgear:
     resources:
       requests:
         cpu: 100m
-        memory: 64Mi
+        memory: 128Mi
       limits:
         cpu: 500m
         memory: 256Mi
