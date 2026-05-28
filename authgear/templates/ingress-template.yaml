@@ -12,13 +12,13 @@ data:
     metadata:
       name: nginx-{{ "{{ .Host }}" }}
       annotations:
-        kubernetes.io/ingress.class: {{ $.Values.authgear.ingress.class | quote }}
         {{- with $.Values.authgear.ingress.annotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
         app.kubernetes.io/managed-by: authgear
     spec:
+      ingressClassName: {{ $.Values.authgear.ingress.class | quote }}
       tls:
       - hosts:
         - {{ "{{ .Host }}" }}

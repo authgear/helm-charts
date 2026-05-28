@@ -18,7 +18,6 @@ kind: Ingress
 metadata:
   name: {{ include "authgear.namePortal" . }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
     {{- with $.Values.authgear.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -28,6 +27,7 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
+  ingressClassName: {{ .Values.authgear.ingress.class | quote }}
   {{- if .Values.authgear.tls.portal.ingress.tls.enabled }}
   tls:
   - secretName: {{ $portalSecretName | quote }}
@@ -75,7 +75,6 @@ kind: Ingress
 metadata:
   name: {{ include "authgear.namePortalAuthgear" . }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
     {{- with $.Values.authgear.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -85,6 +84,7 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
+  ingressClassName: {{ .Values.authgear.ingress.class | quote }}
   {{- if .Values.authgear.tls.portalAuthgear.ingress.tls.enabled }}
   tls:
   - secretName: {{ $portalAuthgearSecretName | quote }}
