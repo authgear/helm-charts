@@ -13,7 +13,6 @@ kind: Ingress
 metadata:
   name: {{ include "authgear.nameSiteadmin" . | quote }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.authgear.ingress.class | quote }}
     {{- with $.Values.authgear.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -23,6 +22,7 @@ metadata:
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 spec:
+  ingressClassName: {{ .Values.authgear.ingress.class | quote }}
   {{- if .Values.authgear.tls.siteadmin.ingress.tls.enabled }}
   tls:
   - secretName: {{ $siteadminSecretName | quote }}
