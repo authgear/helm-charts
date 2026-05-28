@@ -247,8 +247,10 @@ spec:
           value: {{ .Values.authgear.portalServer.authgear.clientID | quote }}
         - name: AUTHGEAR_ENDPOINT
           value: {{ .Values.authgear.portalServer.authgear.endpoint | quote }}
+        {{- if .Values.authgear.portalServer.authgear.useInternalEndpoint }}
         - name: AUTHGEAR_ENDPOINT_INTERNAL
           value: {{ printf "http://%s" (include "authgear.nameMain" .) | quote }}
+        {{- end }}
         - name: AUTHGEAR_WEB_SDK_SESSION_TYPE
           value: {{ .Values.authgear.portalServer.authgear.webSDKSessionType | quote }}
         - name: ADMIN_API_ENDPOINT
