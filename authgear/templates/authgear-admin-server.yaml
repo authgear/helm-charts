@@ -115,6 +115,16 @@ spec:
         - name: USEREXPORT_OBJECT_STORE_ALIBABA_CLOUD_OSS_SECRET_ACCESS_KEY
           value: {{ .Values.authgear.userexport.objectStore.alibabaCloudOSS.secretAccessKey | quote }}
         {{- end }}
+        {{- if eq .Values.authgear.userexport.objectStore.type "MINIO" }}
+        - name: USEREXPORT_OBJECT_STORE_MINIO_ENDPOINT
+          value: {{ .Values.authgear.userexport.objectStore.minio.endpoint | quote }}
+        - name: USEREXPORT_OBJECT_STORE_MINIO_BUCKET_NAME
+          value: {{ .Values.authgear.userexport.objectStore.minio.bucketName | quote }}
+        - name: USEREXPORT_OBJECT_STORE_MINIO_ACCESS_KEY_ID
+          value: {{ .Values.authgear.userexport.objectStore.minio.accessKeyID | quote }}
+        - name: USEREXPORT_OBJECT_STORE_MINIO_SECRET_ACCESS_KEY
+          value: {{ .Values.authgear.userexport.objectStore.minio.secretAccessKey | quote }}
+        {{- end }}
         {{- end }}
         {{- include "authgear.loggingEnv" . | nindent 8 }}
         {{- include "authgear.otelEnv" . | nindent 8 }}
