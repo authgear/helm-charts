@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [10.34.0] - 2026-06-09
+
+[c2bcc36..4f99cea](https://github.com/authgear/helm-charts/compare/c2bcc36..4f99cea)
+
+### Fixed
+- Fix some services are missing user export object store config
+- Migrate ingress class annotation to ingressClassName field
+
+### Changed
+- Adjust deployment resources for a more realistic usage
+
+## [10.33.0] - 2026-05-19
+
+[a612fcc..c2bcc36](https://github.com/authgear/helm-charts/compare/a612fcc..c2bcc36)
+
+### Added
+- Add MinIO and OpenTelemetry configs
+- Add documentation to values
+
 ## [10.32.0] - 2026-05-05
 
 [ff65cdc..a612fcc](https://github.com/authgear/helm-charts/compare/ff65cdc..a612fcc)
