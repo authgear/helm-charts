@@ -41,4 +41,4 @@ update-index: check-cr-version
 
 .PHONY: debug
 debug:
-	helm install authgear ./authgear --dry-run --debug
+	helm template authgear ./authgear --dry-run --debug

@@ -916,6 +916,9 @@ authgear:
       endpoint: https://__replace_me__.example.com
       # -- Session type: "cookie" or "refresh_token" (refresh_token recommended)
       webSDKSessionType: cookie
+      # -- Route Authgear traffic from portal to the main server via internal HTTP endpoint instead of the public endpoint
+      # Minimum image version: 2026-06-11.0
+      useInternalEndpoint: false
 
     # -- Admin API endpoint (service-to-service communication)
     adminAPI:
