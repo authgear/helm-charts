@@ -62,6 +62,7 @@ spec:
           value: {{ .Values.authgear.databaseSchema | quote }}
         - name: REDIS_URL
           value: {{ .Values.authgear.redisURL | quote }}
+        {{- include "authgear.searchEnv" . | nindent 8 }}
         - name: DENO_ENDPOINT
           value: {{ printf "http://%s" (include "authgear.nameDeno" .) | quote }}
         - name: TRUST_PROXY

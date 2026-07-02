@@ -303,6 +303,27 @@ OpenTelemetry (metrics and traces) environment variables
 {{/*
 Logging environment variables
 */}}
+{{- define "authgear.searchEnv" -}}
+{{- $impl := .Values.authgear.searchImplementation -}}
+{{- if not $impl -}}
+{{- if .Values.authgear.elasticsearch.enabled -}}
+{{- $impl = "elasticsearch" -}}
+{{- else if .Values.authgear.postgresqlsearch.enabled -}}
+{{- $impl = "postgresql" -}}
+{{- else -}}
+{{- $impl = "none" -}}
+{{- end -}}
+{{- end -}}
+{{- if .Values.authgear.postgresqlsearch.enabled }}
+- name: SEARCH_DATABASE_URL
+  value: {{ .Values.authgear.postgresqlsearch.databaseURL | quote }}
+- name: SEARCH_DATABASE_SCHEMA
+  value: {{ .Values.authgear.postgresqlsearch.databaseSchema | quote }}
+{{- end }}
+- name: SEARCH_IMPLEMENTATION
+  value: {{ $impl | quote }}
+{{- end }}
+
 {{- define "authgear.loggingEnv" -}}
 {{- $handlers := list -}}
 {{- if .Values.authgear.logging.console.enabled -}}

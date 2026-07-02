@@ -270,6 +270,10 @@ authgear:
     # -- Schema for search data in PostgreSQL
     databaseSchema: public
 
+  # -- Search implementation to use. One of: elasticsearch, postgresql, none.
+  # -- If not set, determined automatically: elasticsearch (if enabled) > postgresql (if enabled) > none.
+  searchImplementation: ""
+
   # -- Twilio SMS configuration (optional, alternative to Nexmo)
   twilio:
     # -- Twilio Account SID
