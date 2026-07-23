@@ -39,7 +39,7 @@ spec:
     http:
       paths:
       - path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix
         backend:
           service:
             name: {{ include "authgear.namePortal" . | quote }}
@@ -95,32 +95,32 @@ spec:
   - host: {{ $portalAuthgearHost | quote }}
     http:
       paths:
-      - path: /
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: {{ include "authgear.nameMain" . | quote }}
-            port:
-              name: http
       - path: /_api/admin
-        pathType: ImplementationSpecific
+        pathType: Prefix
         backend:
           service:
             name: {{ include "authgear.nameAdmin" . | quote }}
             port:
               name: http
       - path: /_resolver
-        pathType: ImplementationSpecific
+        pathType: Prefix
         backend:
           service:
             name: {{ include "authgear.nameResolver" . | quote }}
             port:
               name: http
       - path: /_images
-        pathType: ImplementationSpecific
+        pathType: Prefix
         backend:
           service:
             name: {{ include "authgear.nameImages" . | quote }}
+            port:
+              name: http
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "authgear.nameMain" . | quote }}
             port:
               name: http
 {{- end }}

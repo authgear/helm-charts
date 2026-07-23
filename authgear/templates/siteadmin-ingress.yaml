@@ -50,7 +50,7 @@ spec:
               name: http
       {{- else }}
       - path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix
         backend:
           service:
             name: {{ include "authgear.nameSiteadmin" . | quote }}
