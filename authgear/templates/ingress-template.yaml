@@ -27,32 +27,32 @@ data:
       - host: {{ "{{ .Host }}" }}
         http:
           paths:
-          - path: /
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "authgear.nameMain" . | quote }}
-                port:
-                  number: 80
           - path: /_api/admin
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "authgear.nameAdmin" . | quote }}
                 port:
                   number: 80
           - path: /_resolver
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "authgear.nameResolver" . | quote }}
                 port:
                   number: 80
           - path: /_images
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "authgear.nameImages" . | quote }}
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "authgear.nameMain" . | quote }}
                 port:
                   number: 80
     {{- if $.Values.authgear.certManager.enabled }}
