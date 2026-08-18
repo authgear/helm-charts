@@ -324,6 +324,15 @@ Logging environment variables
   value: {{ $impl | quote }}
 {{- end }}
 
+{{- define "authgear.analyticPosthogEnv" -}}
+{{- if .Values.authgear.analytic.posthog.endpoint }}
+- name: ANALYTIC_POSTHOG_ENDPOINT
+  value: {{ .Values.authgear.analytic.posthog.endpoint | quote }}
+- name: ANALYTIC_POSTHOG_APIKEY
+  value: {{ .Values.authgear.analytic.posthog.apiKey | quote }}
+{{- end }}
+{{- end }}
+
 {{- define "authgear.loggingEnv" -}}
 {{- $handlers := list -}}
 {{- if .Values.authgear.logging.console.enabled -}}
