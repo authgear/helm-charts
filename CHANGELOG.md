@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [10.35.0] - 2026-08-26
+
+[4b8ebb3..b43ae41](https://github.com/authgear/helm-charts/compare/4b8ebb3..b43ae41)
+
+### Added
+- Use AUTHGEAR_ENDPOINT_INTERNAL to access authgear from portal
+- Set SEARCH_IMPLEMENTATION env var in all server templates
+- Set ANALYTIC_POSTHOG env vars in all server templates
+
+### Fixed
+- Use Prefix pathType for ingress rules and order specific paths before catch-all
+
 ## [10.34.0] - 2026-06-09
 
 [c2bcc36..4f99cea](https://github.com/authgear/helm-charts/compare/c2bcc36..4f99cea)
