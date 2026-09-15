@@ -106,6 +106,17 @@ authgear:
   # -- Sentry DSN for error tracking in portal (optional)
   portalSentryDSN: ""
 
+  # -- Source map (*.map) file serving for main server and portal server static assets (optional)
+  # Source maps embed original source code, so serving is disabled by default to avoid disclosure.
+  # Applies to: mainServer (webapp static assets) and portalServer (portal SPA static assets).
+  sourceMap:
+    # -- Enable serving of *.map source map files
+    enabled: false
+    # -- When set, source map requests require HTTP Basic Auth with this value as the password (username is ignored)
+    # Intended for Sentry's "hosting publicly" source map fetching
+    # See https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/hosting-publicly/
+    sentryToken: ""
+
   # -- Global ingress configuration for all Authgear services
   # nginx is the default; to use a different controller update class and replace annotations
   ingress:

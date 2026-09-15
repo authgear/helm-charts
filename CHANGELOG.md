@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Support SOURCE_MAP_ENABLED and SOURCE_MAP_SENTRY_TOKEN env vars in main and portal server templates
+
 ## [10.35.0] - 2026-08-26
 
 [4b8ebb3..b43ae41](https://github.com/authgear/helm-charts/compare/4b8ebb3..b43ae41)

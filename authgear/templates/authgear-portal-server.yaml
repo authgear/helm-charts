@@ -298,6 +298,7 @@ spec:
           value: {{ .Values.authgear.analytic.epoch | quote }}
         {{- end }}
         {{- include "authgear.analyticPosthogEnv" . | nindent 8 }}
+        {{- include "authgear.sourceMapEnv" . | nindent 8 }}
         {{- if .Values.authgear.postgresqlsearch.enabled }}
         - name: SEARCH_DATABASE_URL
           value: {{ .Values.authgear.postgresqlsearch.databaseURL | quote }}

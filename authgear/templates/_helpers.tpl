@@ -324,6 +324,18 @@ Logging environment variables
   value: {{ $impl | quote }}
 {{- end }}
 
+{{/*
+Source map (*.map) serving environment variables
+*/}}
+{{- define "authgear.sourceMapEnv" -}}
+- name: SOURCE_MAP_ENABLED
+  value: {{ .Values.authgear.sourceMap.enabled | quote }}
+{{- if .Values.authgear.sourceMap.sentryToken }}
+- name: SOURCE_MAP_SENTRY_TOKEN
+  value: {{ .Values.authgear.sourceMap.sentryToken | quote }}
+{{- end }}
+{{- end }}
+
 {{- define "authgear.analyticPosthogEnv" -}}
 {{- if .Values.authgear.analytic.posthog.endpoint }}
 - name: ANALYTIC_POSTHOG_ENDPOINT
