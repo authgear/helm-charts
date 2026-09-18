@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.36.0] - 2026-09-18
+
+[a32e04f..f09484e](https://github.com/authgear/helm-charts/compare/a32e04f..f09484e)
+
 ### Added
 - Support SOURCE_MAP_ENABLED and SOURCE_MAP_SENTRY_TOKEN env vars in main and portal server templates
 
