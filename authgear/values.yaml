@@ -128,6 +128,23 @@ authgear:
     annotations:
       # -- Maximum request body size for file uploads (nginx annotation)
       nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    # -- Ingress controllers to render the Ingresses for, e.g. to run two controllers side by side while migrating.
+    # When set, class and annotations above are not used.
+    # Every Ingress of the chart (default domains, portal, portal's Authgear endpoint, siteadmin) is rendered once
+    # per entry: the first entry keeps the Ingress names, the others prefix them with "<name>-".
+    # name must consist of lowercase letters, digits and '-'.
+    # The Ingress of a custom domain is named "<name>-<host>", and the portal creates one per entry when the domain
+    # is verified. The Certificates are not duplicated.
+    # When empty, it is one entry with name "nginx", and class and annotations above.
+    controllers: []
+    # - name: nginx
+    #   class: nginx
+    #   annotations:
+    #     nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    # - name: traefik
+    #   class: traefik
+    #   annotations:
+    #     traefik.ingress.kubernetes.io/router.middlewares: authgear-body-limit@kubernetescrd
 
   # -- cert-manager integration for automatic TLS certificate provisioning
   # Enabled by default. Requires cert-manager to be installed in the cluster and issuer names configured.

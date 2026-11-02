@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add `authgear.ingress.controllers` to render the Ingresses for several ingress controllers, e.g. to migrate from nginx to traefik without downtime
+
 ## [10.36.0] - 2026-09-18
 
 [a32e04f..f09484e](https://github.com/authgear/helm-charts/compare/a32e04f..f09484e)

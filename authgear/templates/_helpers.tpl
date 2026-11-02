@@ -176,6 +176,51 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-%s" .Release.Name "ingress-template" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{/*
+The ingress controllers to render the Ingresses for, as YAML {"controllers": [{name, class, annotations}]}.
+Without authgear.ingress.controllers, it is one controller named "nginx" with authgear.ingress.class and
+authgear.ingress.annotations, which renders the same Ingresses as before the list existed.
+*/}}
+{{- define "authgear.ingressControllers" -}}
+{{- $controllers := .Values.authgear.ingress.controllers -}}
+{{- if empty $controllers -}}
+{{- /* Not validated, so that existing values render exactly as before. */ -}}
+{{- $controllers = list (dict "name" "nginx" "class" .Values.authgear.ingress.class "annotations" .Values.authgear.ingress.annotations) -}}
+{{- else -}}
+{{- $names := dict -}}
+{{- range $controllers -}}
+{{- if empty .name -}}
+{{- fail "authgear.ingress.controllers: every entry needs a name" -}}
+{{- end -}}
+{{- /* The name is part of the Ingress names, which must be DNS subdomains. */ -}}
+{{- if not (regexMatch "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$" .name) -}}
+{{- fail (printf "authgear.ingress.controllers: %s must consist of lowercase letters, digits and '-'" .name) -}}
+{{- end -}}
+{{- if empty .class -}}
+{{- fail (printf "authgear.ingress.controllers: %s needs a class" .name) -}}
+{{- end -}}
+{{- if hasKey $names .name -}}
+{{- fail (printf "authgear.ingress.controllers: %s is listed more than once" .name) -}}
+{{- end -}}
+{{- $_ := set $names .name true -}}
+{{- end -}}
+{{- end -}}
+{{- toYaml (dict "controllers" $controllers) -}}
+{{- end }}
+
+{{/*
+The name of an Ingress for a controller. The first controller keeps the name, so that the existing Ingresses
+are updated in place; the others prefix it with "<controller name>-".
+Takes a dict with "index" (of the controller), "controller" and "name".
+*/}}
+{{- define "authgear.ingressNameForController" -}}
+{{- if eq (int .index) 0 -}}
+{{- .name -}}
+{{- else -}}
+{{- printf "%s-%s" .controller.name .name -}}
+{{- end -}}
+{{- end }}
+
 {{- define "authgear.authgearSecretsYAML" -}}
 secrets:
 - key: db
