@@ -188,42 +188,74 @@ authgear.ingress.annotations, which renders the same Ingresses as before the lis
 {{- /* Not validated, so that existing values render exactly as before. */ -}}
 {{- $controllers = list (dict "name" "nginx" "class" .Values.authgear.ingress.class "annotations" .Values.authgear.ingress.annotations) -}}
 {{- else -}}
+{{- include "authgear.validateIngressControllers" (dict "controllers" $controllers "path" "authgear.ingress.controllers" "customDomain" false) -}}
+{{- end -}}
+{{- toYaml (dict "controllers" $controllers) -}}
+{{- end }}
+
+{{/*
+The ingress controllers to render the Ingresses of custom domains (ingress.tpl.yaml) for, as YAML
+{"controllers": [{name, class, annotations}]}.
+authgear.ingress.customDomain.controllers, or the same as "authgear.ingressControllers" when it is empty.
+*/}}
+{{- define "authgear.customDomainIngressControllers" -}}
+{{- $controllers := (.Values.authgear.ingress.customDomain | default dict).controllers -}}
+{{- if empty $controllers -}}
+{{- include "authgear.ingressControllers" . -}}
+{{- else -}}
+{{- include "authgear.validateIngressControllers" (dict "controllers" $controllers "path" "authgear.ingress.customDomain.controllers" "customDomain" true) -}}
+{{- toYaml (dict "controllers" $controllers) -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Fails on an invalid list of ingress controllers. Renders nothing.
+Takes a dict with "controllers", "path" (of the values, for the messages) and "customDomain" (true for
+authgear.ingress.customDomain.controllers, whose Ingresses are always named "<name>-<host>").
+*/}}
+{{- define "authgear.validateIngressControllers" -}}
+{{- $path := .path -}}
+{{- $customDomain := .customDomain -}}
 {{- $names := dict -}}
 {{- $prefixes := dict -}}
-{{- range $index, $controller := $controllers -}}
+{{- range $index, $controller := .controllers -}}
 {{- if empty .name -}}
-{{- fail "authgear.ingress.controllers: every entry needs a name" -}}
+{{- fail (printf "%s: every entry needs a name" $path) -}}
 {{- end -}}
 {{- /* The name is part of the Ingress names, which must be DNS subdomains. */ -}}
 {{- if not (regexMatch "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$" .name) -}}
-{{- fail (printf "authgear.ingress.controllers: %s must consist of lowercase letters, digits and '-'" .name) -}}
+{{- fail (printf "%s: %s must consist of lowercase letters, digits and '-'" $path .name) -}}
 {{- end -}}
 {{- if empty .class -}}
-{{- fail (printf "authgear.ingress.controllers: %s needs a class" .name) -}}
+{{- fail (printf "%s: %s needs a class" $path .name) -}}
 {{- end -}}
 {{- if hasKey $names .name -}}
-{{- fail (printf "authgear.ingress.controllers: %s is listed more than once" .name) -}}
+{{- fail (printf "%s: %s is listed more than once" $path .name) -}}
 {{- end -}}
 {{- $_ := set $names .name true -}}
+{{- if $customDomain -}}
+{{- if hasKey . "ingressNamePrefix" -}}
+{{- fail (printf "%s: %s sets ingressNamePrefix, but the Ingresses of custom domains are always named \"<name>-<host>\"" $path .name) -}}
+{{- end -}}
+{{- else -}}
 {{- if hasKey . "ingressNamePrefix" -}}
 {{- /* Empty is allowed: no prefix. Otherwise the start of a DNS subdomain, e.g. "traefik-". */ -}}
 {{- /* Two ifs: "and" does not short-circuit in older Helm versions, and regexMatch fails on a non-string. */ -}}
 {{- if not (kindIs "string" .ingressNamePrefix) -}}
-{{- fail (printf "authgear.ingress.controllers: ingressNamePrefix of %s must be a string" .name) -}}
+{{- fail (printf "%s: ingressNamePrefix of %s must be a string" $path .name) -}}
 {{- end -}}
 {{- if not (regexMatch "^([a-z0-9][-a-z0-9]*)?$" .ingressNamePrefix) -}}
-{{- fail (printf "authgear.ingress.controllers: ingressNamePrefix of %s must be empty or start with a lowercase letter or digit, followed by lowercase letters, digits and '-'" .name) -}}
+{{- fail (printf "%s: ingressNamePrefix of %s must be empty or start with a lowercase letter or digit, followed by lowercase letters, digits and '-'" $path .name) -}}
 {{- end -}}
 {{- end -}}
 {{- /* Two controllers with the same prefix would render Ingresses with the same names. */ -}}
 {{- $prefix := include "authgear.ingressNameForController" (dict "index" $index "controller" . "name" "") -}}
 {{- if hasKey $prefixes $prefix -}}
-{{- fail (printf "authgear.ingress.controllers: %s and %s have the same Ingress name prefix %q" (get $prefixes $prefix) .name $prefix) -}}
+{{- fail (printf "%s: %s and %s have the same Ingress name prefix %q" $path (get $prefixes $prefix) .name $prefix) -}}
 {{- end -}}
 {{- $_ := set $prefixes $prefix .name -}}
 {{- end -}}
 {{- end -}}
-{{- toYaml (dict "controllers" $controllers) -}}
 {{- end }}
 
 {{/*

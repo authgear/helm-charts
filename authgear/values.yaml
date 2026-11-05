@@ -136,8 +136,8 @@ authgear:
     # ingressNamePrefix (optional) replaces that prefix, e.g. "" or "traefik-". Set it on an entry whose position
     # changes, e.g. when an earlier entry is removed after a migration, so that its Ingresses keep their names.
     # It does not change the names of custom domain Ingresses.
-    # The Ingress of a custom domain is named "<name>-<host>", and the portal creates one per entry when the domain
-    # is verified. The Certificates are not duplicated.
+    # Custom domains use these entries too, unless customDomain.controllers below is set.
+    # The Certificates are not duplicated.
     # When empty, it is one entry with name "nginx", and class and annotations above.
     controllers: []
     # - name: nginx
@@ -149,6 +149,18 @@ authgear:
     #   ingressNamePrefix: traefik-
     #   annotations:
     #     traefik.ingress.kubernetes.io/router.middlewares: authgear-body-limit@kubernetescrd
+    customDomain:
+      # -- Ingress controllers to render the Ingresses of custom domains for, e.g. to serve custom domains through
+      # another ingress class. Same fields as controllers above, except ingressNamePrefix.
+      # The Ingress of a custom domain is named "<name>-<host>", and the portal creates one per entry when the domain
+      # is verified. Existing custom domains only change with `authgear-portal internal domain apply-k8s-resources`.
+      # When empty, the same as controllers above (or class and annotations above, when that is empty too).
+      # When set, keep it in sync with controllers during a migration of the ingress controller.
+      controllers: []
+      # - name: traefik
+      #   class: traefik-custom-domain
+      #   annotations:
+      #     traefik.ingress.kubernetes.io/router.middlewares: authgear-body-limit@kubernetescrd
 
   # -- cert-manager integration for automatic TLS certificate provisioning
   # Enabled by default. Requires cert-manager to be installed in the cluster and issuer names configured.

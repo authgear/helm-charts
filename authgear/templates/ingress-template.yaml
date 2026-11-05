@@ -7,7 +7,7 @@ metadata:
 data:
   ingress.tpl.yaml: |-
     {{ "{{ if .IsCustom }}" }}
-    {{- range $controllerIndex, $controller := (include "authgear.ingressControllers" $ | fromYaml).controllers }}
+    {{- range $controllerIndex, $controller := (include "authgear.customDomainIngressControllers" $ | fromYaml).controllers }}
     {{- if gt $controllerIndex 0 }}
     ---
     {{- end }}
