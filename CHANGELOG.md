@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Add `authgear.ingress.controllers` to render the Ingresses for several ingress controllers, e.g. to migrate from nginx to traefik without downtime
+- Add `authgear.ingress.controllers` to render the Ingresses for several ingress controllers, e.g. to migrate from nginx to traefik without downtime. `ingressNamePrefix` of an entry sets the prefix of its Ingress names, so that they don't change when an earlier entry is removed
 
 ## [10.36.0] - 2026-09-18
 

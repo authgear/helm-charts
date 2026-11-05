@@ -177,7 +177,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-The ingress controllers to render the Ingresses for, as YAML {"controllers": [{name, class, annotations}]}.
+The ingress controllers to render the Ingresses for, as YAML
+{"controllers": [{name, class, annotations, ingressNamePrefix?}]}.
 Without authgear.ingress.controllers, it is one controller named "nginx" with authgear.ingress.class and
 authgear.ingress.annotations, which renders the same Ingresses as before the list existed.
 */}}
@@ -188,7 +189,8 @@ authgear.ingress.annotations, which renders the same Ingresses as before the lis
 {{- $controllers = list (dict "name" "nginx" "class" .Values.authgear.ingress.class "annotations" .Values.authgear.ingress.annotations) -}}
 {{- else -}}
 {{- $names := dict -}}
-{{- range $controllers -}}
+{{- $prefixes := dict -}}
+{{- range $index, $controller := $controllers -}}
 {{- if empty .name -}}
 {{- fail "authgear.ingress.controllers: every entry needs a name" -}}
 {{- end -}}
@@ -203,18 +205,37 @@ authgear.ingress.annotations, which renders the same Ingresses as before the lis
 {{- fail (printf "authgear.ingress.controllers: %s is listed more than once" .name) -}}
 {{- end -}}
 {{- $_ := set $names .name true -}}
+{{- if hasKey . "ingressNamePrefix" -}}
+{{- /* Empty is allowed: no prefix. Otherwise the start of a DNS subdomain, e.g. "traefik-". */ -}}
+{{- /* Two ifs: "and" does not short-circuit in older Helm versions, and regexMatch fails on a non-string. */ -}}
+{{- if not (kindIs "string" .ingressNamePrefix) -}}
+{{- fail (printf "authgear.ingress.controllers: ingressNamePrefix of %s must be a string" .name) -}}
+{{- end -}}
+{{- if not (regexMatch "^([a-z0-9][-a-z0-9]*)?$" .ingressNamePrefix) -}}
+{{- fail (printf "authgear.ingress.controllers: ingressNamePrefix of %s must be empty or start with a lowercase letter or digit, followed by lowercase letters, digits and '-'" .name) -}}
+{{- end -}}
+{{- end -}}
+{{- /* Two controllers with the same prefix would render Ingresses with the same names. */ -}}
+{{- $prefix := include "authgear.ingressNameForController" (dict "index" $index "controller" . "name" "") -}}
+{{- if hasKey $prefixes $prefix -}}
+{{- fail (printf "authgear.ingress.controllers: %s and %s have the same Ingress name prefix %q" (get $prefixes $prefix) .name $prefix) -}}
+{{- end -}}
+{{- $_ := set $prefixes $prefix .name -}}
 {{- end -}}
 {{- end -}}
 {{- toYaml (dict "controllers" $controllers) -}}
 {{- end }}
 
 {{/*
-The name of an Ingress for a controller. The first controller keeps the name, so that the existing Ingresses
-are updated in place; the others prefix it with "<controller name>-".
+The name of an Ingress for a controller: ingressNamePrefix of the controller followed by the name, if the
+controller sets it. Otherwise the first controller keeps the name, so that the existing Ingresses are updated in
+place, and the others prefix it with "<controller name>-".
 Takes a dict with "index" (of the controller), "controller" and "name".
 */}}
 {{- define "authgear.ingressNameForController" -}}
-{{- if eq (int .index) 0 -}}
+{{- if hasKey .controller "ingressNamePrefix" -}}
+{{- printf "%s%s" .controller.ingressNamePrefix .name -}}
+{{- else if eq (int .index) 0 -}}
 {{- .name -}}
 {{- else -}}
 {{- printf "%s-%s" .controller.name .name -}}

@@ -133,6 +133,9 @@ authgear:
     # Every Ingress of the chart (default domains, portal, portal's Authgear endpoint, siteadmin) is rendered once
     # per entry: the first entry keeps the Ingress names, the others prefix them with "<name>-".
     # name must consist of lowercase letters, digits and '-'.
+    # ingressNamePrefix (optional) replaces that prefix, e.g. "" or "traefik-". Set it on an entry whose position
+    # changes, e.g. when an earlier entry is removed after a migration, so that its Ingresses keep their names.
+    # It does not change the names of custom domain Ingresses.
     # The Ingress of a custom domain is named "<name>-<host>", and the portal creates one per entry when the domain
     # is verified. The Certificates are not duplicated.
     # When empty, it is one entry with name "nginx", and class and annotations above.
@@ -143,6 +146,7 @@ authgear:
     #     nginx.ingress.kubernetes.io/proxy-body-size: 10m
     # - name: traefik
     #   class: traefik
+    #   ingressNamePrefix: traefik-
     #   annotations:
     #     traefik.ingress.kubernetes.io/router.middlewares: authgear-body-limit@kubernetescrd
 
