@@ -1,15 +1,18 @@
 {{- if .Values.authgear.ingress.enabled }}
 
+{{- $controllers := (include "authgear.ingressControllers" . | fromYaml).controllers }}
+
 {{- range $index, $defaultDomain := .Values.authgear.allDefaultDomains }}
 
 {{- if $defaultDomain.ingress.enabled }}
+{{- range $controllerIndex, $controller := $controllers }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $defaultDomain.domain | quote }}
+  name: {{ include "authgear.ingressNameForController" (dict "index" $controllerIndex "controller" $controller "name" $defaultDomain.domain) | quote }}
   annotations:
-    {{- with $.Values.authgear.ingress.annotations }}
+    {{- with $controller.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- with $defaultDomain.ingress.annotations }}
@@ -18,7 +21,7 @@ metadata:
   labels:
     {{- include "authgear.labels" $ | nindent 4 }}
 spec:
-  ingressClassName: {{ $.Values.authgear.ingress.class | quote }}
+  ingressClassName: {{ $controller.class | quote }}
   {{- if $defaultDomain.ingress.tls.enabled }}
   tls:
   - secretName: {{ $defaultDomain.secretName | quote }}
@@ -57,6 +60,7 @@ spec:
             name: {{ include "authgear.nameMain" $ | quote }}
             port:
               name: http
+{{- end }}
 {{- end }}
 
 {{- if $.Values.authgear.certManager.enabled }}

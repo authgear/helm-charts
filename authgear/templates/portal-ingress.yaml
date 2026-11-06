@@ -12,39 +12,44 @@
 
 {{- if .Values.authgear.ingress.enabled }}
 
+{{- $controllers := (include "authgear.ingressControllers" . | fromYaml).controllers }}
+
 {{- if .Values.authgear.tls.portal.ingress.enabled }}
+{{- range $controllerIndex, $controller := $controllers }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "authgear.namePortal" . }}
+  name: {{ include "authgear.ingressNameForController" (dict "index" $controllerIndex "controller" $controller "name" (include "authgear.namePortal" $)) }}
   annotations:
-    {{- with $.Values.authgear.ingress.annotations }}
+    {{- with $controller.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- with $.Values.authgear.tls.portal.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   labels:
-    {{- include "authgear.labels" . | nindent 4 }}
+    {{- include "authgear.labels" $ | nindent 4 }}
 spec:
-  ingressClassName: {{ .Values.authgear.ingress.class | quote }}
-  {{- if .Values.authgear.tls.portal.ingress.tls.enabled }}
+  ingressClassName: {{ $controller.class | quote }}
+  {{- if $.Values.authgear.tls.portal.ingress.tls.enabled }}
   tls:
   - secretName: {{ $portalSecretName | quote }}
     hosts:
-    - {{ include "authgear.portalHost" . | quote }}
+    - {{ include "authgear.portalHost" $ | quote }}
   {{- end }}
   rules:
-  - host: {{ include "authgear.portalHost" . | quote }}
+  - host: {{ include "authgear.portalHost" $ | quote }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: {{ include "authgear.namePortal" . | quote }}
+            name: {{ include "authgear.namePortal" $ | quote }}
             port:
               name: http
+{{- end }}
 {{- end }}
 
 {{- if .Values.authgear.certManager.enabled }}
@@ -69,23 +74,24 @@ spec:
 
 
 {{- if .Values.authgear.tls.portalAuthgear.ingress.enabled }}
+{{- range $controllerIndex, $controller := $controllers }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "authgear.namePortalAuthgear" . }}
+  name: {{ include "authgear.ingressNameForController" (dict "index" $controllerIndex "controller" $controller "name" (include "authgear.namePortalAuthgear" $)) }}
   annotations:
-    {{- with $.Values.authgear.ingress.annotations }}
+    {{- with $controller.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- with $.Values.authgear.tls.portalAuthgear.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   labels:
-    {{- include "authgear.labels" . | nindent 4 }}
+    {{- include "authgear.labels" $ | nindent 4 }}
 spec:
-  ingressClassName: {{ .Values.authgear.ingress.class | quote }}
-  {{- if .Values.authgear.tls.portalAuthgear.ingress.tls.enabled }}
+  ingressClassName: {{ $controller.class | quote }}
+  {{- if $.Values.authgear.tls.portalAuthgear.ingress.tls.enabled }}
   tls:
   - secretName: {{ $portalAuthgearSecretName | quote }}
     hosts:
@@ -99,30 +105,31 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ include "authgear.nameAdmin" . | quote }}
+            name: {{ include "authgear.nameAdmin" $ | quote }}
             port:
               name: http
       - path: /_resolver
         pathType: Prefix
         backend:
           service:
-            name: {{ include "authgear.nameResolver" . | quote }}
+            name: {{ include "authgear.nameResolver" $ | quote }}
             port:
               name: http
       - path: /_images
         pathType: Prefix
         backend:
           service:
-            name: {{ include "authgear.nameImages" . | quote }}
+            name: {{ include "authgear.nameImages" $ | quote }}
             port:
               name: http
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: {{ include "authgear.nameMain" . | quote }}
+            name: {{ include "authgear.nameMain" $ | quote }}
             port:
               name: http
+{{- end }}
 {{- end }}
 
 {{- if .Values.authgear.certManager.enabled }}

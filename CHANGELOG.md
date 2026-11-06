@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add `authgear.ingress.controllers` to render the Ingresses for several ingress controllers, e.g. to migrate from nginx to traefik without downtime. `ingressNamePrefix` of an entry sets the prefix of its Ingress names, so that they don't change when an earlier entry is removed
+- Add `authgear.ingress.customDomain.controllers` to render the Ingresses of custom domains for other ingress controllers than the other Ingresses, e.g. another ingress class. When empty, it is the same as `authgear.ingress.controllers`
+- Add `tlsSecretNameTemplate` to the entries of `authgear.ingress.customDomain.controllers` to set the `secretName` of the Ingresses of custom domains, or omit it with `""`, e.g. for controllers that obtain the certificates themselves
+
 ## [10.36.0] - 2026-09-18
 
 [a32e04f..f09484e](https://github.com/authgear/helm-charts/compare/a32e04f..f09484e)

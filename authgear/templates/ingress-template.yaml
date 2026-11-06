@@ -7,22 +7,32 @@ metadata:
 data:
   ingress.tpl.yaml: |-
     {{ "{{ if .IsCustom }}" }}
+    {{- range $controllerIndex, $controller := (include "authgear.customDomainIngressControllers" $ | fromYaml).controllers }}
+    {{- if gt $controllerIndex 0 }}
+    ---
+    {{- end }}
     apiVersion: networking.k8s.io/v1
     kind: Ingress
     metadata:
-      name: nginx-{{ "{{ .Host }}" }}
+      name: {{ $controller.name }}-{{ "{{ .Host }}" }}
       annotations:
-        {{- with $.Values.authgear.ingress.annotations }}
+        {{- with $controller.annotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
         app.kubernetes.io/managed-by: authgear
     spec:
-      ingressClassName: {{ $.Values.authgear.ingress.class | quote }}
+      ingressClassName: {{ $controller.class | quote }}
       tls:
       - hosts:
         - {{ "{{ .Host }}" }}
-        secretName: tls-{{ "{{ .Host }}" }}
+        {{- $secretNameTemplate := "tls-{{ .Host }}" }}
+        {{- if hasKey $controller "tlsSecretNameTemplate" }}
+        {{- $secretNameTemplate = $controller.tlsSecretNameTemplate }}
+        {{- end }}
+        {{- with $secretNameTemplate }}
+        secretName: {{ . }}
+        {{- end }}
       rules:
       - host: {{ "{{ .Host }}" }}
         http:
@@ -31,30 +41,31 @@ data:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "authgear.nameAdmin" . | quote }}
+                name: {{ include "authgear.nameAdmin" $ | quote }}
                 port:
                   number: 80
           - path: /_resolver
             pathType: Prefix
             backend:
               service:
-                name: {{ include "authgear.nameResolver" . | quote }}
+                name: {{ include "authgear.nameResolver" $ | quote }}
                 port:
                   number: 80
           - path: /_images
             pathType: Prefix
             backend:
               service:
-                name: {{ include "authgear.nameImages" . | quote }}
+                name: {{ include "authgear.nameImages" $ | quote }}
                 port:
                   number: 80
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ include "authgear.nameMain" . | quote }}
+                name: {{ include "authgear.nameMain" $ | quote }}
                 port:
                   number: 80
+    {{- end }}
     {{- if $.Values.authgear.certManager.enabled }}
     ---
     apiVersion: cert-manager.io/v1
