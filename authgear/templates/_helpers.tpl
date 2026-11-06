@@ -195,7 +195,7 @@ authgear.ingress.annotations, which renders the same Ingresses as before the lis
 
 {{/*
 The ingress controllers to render the Ingresses of custom domains (ingress.tpl.yaml) for, as YAML
-{"controllers": [{name, class, annotations}]}.
+{"controllers": [{name, class, annotations, tlsSecretNameTemplate?}]}.
 authgear.ingress.customDomain.controllers, or the same as "authgear.ingressControllers" when it is empty.
 */}}
 {{- define "authgear.customDomainIngressControllers" -}}
@@ -237,7 +237,15 @@ authgear.ingress.customDomain.controllers, whose Ingresses are always named "<na
 {{- if hasKey . "ingressNamePrefix" -}}
 {{- fail (printf "%s: %s sets ingressNamePrefix, but the Ingresses of custom domains are always named \"<name>-<host>\"" $path .name) -}}
 {{- end -}}
+{{- if hasKey . "tlsSecretNameTemplate" -}}
+{{- if not (kindIs "string" .tlsSecretNameTemplate) -}}
+{{- fail (printf "%s: tlsSecretNameTemplate of %s must be a string" $path .name) -}}
+{{- end -}}
+{{- end -}}
 {{- else -}}
+{{- if hasKey . "tlsSecretNameTemplate" -}}
+{{- fail (printf "%s: %s sets tlsSecretNameTemplate, but it only applies to authgear.ingress.customDomain.controllers" $path .name) -}}
+{{- end -}}
 {{- if hasKey . "ingressNamePrefix" -}}
 {{- /* Empty is allowed: no prefix. Otherwise the start of a DNS subdomain, e.g. "traefik-". */ -}}
 {{- /* Two ifs: "and" does not short-circuit in older Helm versions, and regexMatch fails on a non-string. */ -}}

@@ -26,7 +26,13 @@ data:
       tls:
       - hosts:
         - {{ "{{ .Host }}" }}
-        secretName: tls-{{ "{{ .Host }}" }}
+        {{- $secretNameTemplate := "tls-{{ .Host }}" }}
+        {{- if hasKey $controller "tlsSecretNameTemplate" }}
+        {{- $secretNameTemplate = $controller.tlsSecretNameTemplate }}
+        {{- end }}
+        {{- with $secretNameTemplate }}
+        secretName: {{ . }}
+        {{- end }}
       rules:
       - host: {{ "{{ .Host }}" }}
         http:

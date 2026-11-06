@@ -152,6 +152,11 @@ authgear:
     customDomain:
       # -- Ingress controllers to render the Ingresses of custom domains for, e.g. to serve custom domains through
       # another ingress class. Same fields as controllers above, except ingressNamePrefix.
+      # tlsSecretNameTemplate (optional, default "tls-{{ .Host }}") is the spec.tls[].secretName of the Ingresses of
+      # the entry. It is a Go template rendered by the portal, with .Host being the custom domain.
+      # Set it to "" to omit secretName, for controllers that obtain the certificates themselves, e.g. Traefik with an
+      # ACME resolver. The Certificates of cert-manager always use "tls-{{ .Host }}", so set
+      # authgear.certManager.enabled to false if the Ingresses do not use them.
       # The Ingress of a custom domain is named "<name>-<host>", and the portal creates one per entry when the domain
       # is verified. Existing custom domains only change with `authgear-portal internal domain apply-k8s-resources`.
       # When empty, the same as controllers above (or class and annotations above, when that is empty too).
@@ -159,6 +164,7 @@ authgear:
       controllers: []
       # - name: traefik
       #   class: traefik-custom-domain
+      #   tlsSecretNameTemplate: ""
       #   annotations:
       #     traefik.ingress.kubernetes.io/router.middlewares: authgear-body-limit@kubernetescrd
 
