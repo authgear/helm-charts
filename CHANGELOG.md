@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.37.0] - 2026-11-10
+
+[f09484e..fcd5341](https://github.com/authgear/helm-charts/compare/f09484e..fcd5341)
+
 ### Added
 - Add `authgear.ingress.controllers` to render the Ingresses for several ingress controllers, e.g. to migrate from nginx to traefik without downtime. `ingressNamePrefix` of an entry sets the prefix of its Ingress names, so that they don't change when an earlier entry is removed
 - Add `authgear.ingress.customDomain.controllers` to render the Ingresses of custom domains for other ingress controllers than the other Ingresses, e.g. another ingress class. When empty, it is the same as `authgear.ingress.controllers`
