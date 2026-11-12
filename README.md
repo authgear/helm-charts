@@ -4,6 +4,10 @@
 
 1.21
 
+## Documentation
+
+- [Service accounts](./docs/service-accounts.md): the service accounts to create when `serviceAccount.create` is `false`.
+
 ## Release a new version
 
 1. Update version in [Chart.yaml](./authgear/Chart.yaml) and commit as "Bump version to X.Y.Z".

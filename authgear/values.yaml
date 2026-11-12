@@ -528,6 +528,7 @@ authgear:
       # -- Create the service account, and the Role and RoleBinding in appNamespace.
       # Set to false to use an existing service account named `name`, e.g. when the deployer cannot create RBAC resources.
       # The existing service account must be able to get, list and watch configmaps, secrets and ingresses in appNamespace.
+      # See https://github.com/authgear/helm-charts/blob/main/docs/service-accounts.md for the manifests to create.
       create: true
       # -- Name of the service account. Defaults to `<release>-main` when `create` is true. Required when `create` is false.
       name: ""
@@ -961,6 +962,7 @@ authgear:
       # Set to false to use an existing service account named `name`, e.g. when the deployer cannot create RBAC resources.
       # The existing service account must be able to manage (all verbs) configmaps, secrets, ingresses
       # and cert-manager certificates in appNamespace, for custom domains.
+      # See https://github.com/authgear/helm-charts/blob/main/docs/service-accounts.md for the manifests to create.
       create: true
       # -- Name of the service account. Defaults to `<release>-portal` when `create` is true. Required when `create` is false.
       name: ""
