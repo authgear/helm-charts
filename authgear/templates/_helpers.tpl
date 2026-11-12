@@ -27,6 +27,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- printf "%s-%s" .Release.Name "main" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{/*
+The ServiceAccount of main, admin and resolver.
+*/}}
+{{- define "authgear.serviceAccountNameMain" -}}
+{{- if .Values.authgear.mainServer.serviceAccount.create }}
+{{- default (include "authgear.nameMain" .) .Values.authgear.mainServer.serviceAccount.name }}
+{{- else }}
+{{- required "authgear.mainServer.serviceAccount.name is required when authgear.mainServer.serviceAccount.create is false" .Values.authgear.mainServer.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
 {{- define "authgear.mainSelectorLabels" -}}
 app.kubernetes.io/name: {{ include "authgear.nameMain" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
@@ -61,6 +72,17 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "authgear.namePortal" -}}
 {{- printf "%s-%s" .Release.Name "portal" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+The ServiceAccount of portal.
+*/}}
+{{- define "authgear.serviceAccountNamePortal" -}}
+{{- if .Values.authgear.portalServer.serviceAccount.create }}
+{{- default (include "authgear.namePortal" .) .Values.authgear.portalServer.serviceAccount.name }}
+{{- else }}
+{{- required "authgear.portalServer.serviceAccount.name is required when authgear.portalServer.serviceAccount.create is false" .Values.authgear.portalServer.serviceAccount.name }}
+{{- end }}
 {{- end }}
 
 {{- define "authgear.namePortalAuthgear" -}}
