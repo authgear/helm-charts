@@ -14,7 +14,7 @@ spec:
       labels:
         {{- include "authgear.adminSelectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "authgear.nameMain" . | quote }}
+      serviceAccountName: {{ include "authgear.serviceAccountNameMain" . | quote }}
       volumes:
       {{- if .Values.authgear.appCustomResources.path }}
       - name: custom-resources

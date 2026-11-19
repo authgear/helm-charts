@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add `authgear.mainServer.serviceAccount.create` and `authgear.mainServer.serviceAccount.name`. Set `create` to `false` to use an existing service account for main, admin and resolver, without creating the ServiceAccount, Role and RoleBinding
+- Add `authgear.portalServer.serviceAccount.create`, `authgear.portalServer.serviceAccount.name` and `authgear.portalServer.serviceAccount.annotations`. Set `create` to `false` to use an existing service account for portal, without creating the ServiceAccount, Role and RoleBinding
+
 ## [10.37.0] - 2026-11-10
 
 [f09484e..fcd5341](https://github.com/authgear/helm-charts/compare/f09484e..fcd5341)

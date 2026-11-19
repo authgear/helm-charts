@@ -1,7 +1,12 @@
+{{- if .Values.authgear.portalServer.serviceAccount.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "authgear.namePortal" . | quote }}
+  name: {{ include "authgear.serviceAccountNamePortal" . | quote }}
+  {{- if .Values.authgear.portalServer.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml .Values.authgear.portalServer.serviceAccount.annotations | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "authgear.labels" . | nindent 4 }}
 automountServiceAccountToken: true
@@ -33,12 +38,13 @@ metadata:
     {{- include "authgear.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "authgear.namePortal" . | quote }}
+  name: {{ include "authgear.serviceAccountNamePortal" . | quote }}
   namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: {{ include "authgear.namePortal" . | quote }}
   apiGroup: rbac.authorization.k8s.io
+{{- end }}
 {{- if (eq .Values.authgear.portalServer.authgear.webSDKSessionType "cookie") }}
 ---
 apiVersion: v1
@@ -130,7 +136,7 @@ spec:
       labels:
         {{- include "authgear.portalSelectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "authgear.namePortal" . | quote }}
+      serviceAccountName: {{ include "authgear.serviceAccountNamePortal" . | quote }}
       volumes:
       {{- if (eq .Values.authgear.portalServer.authgear.webSDKSessionType "cookie") }}
       - name: volume-nginx-conf

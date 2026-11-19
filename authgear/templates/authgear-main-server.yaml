@@ -1,7 +1,8 @@
+{{- if .Values.authgear.mainServer.serviceAccount.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "authgear.nameMain" . | quote }}
+  name: {{ include "authgear.serviceAccountNameMain" . | quote }}
   {{- if .Values.authgear.mainServer.serviceAccount.annotations }}
   annotations:
     {{- toYaml .Values.authgear.mainServer.serviceAccount.annotations | nindent 4 }}
@@ -34,12 +35,13 @@ metadata:
     {{- include "authgear.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "authgear.nameMain" . | quote }}
+  name: {{ include "authgear.serviceAccountNameMain" . | quote }}
   namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
   name: {{ include "authgear.nameMain" . | quote }}
   apiGroup: rbac.authorization.k8s.io
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,7 +59,7 @@ spec:
       labels:
         {{- include "authgear.mainSelectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "authgear.nameMain" . | quote }}
+      serviceAccountName: {{ include "authgear.serviceAccountNameMain" . | quote }}
       volumes:
       {{- if .Values.authgear.appCustomResources.path }}
       - name: custom-resources
